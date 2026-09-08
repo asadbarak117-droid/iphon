@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   motion,
   AnimatePresence,
@@ -6,7 +6,6 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
-import { Link, useLocation } from "react-router-dom";
 
 const COLORS = {
   blue: "#30AFFF",
@@ -25,240 +24,209 @@ const problems = [
   {
     id: 1,
     device: "iPhone",
-    icon: "🔋",
-    question: "Why is my iPhone battery draining fast?",
-    problem:
-      "High brightness, background activity, weak signal, gaming, video recording, and other intensive tasks can increase battery usage.",
+    icon: "📱",
+    title: "iPhone battery drains quickly",
+    description: "Your iPhone battery is losing charge faster than normal.",
     solution:
-      "Open Settings → Battery and check which apps use the most power. Reduce brightness, limit unnecessary background activity, update iOS, and use Low Power Mode when needed.",
+      "Open Settings → Battery to check battery usage. Disable unnecessary Background App Refresh, reduce screen brightness, and check Battery Health under Settings → Battery → Battery Health & Charging.",
   },
   {
     id: 2,
     device: "iPhone",
-    icon: "🔥",
-    question: "Why is my iPhone getting hot?",
-    problem:
-      "Gaming, camera use, charging, direct sunlight, poor signal, or intensive background processes can make the iPhone warm.",
+    icon: "📶",
+    title: "iPhone Wi-Fi keeps disconnecting",
+    description: "Your iPhone repeatedly loses its Wi-Fi connection.",
     solution:
-      "Stop demanding tasks temporarily, remove the phone from direct heat, stop charging if it is very hot, and allow it to cool naturally.",
+      "Forget the Wi-Fi network and reconnect. Go to Settings → Wi-Fi → tap the network → Forget This Network. Restart the router and your iPhone if the problem continues.",
   },
   {
     id: 3,
     device: "iPhone",
-    icon: "🐌",
-    question: "Why is my iPhone slow?",
-    problem:
-      "Low storage, outdated software, background processes, or an aging battery can affect performance.",
+    icon: "🔋",
+    title: "iPhone is not charging",
+    description: "Your iPhone does not charge or charges very slowly.",
     solution:
-      "Free up storage, restart the iPhone, update iOS, and check Settings → Battery → Battery Health & Charging.",
+      "Check the charging cable and adapter for damage. Clean the charging port carefully and try another certified cable or charger. Restart the iPhone and check for software updates.",
   },
   {
     id: 4,
     device: "iPhone",
-    icon: "💾",
-    question: "How can I free iPhone storage?",
-    problem:
-      "Photos, videos, applications, downloads, messages, and cached data can consume a lot of storage.",
+    icon: "🐌",
+    title: "iPhone feels slow",
+    description: "Apps open slowly and the device feels less responsive.",
     solution:
-      "Go to Settings → General → iPhone Storage. Remove unused apps and large files, delete unnecessary videos, and optimize photo storage if appropriate.",
+      "Restart the iPhone, update iOS, remove unnecessary apps, and keep some free storage available. Check Settings → General → iPhone Storage to identify large files and apps.",
   },
   {
     id: 5,
     device: "iPhone",
-    icon: "👤",
-    question: "Why is Face ID not working?",
-    problem:
-      "Face obstruction, dirty sensors, incorrect positioning, or software issues can prevent Face ID from recognizing you.",
+    icon: "📷",
+    title: "iPhone camera is blurry",
+    description: "Photos or videos appear blurry or the camera cannot focus.",
     solution:
-      "Clean the TrueDepth camera area, make sure your face is visible, hold the iPhone correctly, and check Settings → Face ID & Passcode.",
+      "Clean the camera lens with a soft microfiber cloth. Remove any camera protector that may interfere with focus. Restart the device and test the camera again.",
   },
   {
     id: 6,
     device: "iPhone",
-    icon: "📶",
-    question: "Why is my iPhone Wi-Fi slow?",
-    problem:
-      "Weak signal, router problems, network congestion, or incorrect network settings can cause slow Wi-Fi.",
+    icon: "🔊",
+    title: "iPhone speaker has no sound",
+    description: "You cannot hear sound from the built-in speaker.",
     solution:
-      "Move closer to the router, reconnect to Wi-Fi, restart the router, and try restarting your iPhone. If necessary, check network settings.",
+      "Check the volume level and make sure Silent Mode is disabled. Disconnect Bluetooth devices and check whether the speaker openings are blocked.",
   },
   {
     id: 7,
     device: "iPhone",
-    icon: "📱",
-    question: "Why is my iPhone screen not responding?",
-    problem:
-      "A frozen application, software issue, wet screen, damaged display, or temporary system problem can cause touch problems.",
+    icon: "🌡️",
+    title: "iPhone is overheating",
+    description: "The device becomes unusually hot during normal use.",
     solution:
-      "Clean and dry the screen, remove accessories that may interfere, restart the iPhone, and update iOS. If the display remains unresponsive, hardware service may be needed.",
+      "Close intensive apps, remove the case temporarily, avoid direct sunlight, and stop charging while the device is extremely hot. Allow it to cool before continuing use.",
   },
   {
     id: 8,
     device: "iPhone",
-    icon: "🔌",
-    question: "Why is my iPhone not charging?",
-    problem:
-      "Dust in the charging port, a damaged cable, adapter problems, or software issues can prevent charging.",
+    icon: "🔐",
+    title: "Face ID is not working",
+    description: "Face ID does not recognize your face correctly.",
     solution:
-      "Try another compatible cable and adapter, inspect the charging port, restart the iPhone, and make sure the power source works.",
+      "Make sure the TrueDepth camera is clean and unobstructed. Check Settings → Face ID & Passcode. If necessary, reset Face ID and configure it again.",
   },
   {
     id: 9,
     device: "Mac",
-    icon: "🐌",
-    question: "Why is my Mac running slowly?",
-    problem:
-      "Too many applications, startup items, low storage, memory pressure, or heavy background processes can reduce performance.",
+    icon: "💻",
+    title: "MacBook is running slowly",
+    description: "Applications take longer to open and macOS feels sluggish.",
     solution:
-      "Close unnecessary applications, restart your Mac, free storage, and review startup/background items in System Settings.",
+      "Restart your Mac, close unused applications, check Activity Monitor, and free storage space. Remove unnecessary startup applications from System Settings → General → Login Items.",
   },
   {
     id: 10,
     device: "Mac",
-    icon: "🔥",
-    question: "Why is my MacBook overheating?",
-    problem:
-      "Heavy workloads, demanding applications, blocked airflow, and high room temperatures can increase heat.",
+    icon: "🌐",
+    title: "Mac Wi-Fi is unstable",
+    description: "Your Mac frequently disconnects from wireless networks.",
     solution:
-      "Close demanding applications and place the Mac on a hard, stable surface with good airflow. Keep vents clear and allow the Mac to cool.",
+      "Turn Wi-Fi off and on again. Forget the network and reconnect. Restart your router and Mac. Also check whether macOS has pending updates.",
   },
   {
     id: 11,
     device: "Mac",
-    icon: "📶",
-    question: "Why isn't my Mac connecting to Wi-Fi?",
-    problem:
-      "Router problems, weak signal, incorrect network settings, or temporary software problems can interrupt Wi-Fi.",
+    icon: "🔋",
+    title: "MacBook battery drains fast",
+    description: "Your MacBook battery does not last as long as expected.",
     solution:
-      "Turn Wi-Fi off and on, reconnect to the network, restart your Mac, and restart the router.",
+      "Open System Settings → Battery to review usage. Reduce screen brightness, close high-energy applications, and enable Low Power Mode when appropriate.",
   },
   {
     id: 12,
     device: "Mac",
-    icon: "💾",
-    question: "How can I free Mac storage?",
-    problem:
-      "Applications, downloads, videos, photos, documents, and system data can consume disk space.",
+    icon: "🧠",
+    title: "Mac memory is full",
+    description: "The Mac shows warnings about available memory.",
     solution:
-      "Open System Settings → General → Storage. Remove unnecessary files and applications and empty the Trash.",
+      "Open Activity Monitor → Memory and identify applications consuming excessive RAM. Close unnecessary applications and restart the Mac if memory pressure remains high.",
   },
   {
     id: 13,
     device: "Mac",
-    icon: "⚠️",
-    question: "Why is an app not responding?",
-    problem:
-      "An application can freeze because of a software bug, memory pressure, or excessive system load.",
+    icon: "💾",
+    title: "Mac storage is almost full",
+    description: "There is not enough free storage available.",
     solution:
-      "Wait briefly. If the application remains frozen, use Force Quit to close it and reopen it. Update the application if an update is available.",
+      "Open System Settings → General → Storage. Remove unused applications, large downloads, old files, and empty the Trash.",
   },
   {
     id: 14,
     device: "Mac",
-    icon: "🔊",
-    question: "Why is my Mac sound not working?",
-    problem:
-      "The wrong audio output may be selected, the volume may be muted, or an external device may be receiving the audio.",
+    icon: "⌨️",
+    title: "Mac keyboard is not responding",
+    description: "Some or all keyboard keys do not work correctly.",
     solution:
-      "Open System Settings → Sound and select the correct output device. Check the volume and disconnect unwanted Bluetooth or external audio devices.",
+      "Reconnect the keyboard if it is wireless, check Bluetooth, and test another keyboard if available. Restart the Mac and install any available macOS updates.",
   },
   {
     id: 15,
     device: "Mac",
-    icon: "🔋",
-    question: "Why does my MacBook battery drain quickly?",
-    problem:
-      "High screen brightness, demanding applications, background processes, and heavy workloads can increase battery usage.",
+    icon: "🖥️",
+    title: "External display not detected",
+    description: "Your Mac does not recognize an external monitor.",
     solution:
-      "Check battery usage, reduce brightness, close unnecessary applications, disconnect unused accessories, and keep macOS updated.",
+      "Check the cable and adapter, reconnect the display, and open System Settings → Displays. Restart the Mac if the display remains unavailable.",
   },
   {
     id: 16,
     device: "Mac",
-    icon: "🖥️",
-    question: "Why is my external display not working?",
-    problem:
-      "Cable problems, incorrect display settings, adapters, or compatibility issues can prevent an external display from appearing.",
+    icon: "🔄",
+    title: "macOS update is stuck",
+    description: "A macOS update appears frozen or takes unusually long.",
     solution:
-      "Check the cable and adapter, reconnect the display, restart the Mac, and open System Settings → Displays to detect and configure the display.",
+      "Keep the Mac connected to power and allow the update time to complete. If it is genuinely frozen, restart the Mac and try the update again.",
   },
 ];
 
 const devices = ["All", "iPhone", "Mac"];
 
-const navItems = [
-  {
-    name: "Home",
-    subtitle: "Main experience",
-    path: "/",
-    icon: "⌂",
+const cardVariants = {
+  hidden: {
+    opacity: 0,
+    y: 35,
+    scale: 0.97,
+    filter: "blur(8px)",
   },
-  {
-    name: "iPhone",
-    subtitle: "Explore iPhone",
-    path: "/iph",
-    icon: "▣",
-  },
-  {
-    name: "Mac",
-    subtitle: "Explore Mac",
-    path: "/mac",
-    icon: "▱",
-  },
-  {
-    name: "Tools",
-    subtitle: "Useful tools",
-    path: "/tools",
-    icon: "✦",
-  },
-  {
-    name: "Guides",
-    subtitle: "Fix problems",
-    path: "/guides",
-    icon: "◈",
-  },
-  {
-    name: "About",
-    subtitle: "About AppleHub",
-    path: "/about",
-    icon: "●",
-  },
-];
+  visible: (index) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    filter: "blur(0px)",
+    transition: {
+      delay: index * 0.055,
+      duration: 0.65,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  }),
+};
 
 function Guides() {
   const [activeDevice, setActiveDevice] = useState("All");
   const [search, setSearch] = useState("");
   const [openId, setOpenId] = useState(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const location = useLocation();
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
   const smoothX = useSpring(mouseX, {
-    stiffness: 160,
-    damping: 20,
-    mass: 0.6,
+    stiffness: 100,
+    damping: 22,
+    mass: 0.8,
   });
 
   const smoothY = useSpring(mouseY, {
-    stiffness: 160,
-    damping: 20,
-    mass: 0.6,
+    stiffness: 100,
+    damping: 22,
+    mass: 0.8,
   });
 
-  const rotateX = useTransform(smoothY, [-1, 1], [7, -7]);
-  const rotateY = useTransform(smoothX, [-1, 1], [-8, 8]);
+  const heroRotateX = useTransform(smoothY, [-1, 1], [3, -3]);
+  const heroRotateY = useTransform(smoothX, [-1, 1], [-4, 4]);
 
-  const glowX = useTransform(smoothX, [-1, 1], ["20%", "80%"]);
-  const glowY = useTransform(smoothY, [-1, 1], ["20%", "80%"]);
+  const heroX = useTransform(smoothX, [-1, 1], [-12, 12]);
+  const heroY = useTransform(smoothY, [-1, 1], [-10, 10]);
+
+  const glowX = useTransform(smoothX, [-1, 1], ["25%", "75%"]);
+  const glowY = useTransform(smoothY, [-1, 1], ["25%", "75%"]);
 
   const handlePointerMove = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
 
-    mouseX.set(((event.clientX - rect.left) / rect.width - 0.5) * 2);
-    mouseY.set(((event.clientY - rect.top) / rect.height - 0.5) * 2);
+    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+
+    const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+
+    mouseX.set(x);
+    mouseY.set(y);
   };
 
   const resetPointer = () => {
@@ -266,916 +234,895 @@ function Guides() {
     mouseY.set(0);
   };
 
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
+  const filteredProblems = useMemo(() => {
+    return problems.filter((problem) => {
+      const matchesDevice =
+        activeDevice === "All" || problem.device === activeDevice;
 
-  const filteredProblems = problems.filter((item) => {
-    const matchesDevice =
-      activeDevice === "All" || item.device === activeDevice;
+      const text = `
+        ${problem.title}
+        ${problem.description}
+        ${problem.device}
+      `.toLowerCase();
 
-    const searchText = search.toLowerCase().trim();
+      const matchesSearch = text.includes(search.toLowerCase());
 
-    const matchesSearch =
-      item.question.toLowerCase().includes(searchText) ||
-      item.problem.toLowerCase().includes(searchText) ||
-      item.solution.toLowerCase().includes(searchText);
-
-    return matchesDevice && matchesSearch;
-  });
-
-  const closeMenu = () => {
-    setMobileMenuOpen(false);
-  };
+      return matchesDevice && matchesSearch;
+    });
+  }, [activeDevice, search]);
 
   return (
     <main
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetPointer}
       className="min-h-screen overflow-hidden"
       style={{
-        background: COLORS.soft,
+        background: `
+          radial-gradient(circle at 10% 5%, ${COLORS.cyan}38, transparent 28%),
+          radial-gradient(circle at 90% 20%, ${COLORS.green}30, transparent 25%),
+          linear-gradient(180deg, ${COLORS.white}, ${COLORS.soft})
+        `,
         color: COLORS.text,
       }}
     >
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
-          animate={{
-            x: [-100, 120, -100],
-            y: [-50, 100, -50],
-            scale: [1, 1.25, 1],
-            rotate: [0, 45, 0],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute left-[-180px] top-[80px] h-[520px] w-[520px] rounded-full blur-[130px]"
           style={{
-            background: `${COLORS.cyan}80`,
+            x: heroX,
+            y: heroY,
           }}
-        />
+          className="absolute -left-32 top-20 h-72 w-72 rounded-full blur-3xl"
+        >
+          <div
+            className="h-full w-full rounded-full opacity-25"
+            style={{
+              background: COLORS.cyan,
+            }}
+          />
+        </motion.div>
 
         <motion.div
-          animate={{
-            x: [100, -120, 100],
-            y: [50, -100, 50],
-            scale: [1, 1.3, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute right-[-180px] top-[500px] h-[500px] w-[500px] rounded-full blur-[140px]"
           style={{
-            background: `${COLORS.green}80`,
+            x: heroX,
+            y: heroY,
           }}
-        />
-
-        <motion.div
-          className="absolute h-[420px] w-[420px] rounded-full blur-[110px]"
-          style={{
-            left: glowX,
-            top: glowY,
-            x: "-50%",
-            y: "-50%",
-            background: `radial-gradient(circle, ${COLORS.blue}35, transparent 68%)`,
-          }}
-        />
-
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage: `linear-gradient(${COLORS.border} 1px, transparent 1px), linear-gradient(90deg, ${COLORS.border} 1px, transparent 1px)`,
-            backgroundSize: "70px 70px",
-            maskImage: "linear-gradient(to bottom, black, transparent 80%)",
-          }}
-        />
+          className="absolute -right-32 top-[45%] h-80 w-80 rounded-full blur-3xl"
+        >
+          <div
+            className="h-full w-full rounded-full opacity-20"
+            style={{
+              background: COLORS.green,
+            }}
+          />
+        </motion.div>
       </div>
 
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeMenu}
-            className="fixed inset-0 z-30 bg-[#17324D]/20 backdrop-blur-md md:hidden"
-          />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: -30,
-              scale: 0.94,
-              rotateX: -8,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              rotateX: 0,
-            }}
-            exit={{
-              opacity: 0,
-              y: -30,
-              scale: 0.94,
-              rotateX: -8,
-            }}
-            transition={{
-              duration: 0.45,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-            style={{
-              transformPerspective: 1000,
-            }}
-            className="fixed left-4 right-4 top-[88px] z-40 overflow-hidden rounded-[30px] border bg-white/95 shadow-2xl backdrop-blur-2xl md:hidden"
-          >
-            <div
-              className="border-b px-6 py-5"
-              style={{ borderColor: COLORS.border }}
-            >
-              <p
-                className="text-[9px] uppercase tracking-[0.3em]"
-                style={{ color: COLORS.blue }}
-              >
-                AppleHub
-              </p>
-
-              <p className="mt-1 text-sm" style={{ color: COLORS.textLight }}>
-                Explore the anatomy
-              </p>
-            </div>
-
-            <div className="p-3">
-              {navItems.map((item, index) => {
-                const active = isActive(item.path);
-
-                return (
-                  <motion.div
-                    key={item.name}
-                    initial={{ opacity: 0, x: -25 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                      delay: 0.05 + index * 0.07,
-                      type: "spring",
-                      stiffness: 180,
-                    }}
-                  >
-                    <Link
-                      to={item.path}
-                      onClick={closeMenu}
-                      className="group flex items-center justify-between rounded-2xl px-4 py-4 transition"
-                      style={{
-                        background: active
-                          ? `${COLORS.softBlue}`
-                          : "transparent",
-                        color: active ? COLORS.text : COLORS.textLight,
-                      }}
-                    >
-                      <div className="flex items-center gap-4">
-                        <motion.div
-                          whileHover={{
-                            scale: 1.15,
-                            rotate: 8,
-                            z: 20,
-                          }}
-                          className="flex h-10 w-10 items-center justify-center rounded-xl border"
-                          style={{
-                            borderColor: active
-                              ? `${COLORS.blue}55`
-                              : COLORS.border,
-                            background: active
-                              ? `${COLORS.cyan}55`
-                              : COLORS.soft,
-                          }}
-                        >
-                          {item.icon}
-                        </motion.div>
-
-                        <div>
-                          <span className="block text-sm font-semibold">
-                            {item.name}
-                          </span>
-
-                          <span
-                            className="block text-[9px] uppercase tracking-[0.2em]"
-                            style={{ color: COLORS.textLight }}
-                          >
-                            {item.subtitle}
-                          </span>
-                        </div>
-                      </div>
-
-                      <motion.span
-                        whileHover={{ x: 5 }}
-                        style={{ color: COLORS.blue }}
-                      >
-                        →
-                      </motion.span>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </div>
-
-            <div
-              className="border-t p-4"
-              style={{ borderColor: COLORS.border }}
-            >
-              <Link
-                to="/iph"
-                onClick={closeMenu}
-                className="flex items-center justify-center gap-2 rounded-2xl px-5 py-4 text-sm font-bold text-white shadow-lg"
-                style={{
-                  background: COLORS.blue,
-                  boxShadow: `0 15px 40px ${COLORS.blue}35`,
-                }}
-              >
-                Explore iPhone
-                <span>→</span>
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <section className="relative px-6 pb-20 pt-40">
-        <div className="mx-auto max-w-7xl">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.9,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-          >
-            <motion.p
-              animate={{
-                letterSpacing: ["0.3em", "0.42em", "0.3em"],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="text-xs uppercase"
-              style={{ color: COLORS.blue }}
-            >
-              AppleHub Support
-            </motion.p>
-
-            <h1 className="mt-5 text-5xl font-black tracking-tighter md:text-7xl">
-              Problems?
-              <br />
-              <motion.span
-                animate={{
-                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                }}
-                transition={{
-                  duration: 7,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-                className="bg-gradient-to-r from-[#30AFFF] via-[#17324D] to-[#92EEFF] bg-[length:200%_auto] bg-clip-text text-transparent"
-              >
-                Let's solve them.
-              </motion.span>
-            </h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25, duration: 0.7 }}
-              className="mt-6 max-w-2xl text-base leading-relaxed md:text-lg"
-              style={{ color: COLORS.textLight }}
-            >
-              Common iPhone and Mac problems explained simply. Find out why a
-              problem happens and what you can do to solve it.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 30,
-              scale: 0.97,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-            }}
-            transition={{
-              delay: 0.35,
-              duration: 0.8,
-            }}
-            className="mt-10 max-w-2xl"
-          >
+      <section className="relative mx-auto max-w-7xl px-5 pb-20 pt-20 lg:px-8 lg:pb-28 lg:pt-28">
+        <div className="grid items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
+          <div>
             <motion.div
-              whileHover={{
-                y: -4,
-                scale: 1.01,
+              initial={{
+                opacity: 0,
+                y: 15,
+                filter: "blur(8px)",
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
               }}
               transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 20,
+                duration: 0.7,
               }}
-              className="group flex items-center rounded-2xl border bg-white/80 px-5 py-4 shadow-sm backdrop-blur-xl"
+              className="mb-6 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.18em]"
               style={{
-                borderColor: COLORS.border,
-                boxShadow: `0 15px 50px ${COLORS.blue}12`,
+                background: COLORS.softBlue,
+                color: COLORS.blue,
+                border: `1px solid ${COLORS.border}`,
               }}
             >
               <motion.span
                 animate={{
-                  scale: [1, 1.15, 1],
-                  rotate: [0, -8, 0],
+                  opacity: [0.4, 1, 0.4],
                 }}
                 transition={{
                   duration: 2,
                   repeat: Infinity,
                 }}
-                className="mr-3 text-xl"
-                style={{ color: COLORS.blue }}
-              >
-                ⌕
-              </motion.span>
-
-              <input
-                type="text"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search a problem..."
-                className="w-full bg-transparent text-sm outline-none placeholder:opacity-50"
-                style={{ color: COLORS.text }}
-              />
-
-              {search && (
-                <motion.button
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  whileHover={{ scale: 1.2, rotate: 90 }}
-                  onClick={() => setSearch("")}
-                  className="text-xl"
-                  style={{ color: COLORS.textLight }}
-                >
-                  ×
-                </motion.button>
-              )}
-            </motion.div>
-          </motion.div>
-
-          <div className="mt-6 flex flex-wrap gap-3">
-            {devices.map((device, index) => (
-              <motion.button
-                key={device}
-                initial={{
-                  opacity: 0,
-                  y: 15,
-                }}
-                animate={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                transition={{
-                  delay: 0.45 + index * 0.08,
-                }}
-                whileHover={{
-                  y: -4,
-                  scale: 1.04,
-                }}
-                whileTap={{
-                  scale: 0.94,
-                }}
-                onClick={() => {
-                  setActiveDevice(device);
-                  setOpenId(null);
-                }}
-                className="rounded-full border px-6 py-3 text-sm font-medium transition"
+                className="h-2 w-2 rounded-full"
                 style={{
-                  borderColor:
-                    activeDevice === device ? COLORS.blue : COLORS.border,
-                  background:
-                    activeDevice === device ? COLORS.blue : COLORS.white,
-                  color:
-                    activeDevice === device ? COLORS.white : COLORS.textLight,
-                  boxShadow:
-                    activeDevice === device
-                      ? `0 10px 30px ${COLORS.blue}30`
-                      : "none",
+                  background: COLORS.blue,
+                }}
+              />
+              Smart troubleshooting
+            </motion.div>
+
+            <motion.h1
+              initial={{
+                opacity: 0,
+                y: 35,
+                filter: "blur(12px)",
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                filter: "blur(0px)",
+              }}
+              transition={{
+                duration: 0.9,
+                delay: 0.1,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="max-w-4xl text-5xl font-black leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-8xl"
+            >
+              Fix it.
+              <br />
+              <span
+                style={{
+                  background: `linear-gradient(90deg, ${COLORS.blue}, ${COLORS.cyan})`,
+                  WebkitBackgroundClip: "text",
+                  color: "transparent",
                 }}
               >
-                {device}
-              </motion.button>
-            ))}
-          </div>
+                Understand it.
+              </span>
+            </motion.h1>
 
-          <motion.p
-            key={filteredProblems.length}
-            initial={{
-              opacity: 0,
-              y: 5,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            className="mt-6 text-xs uppercase tracking-[0.25em]"
-            style={{ color: COLORS.textLight }}
-          >
-            {filteredProblems.length} problems found
-          </motion.p>
-        </div>
-      </section>
+            <motion.p
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.7,
+                delay: 0.3,
+              }}
+              className="mt-7 max-w-2xl text-base leading-8 sm:text-lg"
+              style={{
+                color: COLORS.textLight,
+              }}
+            >
+              Find simple and practical solutions for common iPhone and Mac
+              problems.
+            </motion.p>
 
-      <section className="relative px-6 pb-32">
-        <div className="mx-auto max-w-7xl">
-          {filteredProblems.length === 0 ? (
             <motion.div
               initial={{
                 opacity: 0,
-                scale: 0.9,
-                rotateX: 10,
+                y: 20,
+                scale: 0.98,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+              }}
+              transition={{
+                duration: 0.7,
+                delay: 0.45,
+              }}
+              className="relative mt-9 max-w-2xl"
+            >
+              <motion.div
+                animate={{
+                  opacity: [0.15, 0.35, 0.15],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                }}
+                className="absolute -inset-2 rounded-[30px] blur-2xl"
+                style={{
+                  background: COLORS.cyan,
+                }}
+              />
+
+              <motion.div
+                whileFocus={{
+                  scale: 1.01,
+                }}
+                className="relative flex items-center rounded-3xl p-2"
+                style={{
+                  background: `${COLORS.white}F5`,
+                  border: `1px solid ${COLORS.border}`,
+                  boxShadow: `0 25px 70px ${COLORS.blue}12`,
+                }}
+              >
+                <motion.div
+                  animate={{
+                    rotate: [0, 8, -8, 0],
+                  }}
+                  transition={{
+                    duration: 5,
+                    repeat: Infinity,
+                  }}
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-xl"
+                  style={{
+                    background: COLORS.softBlue,
+                  }}
+                >
+                  🔎
+                </motion.div>
+
+                <input
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Search a problem..."
+                  className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm font-semibold outline-none sm:text-base"
+                  style={{
+                    color: COLORS.text,
+                  }}
+                />
+
+                <AnimatePresence>
+                  {search && (
+                    <motion.button
+                      initial={{
+                        opacity: 0,
+                        scale: 0.5,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        scale: 1,
+                      }}
+                      exit={{
+                        opacity: 0,
+                        scale: 0.5,
+                      }}
+                      whileTap={{
+                        scale: 0.8,
+                      }}
+                      onClick={() => setSearch("")}
+                      className="mr-2 flex h-9 w-9 items-center justify-center rounded-xl"
+                      style={{
+                        background: COLORS.softBlue,
+                        color: COLORS.textLight,
+                      }}
+                    >
+                      ✕
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            </motion.div>
+          </div>
+
+          <motion.div
+            style={{
+              rotateX: heroRotateX,
+              rotateY: heroRotateY,
+              x: heroX,
+              y: heroY,
+              transformPerspective: 1200,
+              transformStyle: "preserve-3d",
+            }}
+            className="relative mx-auto h-[350px] w-full max-w-[440px]"
+          >
+            <motion.div
+              animate={{
+                rotate: 360,
+              }}
+              transition={{
+                duration: 30,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              className="absolute left-1/2 top-1/2 h-[280px] w-[280px] -translate-x-1/2 -translate-y-1/2 rounded-full border"
+              style={{
+                borderColor: `${COLORS.blue}35`,
+              }}
+            />
+
+            <motion.div
+              animate={{
+                rotate: -360,
+              }}
+              transition={{
+                duration: 22,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              className="absolute left-1/2 top-1/2 h-[205px] w-[205px] -translate-x-1/2 -translate-y-1/2 rounded-full border"
+              style={{
+                borderColor: `${COLORS.cyan}55`,
+              }}
+            />
+
+            <motion.div
+              style={{
+                left: glowX,
+                top: glowY,
+              }}
+              className="absolute h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
+            >
+              <div
+                className="h-full w-full rounded-full opacity-40"
+                style={{
+                  background: COLORS.cyan,
+                }}
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                scale: 0.75,
+                rotateY: 25,
               }}
               animate={{
                 opacity: 1,
                 scale: 1,
-                rotateX: 0,
+                rotateY: 0,
               }}
               transition={{
-                duration: 0.6,
+                duration: 1.1,
+                delay: 0.3,
+                ease: [0.22, 1, 0.36, 1],
               }}
-              className="rounded-[30px] border bg-white/80 p-16 text-center shadow-xl backdrop-blur-xl"
+              className="absolute left-1/2 top-1/2 flex h-32 w-32 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[35px]"
               style={{
-                borderColor: COLORS.border,
-                transformPerspective: 1000,
+                background: `linear-gradient(145deg, ${COLORS.white}, ${COLORS.softBlue})`,
+                border: `1px solid ${COLORS.border}`,
+                boxShadow: `
+                  0 30px 80px ${COLORS.blue}25,
+                  inset 0 0 30px ${COLORS.cyan}25
+                `,
+                transform: "translateZ(80px)",
               }}
             >
-              <motion.div
+              <motion.span
                 animate={{
-                  y: [0, -10, 0],
-                  rotate: [0, 8, 0],
+                  opacity: [0.75, 1, 0.75],
                 }}
                 transition={{
-                  duration: 2.5,
+                  duration: 3,
                   repeat: Infinity,
                 }}
-                className="text-5xl"
+                className="text-5xl font-black"
               >
-                ⌕
-              </motion.div>
-
-              <h2 className="mt-6 text-2xl font-bold">No problem found</h2>
-
-              <p className="mt-3" style={{ color: COLORS.textLight }}>
-                Try another search term.
-              </p>
+                
+              </motion.span>
             </motion.div>
-          ) : (
+
             <motion.div
-              layout
-              className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-              onPointerMove={handlePointerMove}
-              onPointerLeave={resetPointer}
+              initial={{
+                opacity: 0,
+                x: -30,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.8,
+                delay: 0.65,
+              }}
+              className="absolute left-[2%] top-[12%] flex h-16 w-16 items-center justify-center rounded-2xl text-2xl"
               style={{
-                perspective: 1600,
+                background: COLORS.white,
+                border: `1px solid ${COLORS.border}`,
+                boxShadow: `0 18px 45px ${COLORS.blue}15`,
+                transform: "translateZ(100px)",
               }}
             >
-              {filteredProblems.map((item, index) => {
-                const isOpen = openId === item.id;
+              📱
+            </motion.div>
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                x: 30,
+                y: -20,
+              }}
+              animate={{
+                opacity: 1,
+                x: 0,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.8,
+                delay: 0.8,
+              }}
+              className="absolute bottom-[10%] right-[2%] flex h-16 w-16 items-center justify-center rounded-2xl text-2xl"
+              style={{
+                background: COLORS.white,
+                border: `1px solid ${COLORS.border}`,
+                boxShadow: `0 18px 45px ${COLORS.green}25`,
+                transform: "translateZ(110px)",
+              }}
+            >
+              💻
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 pb-10 lg:px-8">
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.4,
+          }}
+          transition={{
+            duration: 0.6,
+          }}
+          className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div>
+            <p
+              className="text-xs font-black uppercase tracking-[0.2em]"
+              style={{
+                color: COLORS.blue,
+              }}
+            >
+              Browse guides
+            </p>
+
+            <h2 className="mt-2 text-3xl font-black tracking-tight sm:text-4xl">
+              Find your solution
+            </h2>
+          </div>
+
+          <div
+            className="flex w-fit gap-2 rounded-2xl p-2"
+            style={{
+              background: COLORS.white,
+              border: `1px solid ${COLORS.border}`,
+            }}
+          >
+            {devices.map((device) => {
+              const active = activeDevice === device;
+
+              return (
+                <motion.button
+                  key={device}
+                  whileHover={{
+                    y: -2,
+                  }}
+                  whileTap={{
+                    scale: 0.94,
+                  }}
+                  onClick={() => {
+                    setActiveDevice(device);
+                    setOpenId(null);
+                  }}
+                  className="relative rounded-xl px-4 py-2 text-sm font-black"
+                  style={{
+                    color: active ? COLORS.blue : COLORS.textLight,
+                  }}
+                >
+                  {active && (
+                    <motion.div
+                      layoutId="filterActive"
+                      className="absolute inset-0 -z-10 rounded-xl"
+                      style={{
+                        background: COLORS.softBlue,
+                        border: `1px solid ${COLORS.border}`,
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25,
+                      }}
+                    />
+                  )}
+
+                  {device}
+                </motion.button>
+              );
+            })}
+          </div>
+        </motion.div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 pb-28 lg:px-8">
+        <AnimatePresence mode="popLayout">
+          {filteredProblems.length > 0 ? (
+            <motion.div
+              layout
+              className="grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+            >
+              {filteredProblems.map((problem, index) => {
+                const isOpen = openId === problem.id;
 
                 return (
                   <motion.article
-                    key={item.id}
                     layout
-                    initial={{
+                    key={problem.id}
+                    custom={index}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit={{
                       opacity: 0,
-                      y: 60,
-                      scale: 0.94,
-                      rotateX: 8,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                      scale: 1,
-                      rotateX: 0,
-                    }}
-                    transition={{
-                      delay: index * 0.055,
-                      duration: 0.65,
-                      ease: [0.16, 1, 0.3, 1],
+                      scale: 0.96,
+                      filter: "blur(6px)",
+                      transition: {
+                        duration: 0.25,
+                      },
                     }}
                     whileHover={{
-                      y: -12,
-                      scale: 1.025,
-                      rotateX: 3,
-                      rotateY: index % 2 === 0 ? -2 : 2,
+                      y: -8,
+                      scale: 1.015,
+                      rotateX: 2,
+                      rotateY: index % 2 === 0 ? -1.5 : 1.5,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 220,
+                      damping: 22,
                     }}
                     style={{
-                      transformStyle: "preserve-3d",
                       transformPerspective: 1200,
-                      borderColor: COLORS.border,
-                      background: `${COLORS.white}E8`,
-                      boxShadow: `0 20px 60px ${COLORS.blue}10`,
+                      transformStyle: "preserve-3d",
+                      background: `${COLORS.white}F2`,
+                      border: `1px solid ${
+                        isOpen ? COLORS.blue + "55" : COLORS.border
+                      }`,
+                      boxShadow: isOpen
+                        ? `0 25px 65px ${COLORS.blue}18`
+                        : `0 15px 45px ${COLORS.blue}09`,
                     }}
-                    className="group relative overflow-hidden rounded-[28px] border backdrop-blur-xl"
+                    className="relative overflow-hidden rounded-[30px]"
                   >
                     <motion.div
-                      className="pointer-events-none absolute inset-y-0 -left-[70%] w-1/3 rotate-12 blur-xl"
-                      animate={{
-                        x: ["0%", "520%"],
+                      initial={{
+                        opacity: 0,
+                        scale: 0.8,
                       }}
-                      transition={{
-                        duration: 4.5,
-                        repeat: Infinity,
-                        repeatDelay: 2,
-                        ease: "linear",
+                      whileHover={{
+                        opacity: 1,
+                        scale: 1,
                       }}
+                      className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full blur-3xl"
                       style={{
-                        background: `linear-gradient(90deg, transparent, ${COLORS.white}CC, transparent)`,
+                        background:
+                          problem.device === "iPhone"
+                            ? COLORS.cyan
+                            : COLORS.green,
                       }}
                     />
 
-                    <motion.div
-                      animate={{
-                        scale: [1, 1.2, 1],
-                        opacity: [0.1, 0.2, 0.1],
-                      }}
-                      transition={{
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                      className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full blur-3xl"
-                      style={{
-                        background: COLORS.cyan,
-                      }}
-                    />
-
-                    <div className="relative p-7">
-                      <div className="flex items-center justify-between">
+                    <div className="relative p-6">
+                      <div className="flex items-start justify-between gap-4">
                         <motion.div
                           whileHover={{
-                            rotateX: 15,
-                            rotateY: -15,
-                            rotateZ: 5,
-                            scale: 1.15,
-                            z: 40,
+                            rotateZ: 4,
+                            scale: 1.08,
                           }}
                           transition={{
                             type: "spring",
                             stiffness: 300,
-                            damping: 15,
+                            damping: 18,
                           }}
-                          className="flex h-14 w-14 items-center justify-center rounded-2xl border text-2xl shadow-lg"
+                          className="flex h-16 w-16 items-center justify-center rounded-2xl text-3xl"
                           style={{
-                            borderColor: `${COLORS.blue}35`,
-                            background: `linear-gradient(145deg, ${COLORS.white}, ${COLORS.softBlue})`,
-                            transformStyle: "preserve-3d",
+                            background:
+                              problem.device === "iPhone"
+                                ? COLORS.softBlue
+                                : COLORS.mint,
+                            border: `1px solid ${COLORS.border}`,
+                            boxShadow: `0 12px 30px ${COLORS.blue}0D`,
                           }}
                         >
-                          {item.icon}
+                          {problem.icon}
                         </motion.div>
 
-                        <motion.span
-                          whileHover={{
-                            scale: 1.05,
-                          }}
-                          className="rounded-full border px-3 py-1.5 text-[9px] uppercase tracking-[0.25em]"
+                        <span
+                          className="rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em]"
                           style={{
-                            borderColor: COLORS.border,
-                            color: COLORS.textLight,
-                            background: COLORS.soft,
+                            color:
+                              problem.device === "iPhone"
+                                ? COLORS.blue
+                                : "#4B8B5B",
+                            background:
+                              problem.device === "iPhone"
+                                ? COLORS.softBlue
+                                : COLORS.mint,
                           }}
                         >
-                          {item.device}
-                        </motion.span>
+                          {problem.device}
+                        </span>
                       </div>
 
-                      <motion.h2
+                      <motion.h3
                         layout
-                        className="mt-7 text-xl font-bold leading-tight"
-                        style={{ color: COLORS.text }}
+                        className="mt-6 text-xl font-black leading-tight"
                       >
-                        {item.question}
-                      </motion.h2>
+                        {problem.title}
+                      </motion.h3>
 
-                      <div className="mt-6">
-                        <p
-                          className="text-[9px] uppercase tracking-[0.3em]"
-                          style={{ color: COLORS.blue }}
-                        >
-                          Why it happens
-                        </p>
-
-                        <p
-                          className="mt-2 text-sm leading-relaxed"
-                          style={{ color: COLORS.textLight }}
-                        >
-                          {item.problem}
-                        </p>
-                      </div>
+                      <p
+                        className="mt-3 text-sm leading-7"
+                        style={{
+                          color: COLORS.textLight,
+                        }}
+                      >
+                        {problem.description}
+                      </p>
 
                       <motion.button
                         whileHover={{
-                          scale: 1.015,
-                          y: -2,
+                          x: 3,
                         }}
                         whileTap={{
-                          scale: 0.98,
+                          scale: 0.97,
                         }}
-                        onClick={() => setOpenId(isOpen ? null : item.id)}
-                        className="mt-6 flex w-full items-center justify-between rounded-2xl border p-4 text-left transition"
+                        onClick={() => setOpenId(isOpen ? null : problem.id)}
+                        className="mt-6 flex w-full items-center justify-between rounded-2xl px-4 py-3 text-sm font-black"
                         style={{
-                          borderColor: isOpen
-                            ? `${COLORS.blue}45`
-                            : COLORS.border,
-                          background: isOpen ? `${COLORS.cyan}35` : COLORS.soft,
+                          background: isOpen ? COLORS.blue : COLORS.softBlue,
+                          color: isOpen ? COLORS.white : COLORS.blue,
                         }}
                       >
-                        <span
-                          className="text-[10px] font-bold uppercase tracking-[0.25em]"
-                          style={{ color: COLORS.blue }}
-                        >
-                          {isOpen ? "Hide solution" : "Show solution"}
+                        <span>
+                          {isOpen ? "Hide solution" : "View solution"}
                         </span>
 
                         <motion.span
                           animate={{
                             rotate: isOpen ? 180 : 0,
-                            y: isOpen ? 2 : 0,
                           }}
                           transition={{
                             type: "spring",
-                            stiffness: 250,
+                            stiffness: 300,
+                            damping: 20,
                           }}
-                          style={{ color: COLORS.blue }}
-                          className="text-lg"
                         >
                           ↓
                         </motion.span>
                       </motion.button>
 
-                      <AnimatePresence mode="wait">
+                      <AnimatePresence initial={false}>
                         {isOpen && (
                           <motion.div
                             initial={{
                               height: 0,
                               opacity: 0,
-                              y: -10,
                             }}
                             animate={{
                               height: "auto",
                               opacity: 1,
-                              y: 0,
                             }}
                             exit={{
                               height: 0,
                               opacity: 0,
-                              y: -10,
                             }}
                             transition={{
-                              duration: 0.4,
-                              ease: [0.16, 1, 0.3, 1],
+                              duration: 0.35,
+                              ease: [0.22, 1, 0.36, 1],
                             }}
                             className="overflow-hidden"
                           >
                             <motion.div
                               initial={{
-                                scale: 0.96,
+                                y: -8,
+                                opacity: 0,
+                                filter: "blur(5px)",
                               }}
                               animate={{
-                                scale: 1,
+                                y: 0,
+                                opacity: 1,
+                                filter: "blur(0px)",
                               }}
-                              className="mt-3 rounded-2xl border p-4"
+                              transition={{
+                                duration: 0.35,
+                              }}
+                              className="mt-4 rounded-2xl p-5"
                               style={{
-                                borderColor: `${COLORS.blue}25`,
-                                background: `linear-gradient(135deg, ${COLORS.softBlue}, ${COLORS.mint}55)`,
+                                background: `linear-gradient(135deg, ${COLORS.softBlue}, ${COLORS.mint}60)`,
+                                border: `1px solid ${COLORS.border}`,
                               }}
                             >
-                              <p
-                                className="text-[9px] uppercase tracking-[0.3em]"
-                                style={{ color: COLORS.blue }}
+                              <div
+                                className="mb-3 text-[10px] font-black uppercase tracking-[0.16em]"
+                                style={{
+                                  color: COLORS.blue,
+                                }}
                               >
-                                Solution
-                              </p>
+                                Recommended solution
+                              </div>
 
                               <p
-                                className="mt-2 text-sm leading-relaxed"
-                                style={{ color: COLORS.text }}
+                                className="text-sm leading-7"
+                                style={{
+                                  color: COLORS.text,
+                                }}
                               >
-                                {item.solution}
+                                {problem.solution}
                               </p>
                             </motion.div>
                           </motion.div>
                         )}
                       </AnimatePresence>
-
-                      <div
-                        className="mt-6 flex items-center justify-between border-t pt-5"
-                        style={{
-                          borderColor: COLORS.border,
-                        }}
-                      >
-                        <span
-                          className="text-xs"
-                          style={{ color: COLORS.textLight }}
-                        >
-                          AppleHub Help
-                        </span>
-
-                        <motion.span
-                          animate={{
-                            x: isOpen ? 6 : 0,
-                          }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 300,
-                          }}
-                          style={{ color: COLORS.blue }}
-                        >
-                          →
-                        </motion.span>
-                      </div>
                     </div>
                   </motion.article>
                 );
               })}
             </motion.div>
-          )}
+          ) : (
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              className="rounded-[35px] p-12 text-center"
+              style={{
+                background: COLORS.white,
+                border: `1px solid ${COLORS.border}`,
+              }}
+            >
+              <motion.div
+                animate={{
+                  y: [0, -5, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                }}
+                className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl text-4xl"
+                style={{
+                  background: COLORS.softBlue,
+                }}
+              >
+                🔍
+              </motion.div>
 
+              <h3 className="mt-6 text-2xl font-black">No guide found</h3>
+
+              <p
+                className="mt-3 text-sm"
+                style={{
+                  color: COLORS.textLight,
+                }}
+              >
+                Try another search term or device.
+              </p>
+
+              <motion.button
+                whileHover={{
+                  y: -3,
+                }}
+                whileTap={{
+                  scale: 0.96,
+                }}
+                onClick={() => {
+                  setSearch("");
+                  setActiveDevice("All");
+                }}
+                className="mt-6 rounded-2xl px-6 py-3 text-sm font-black text-white"
+                style={{
+                  background: COLORS.blue,
+                  boxShadow: `0 15px 35px ${COLORS.blue}30`,
+                }}
+              >
+                Reset filters
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-5 pb-24 lg:px-8">
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
+          transition={{
+            duration: 0.7,
+          }}
+          className="relative overflow-hidden rounded-[40px] p-8 sm:p-12 lg:p-16"
+          style={{
+            background: `linear-gradient(135deg, ${COLORS.softBlue}, ${COLORS.mint}70)`,
+            border: `1px solid ${COLORS.border}`,
+          }}
+        >
           <motion.div
-            initial={{
-              opacity: 0,
-              y: 50,
-              scale: 0.96,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-            }}
-            viewport={{
-              once: true,
-              margin: "-80px",
+            animate={{
+              rotate: 360,
             }}
             transition={{
-              duration: 0.8,
-              ease: [0.16, 1, 0.3, 1],
+              duration: 30,
+              repeat: Infinity,
+              ease: "linear",
             }}
-            className="relative mt-12 overflow-hidden rounded-[32px] border p-8 text-center shadow-xl backdrop-blur-xl md:p-12"
+            className="absolute -right-24 -top-24 h-64 w-64 rounded-full border"
             style={{
-              borderColor: COLORS.border,
-              background: `linear-gradient(135deg, ${COLORS.white}, ${COLORS.softBlue}, ${COLORS.mint}55)`,
-              boxShadow: `0 30px 80px ${COLORS.blue}15`,
+              borderColor: `${COLORS.blue}30`,
             }}
-          >
-            <motion.div
-              animate={{
-                x: [-100, 400, -100],
-                rotate: [0, 15, 0],
-              }}
-              transition={{
-                duration: 9,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-              className="pointer-events-none absolute -top-20 h-40 w-72 rounded-full blur-3xl"
+          />
+
+          <div className="relative">
+            <p
+              className="text-xs font-black uppercase tracking-[0.2em]"
               style={{
-                background: `${COLORS.cyan}70`,
+                color: COLORS.blue,
               }}
-            />
+            >
+              Keep exploring
+            </p>
 
-            <motion.div
-              animate={{
-                scale: [1, 1.08, 1],
-                opacity: [0.5, 0.8, 0.5],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-              }}
-              className="pointer-events-none absolute bottom-[-100px] right-[-80px] h-56 w-56 rounded-full blur-3xl"
+            <h2 className="mt-4 max-w-3xl text-3xl font-black tracking-tight sm:text-5xl">
+              Your Apple device has a problem?
+              <br />
+              <span
+                style={{
+                  color: COLORS.blue,
+                }}
+              >
+                Start with the right guide.
+              </span>
+            </h2>
+
+            <p
+              className="mt-5 max-w-2xl text-sm leading-7"
               style={{
-                background: `${COLORS.green}90`,
+                color: COLORS.textLight,
               }}
-            />
-
-            <div className="relative">
-              <p
-                className="text-xs uppercase tracking-[0.3em]"
-                style={{ color: COLORS.blue }}
-              >
-                AppleHub
-              </p>
-
-              <h2 className="mt-4 text-3xl font-black tracking-tight md:text-4xl">
-                Want to understand your device?
-              </h2>
-
-              <p
-                className="mx-auto mt-4 max-w-xl text-sm leading-relaxed"
-                style={{ color: COLORS.textLight }}
-              >
-                Explore the anatomy of iPhone and Mac and learn how the hardware
-                and software work together.
-              </p>
-
-              <div className="mt-7 flex flex-wrap justify-center gap-3">
-                <motion.div
-                  whileHover={{
-                    scale: 1.07,
-                    y: -4,
-                    rotateX: 4,
-                  }}
-                  whileTap={{
-                    scale: 0.96,
-                  }}
-                  style={{
-                    transformPerspective: 800,
-                  }}
-                >
-                  <Link
-                    to="/iph"
-                    className="block rounded-full px-7 py-4 text-sm font-bold text-white shadow-xl"
-                    style={{
-                      background: COLORS.blue,
-                      boxShadow: `0 15px 40px ${COLORS.blue}35`,
-                    }}
-                  >
-                    Explore iPhone →
-                  </Link>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{
-                    scale: 1.07,
-                    y: -4,
-                    rotateX: 4,
-                  }}
-                  whileTap={{
-                    scale: 0.96,
-                  }}
-                  style={{
-                    transformPerspective: 800,
-                  }}
-                >
-                  <Link
-                    to="/mac"
-                    className="block rounded-full border bg-white px-7 py-4 text-sm font-bold"
-                    style={{
-                      borderColor: COLORS.border,
-                      color: COLORS.text,
-                    }}
-                  >
-                    Explore Mac →
-                  </Link>
-                </motion.div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+            >
+              AppleHub gives you simple explanations and useful troubleshooting
+              steps without unnecessary complexity.
+            </p>
+          </div>
+        </motion.div>
       </section>
 
       <footer
-        className="relative border-t px-6 py-10"
+        className="border-t"
         style={{
+          background: COLORS.white,
           borderColor: COLORS.border,
-          background: `${COLORS.white}B8`,
         }}
       >
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-8 lg:px-8">
           <div>
-            <p className="font-bold">
-              Apple
-              <motion.span
-                animate={{
-                  opacity: [0.6, 1, 0.6],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                }}
-                style={{ color: COLORS.blue }}
-              >
-                Hub
-              </motion.span>
-            </p>
+            <div className="text-lg font-black">AppleHub</div>
 
-            <p className="mt-1 text-xs" style={{ color: COLORS.textLight }}>
-              Understand what's inside.
+            <p
+              className="mt-1 text-xs"
+              style={{
+                color: COLORS.textLight,
+              }}
+            >
+              Smart technology. Simple solutions.
             </p>
           </div>
 
-          <p className="text-xs" style={{ color: COLORS.textLight }}>
-            © 2026 AppleHub. Educational project.
-          </p>
+          <div
+            className="text-xs font-semibold"
+            style={{
+              color: COLORS.textLight,
+            }}
+          >
+            © {new Date().getFullYear()} AppleHub
+          </div>
         </div>
       </footer>
     </main>

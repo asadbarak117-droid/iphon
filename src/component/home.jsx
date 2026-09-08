@@ -48,33 +48,6 @@ const features = [
   },
 ];
 
-const anatomy = [
-  {
-    name: "Display",
-    x: "-270px",
-    y: "-120px",
-    delay: 0,
-  },
-  {
-    name: "Chip",
-    x: "190px",
-    y: "-150px",
-    delay: 0.12,
-  },
-  {
-    name: "Camera",
-    x: "-300px",
-    y: "100px",
-    delay: 0.24,
-  },
-  {
-    name: "Battery",
-    x: "210px",
-    y: "120px",
-    delay: 0.36,
-  },
-];
-
 const insideItems = [
   {
     number: "01",
@@ -113,48 +86,53 @@ function Home() {
   const mouseY = useMotionValue(0);
 
   const smoothMouseX = useSpring(mouseX, {
-    stiffness: 90,
+    stiffness: 70,
     damping: 24,
-    mass: 0.5,
+    mass: 0.55,
   });
 
   const smoothMouseY = useSpring(mouseY, {
-    stiffness: 90,
+    stiffness: 70,
     damping: 24,
-    mass: 0.5,
+    mass: 0.55,
   });
 
-  const phoneX = useTransform(smoothMouseX, [-600, 600], [-24, 24]);
+  const phoneX = useTransform(smoothMouseX, [-600, 600], [-26, 26]);
+  const phoneY = useTransform(smoothMouseY, [-500, 500], [-20, 20]);
 
-  const phoneY = useTransform(smoothMouseY, [-500, 500], [-18, 18]);
+  const macX = useTransform(smoothMouseX, [-600, 600], [22, -22]);
+  const macY = useTransform(smoothMouseY, [-500, 500], [18, -18]);
 
-  const macX = useTransform(smoothMouseX, [-600, 600], [18, -18]);
+  const heroX = useTransform(smoothMouseX, [-600, 600], [-6, 6]);
+  const heroY = useTransform(smoothMouseY, [-500, 500], [-6, 6]);
 
-  const macY = useTransform(smoothMouseY, [-500, 500], [15, -15]);
+  const ringX = useTransform(smoothMouseX, [-600, 600], [-18, 18]);
+  const ringY = useTransform(smoothMouseY, [-500, 500], [-14, 14]);
 
-  const heroX = useTransform(smoothMouseX, [-600, 600], [-5, 5]);
+  const lightX = useTransform(smoothMouseX, [-600, 600], ["30%", "70%"]);
+  const lightY = useTransform(smoothMouseY, [-500, 500], ["30%", "70%"]);
 
-  const heroY = useTransform(smoothMouseY, [-500, 500], [-5, 5]);
+  const phoneRotateY = useTransform(smoothMouseX, [-600, 600], [-7, 7]);
+  const phoneRotateX = useTransform(smoothMouseY, [-500, 500], [6, -6]);
 
-  const lightX = useTransform(smoothMouseX, [-600, 600], ["35%", "65%"]);
-
-  const lightY = useTransform(smoothMouseY, [-500, 500], ["35%", "65%"]);
+  const macRotateY = useTransform(smoothMouseX, [-600, 600], [6, -6]);
+  const macRotateX = useTransform(smoothMouseY, [-500, 500], [-5, 5]);
 
   const { scrollYProgress } = useScroll();
 
   const heroOpacity = useTransform(
     scrollYProgress,
-    [0, 0.18, 0.3],
-    [1, 0.9, 0],
+    [0, 0.16, 0.3],
+    [1, 0.92, 0],
   );
 
   const heroScale = useTransform(scrollYProgress, [0, 0.25], [1, 0.92]);
 
   const heroScrollY = useTransform(scrollYProgress, [0, 0.3], [0, -120]);
 
-  const phoneScrollY = useTransform(scrollYProgress, [0, 0.35], [0, -140]);
+  const phoneScrollY = useTransform(scrollYProgress, [0, 0.35], [0, -130]);
 
-  const macScrollY = useTransform(scrollYProgress, [0, 0.35], [0, -100]);
+  const macScrollY = useTransform(scrollYProgress, [0, 0.35], [0, -95]);
 
   const handleMouseMove = (event) => {
     if (prefersReducedMotion) return;
@@ -169,15 +147,21 @@ function Home() {
     mouseY.set(y);
   };
 
+  const resetMouse = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
   return (
     <main
       onMouseMove={handleMouseMove}
+      onMouseLeave={resetMouse}
       className="min-h-screen overflow-hidden bg-[#F7FBFF] text-[#17324D]"
     >
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F7FBFF]">
         <div className="pointer-events-none absolute inset-0">
           <div
-            className="absolute inset-0 opacity-[0.55]"
+            className="absolute inset-0 opacity-[0.5]"
             style={{
               backgroundImage: `
                 linear-gradient(rgba(48,175,255,0.055) 1px, transparent 1px),
@@ -196,12 +180,14 @@ function Home() {
               prefersReducedMotion
                 ? {}
                 : {
-                    opacity: [0.3, 0.55, 0.3],
+                    opacity: [0.25, 0.5, 0.25],
                     scale: [1, 1.08, 1],
+                    x: [-20, 30, -20],
+                    y: [-10, 20, -10],
                   }
             }
             transition={{
-              duration: 8,
+              duration: 9,
               repeat: Infinity,
               ease: "easeInOut",
             }}
@@ -213,12 +199,13 @@ function Home() {
               prefersReducedMotion
                 ? {}
                 : {
-                    opacity: [0.2, 0.45, 0.2],
-                    scale: [1.05, 0.9, 1.05],
+                    opacity: [0.18, 0.4, 0.18],
+                    scale: [1.04, 0.92, 1.04],
+                    x: [20, -20, 20],
                   }
             }
             transition={{
-              duration: 10,
+              duration: 11,
               repeat: Infinity,
               ease: "easeInOut",
             }}
@@ -230,12 +217,13 @@ function Home() {
               prefersReducedMotion
                 ? {}
                 : {
-                    opacity: [0.15, 0.35, 0.15],
+                    opacity: [0.12, 0.32, 0.12],
                     scale: [0.9, 1.05, 0.9],
+                    y: [20, -20, 20],
                   }
             }
             transition={{
-              duration: 9,
+              duration: 10,
               repeat: Infinity,
               ease: "easeInOut",
             }}
@@ -247,17 +235,34 @@ function Home() {
               left: lightX,
               top: lightY,
             }}
-            className="absolute h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#92EEFF]/15 blur-[100px]"
+            className="absolute h-[330px] w-[330px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#92EEFF]/15 blur-[100px]"
           />
         </div>
 
         <motion.div
           style={{
-            x: heroX,
-            y: heroY,
+            x: ringX,
+            y: ringY,
           }}
           className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-[760px] w-[760px] -translate-x-1/2 -translate-y-1/2"
         >
+          <motion.div
+            initial={{
+              opacity: 0,
+              scale: 0.7,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            transition={{
+              duration: 1.8,
+              delay: 0.4,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="absolute inset-0 rounded-full border border-[#30AFFF]/10"
+          />
+
           <motion.div
             animate={
               prefersReducedMotion
@@ -267,7 +272,7 @@ function Home() {
                   }
             }
             transition={{
-              duration: 45,
+              duration: 48,
               repeat: Infinity,
               ease: "linear",
             }}
@@ -283,7 +288,7 @@ function Home() {
                   }
             }
             transition={{
-              duration: 32,
+              duration: 34,
               repeat: Infinity,
               ease: "linear",
             }}
@@ -299,11 +304,27 @@ function Home() {
                   }
             }
             transition={{
-              duration: 55,
+              duration: 58,
               repeat: Infinity,
               ease: "linear",
             }}
             className="absolute left-[18%] top-[18%] h-[64%] w-[64%] rounded-full border border-[#92EEFF]/15"
+          />
+
+          <motion.div
+            animate={
+              prefersReducedMotion
+                ? {}
+                : {
+                    rotate: -360,
+                  }
+            }
+            transition={{
+              duration: 25,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            className="absolute left-[32%] top-[32%] h-[36%] w-[36%] rounded-full border border-dashed border-[#30AFFF]/10"
           />
         </motion.div>
 
@@ -312,27 +333,31 @@ function Home() {
             opacity: heroOpacity,
             scale: heroScale,
             y: heroScrollY,
+            x: heroX,
           }}
           className="relative z-30 px-6 pt-16 text-center"
         >
           <motion.div
             initial={{
               opacity: 0,
-              y: 20,
-              scale: 0.94,
+              y: 25,
+              scale: 0.9,
+              filter: "blur(12px)",
             }}
             animate={{
               opacity: 1,
               y: 0,
               scale: 1,
+              filter: "blur(0px)",
             }}
             transition={{
-              duration: 0.8,
+              duration: 1.1,
+              delay: 0.1,
               ease: [0.16, 1, 0.3, 1],
             }}
             whileHover={{
-              y: -2,
-              scale: 1.03,
+              y: -3,
+              scale: 1.025,
             }}
             className="inline-flex items-center gap-3 rounded-full border border-[#DDECF5] bg-white/75 px-5 py-2.5 text-[10px] font-semibold tracking-[0.28em] text-[#62809A] shadow-[0_15px_50px_rgba(23,50,77,0.06)] backdrop-blur-xl"
           >
@@ -341,77 +366,140 @@ function Home() {
                 prefersReducedMotion
                   ? {}
                   : {
-                      scale: [1, 1.5, 1],
-                      opacity: [0.5, 1, 0.5],
+                      scale: [1, 1.7, 1],
+                      opacity: [0.4, 1, 0.4],
                     }
               }
               transition={{
-                duration: 2,
+                duration: 2.2,
                 repeat: Infinity,
+                ease: "easeInOut",
               }}
               className="h-1.5 w-1.5 rounded-full bg-[#30AFFF]"
             />
             THE ANATOMY OF APPLE
           </motion.div>
 
-          <div className="mt-9 overflow-hidden">
-            <motion.h1
+          <div className="relative mt-10 overflow-hidden">
+            <motion.div
               initial={{
-                y: 120,
                 opacity: 0,
+                y: 90,
+                scale: 0.95,
+                filter: "blur(20px)",
               }}
               animate={{
-                y: 0,
                 opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: "blur(0px)",
               }}
               transition={{
-                duration: 1.15,
+                duration: 1.35,
+                delay: 0.25,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="text-[clamp(4.5rem,12vw,9rem)] font-black leading-[0.8] tracking-[-0.085em] text-[#17324D]"
+              className="relative"
             >
-              Inside
-            </motion.h1>
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scaleX: 0.2,
+                }}
+                animate={{
+                  opacity: [0, 0.65, 0],
+                  scaleX: [0.2, 1, 1.5],
+                }}
+                transition={{
+                  duration: 1.7,
+                  delay: 0.45,
+                  ease: "easeOut",
+                }}
+                className="pointer-events-none absolute left-1/2 top-1/2 h-[120%] w-[60%] -translate-x-1/2 -translate-y-1/2 bg-[#92EEFF]/20 blur-[50px]"
+              />
+
+              <h1 className="relative text-[clamp(4.5rem,12vw,9rem)] font-black leading-[0.8] tracking-[-0.085em] text-[#17324D]">
+                Inside
+              </h1>
+            </motion.div>
           </div>
 
-          <div className="overflow-hidden">
-            <motion.h1
+          <div className="relative overflow-hidden">
+            <motion.div
               initial={{
-                y: 120,
                 opacity: 0,
+                y: 100,
+                scale: 0.94,
+                filter: "blur(24px)",
               }}
               animate={{
-                y: 0,
                 opacity: 1,
+                y: 0,
+                scale: 1,
+                filter: "blur(0px)",
               }}
               transition={{
-                duration: 1.15,
-                delay: 0.1,
+                duration: 1.45,
+                delay: 0.4,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="bg-gradient-to-r from-[#30AFFF] via-[#17324D] to-[#30AFFF] bg-[length:200%_auto] bg-clip-text text-[clamp(4.5rem,12vw,9rem)] font-black leading-[0.8] tracking-[-0.085em] text-transparent"
-              style={{
-                animation: prefersReducedMotion
-                  ? "none"
-                  : "appleGradient 8s linear infinite",
-              }}
+              className="relative"
             >
-              Apple.
-            </motion.h1>
+              <motion.div
+                initial={{
+                  x: "-130%",
+                  opacity: 0,
+                }}
+                animate={{
+                  x: "130%",
+                  opacity: [0, 0.8, 0],
+                }}
+                transition={{
+                  duration: 1.6,
+                  delay: 1,
+                  ease: "easeInOut",
+                }}
+                className="pointer-events-none absolute inset-y-0 left-0 z-20 w-1/3 skew-x-[-20deg] bg-white/50 blur-xl"
+              />
+
+              <motion.h1
+                animate={
+                  prefersReducedMotion
+                    ? {}
+                    : {
+                        backgroundPosition: [
+                          "0% center",
+                          "100% center",
+                          "0% center",
+                        ],
+                      }
+                }
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                className="relative bg-gradient-to-r from-[#30AFFF] via-[#17324D] to-[#30AFFF] bg-[length:200%_auto] bg-clip-text text-[clamp(4.5rem,12vw,9rem)] font-black leading-[0.8] tracking-[-0.085em] text-transparent"
+              >
+                Apple.
+              </motion.h1>
+            </motion.div>
           </div>
 
           <motion.p
             initial={{
               opacity: 0,
-              y: 24,
+              y: 28,
+              filter: "blur(8px)",
             }}
             animate={{
               opacity: 1,
               y: 0,
+              filter: "blur(0px)",
             }}
             transition={{
-              duration: 0.9,
-              delay: 0.65,
+              duration: 1,
+              delay: 0.8,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="mx-auto mt-10 max-w-xl text-base leading-8 text-[#62809A] sm:text-lg"
@@ -423,43 +511,51 @@ function Home() {
           <motion.div
             initial={{
               opacity: 0,
-              y: 20,
+              y: 25,
+              scale: 0.92,
             }}
             animate={{
               opacity: 1,
               y: 0,
+              scale: 1,
             }}
             transition={{
-              duration: 0.8,
-              delay: 0.9,
+              duration: 0.9,
+              delay: 1,
+              ease: [0.16, 1, 0.3, 1],
             }}
             className="mt-9"
           >
             <Link to="/iph">
               <motion.div
                 whileHover={{
-                  y: -5,
-                  scale: 1.04,
-                  boxShadow: "0 25px 60px rgba(48,175,255,0.25)",
+                  y: -6,
+                  scale: 1.045,
+                  boxShadow: "0 28px 70px rgba(48,175,255,0.25)",
                 }}
                 whileTap={{
-                  scale: 0.97,
+                  scale: 0.96,
                 }}
                 transition={{
                   type: "spring",
                   stiffness: 350,
-                  damping: 22,
+                  damping: 20,
                 }}
                 className="group inline-flex items-center gap-4 rounded-full bg-[#30AFFF] px-7 py-4 font-semibold text-white shadow-[0_15px_40px_rgba(48,175,255,0.18)]"
               >
                 Explore the anatomy
                 <motion.span
-                  whileHover={{
-                    x: 5,
-                  }}
+                  animate={
+                    prefersReducedMotion
+                      ? {}
+                      : {
+                          x: [0, 4, 0],
+                        }
+                  }
                   transition={{
-                    type: "spring",
-                    stiffness: 400,
+                    duration: 1.6,
+                    repeat: Infinity,
+                    ease: "easeInOut",
                   }}
                 >
                   →
@@ -470,43 +566,106 @@ function Home() {
         </motion.div>
 
         <motion.div
-          style={{
-            x: phoneX,
-            y: phoneScrollY,
+          initial={{
+            opacity: 0,
+            x: -100,
+            y: 80,
+            scale: 0.78,
+            rotate: -22,
+            filter: "blur(16px)",
           }}
           animate={
             prefersReducedMotion
-              ? {}
+              ? {
+                  opacity: 1,
+                  x: 0,
+                  y: 0,
+                  scale: 1,
+                  rotate: -12,
+                  filter: "blur(0px)",
+                }
               : {
-                  y: [-10, 10, -10],
+                  opacity: 1,
+                  x: 0,
+                  y: [-5, 8, -5],
+                  scale: 1,
+                  rotate: -12,
+                  filter: "blur(0px)",
                 }
           }
           transition={{
+            opacity: {
+              duration: 1.2,
+              delay: 0.9,
+              ease: "easeOut",
+            },
+            x: {
+              duration: 1.4,
+              delay: 0.9,
+              ease: [0.16, 1, 0.3, 1],
+            },
+            scale: {
+              duration: 1.4,
+              delay: 0.9,
+              ease: [0.16, 1, 0.3, 1],
+            },
+            rotate: {
+              duration: 1.4,
+              delay: 0.9,
+              ease: [0.16, 1, 0.3, 1],
+            },
+            filter: {
+              duration: 1.2,
+              delay: 0.9,
+            },
             y: {
               duration: 6,
               repeat: Infinity,
               ease: "easeInOut",
             },
           }}
+          style={{
+            x: phoneX,
+            y: phoneY,
+            rotateX: phoneRotateX,
+            rotateY: phoneRotateY,
+            transformStyle: "preserve-3d",
+          }}
           className="absolute bottom-[10%] left-[4%] z-20 hidden lg:block"
         >
           <motion.div
             whileHover={{
-              rotateY: 15,
-              rotateX: -7,
-              scale: 1.035,
+              scale: 1.05,
+              rotateY: 16,
+              rotateX: -8,
+              rotateZ: -3,
             }}
             transition={{
               type: "spring",
               stiffness: 180,
-              damping: 20,
+              damping: 18,
             }}
             style={{
               transformStyle: "preserve-3d",
-              rotate: -12,
             }}
             className="relative h-[280px] w-[140px] rounded-[40px] border-[5px] border-[#62809A] bg-[#17324D] p-[4px] shadow-[0_35px_80px_rgba(23,50,77,0.18)]"
           >
+            <motion.div
+              animate={
+                prefersReducedMotion
+                  ? {}
+                  : {
+                      opacity: [0.2, 0.65, 0.2],
+                    }
+              }
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="absolute -inset-3 rounded-[45px] border border-[#30AFFF]/20"
+            />
+
             <div className="absolute -left-[8px] top-[72px] h-10 w-[4px] rounded-l-full bg-[#92EEFF]" />
 
             <div className="absolute -left-[8px] top-[125px] h-14 w-[4px] rounded-l-full bg-[#92EEFF]" />
@@ -519,8 +678,8 @@ function Home() {
                   prefersReducedMotion
                     ? {}
                     : {
-                        x: [-60, 50, -60],
-                        y: [-30, 70, -30],
+                        x: [-60, 55, -60],
+                        y: [-30, 75, -30],
                       }
                 }
                 transition={{
@@ -536,7 +695,7 @@ function Home() {
                   prefersReducedMotion
                     ? {}
                     : {
-                        opacity: [0.2, 0.7, 0.2],
+                        opacity: [0.15, 0.6, 0.15],
                       }
                 }
                 transition={{
@@ -565,25 +724,38 @@ function Home() {
                 className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#92EEFF]/30"
               />
 
-              <div className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#30AFFF] shadow-[0_0_20px_#30AFFF]" />
+              <motion.div
+                animate={
+                  prefersReducedMotion
+                    ? {}
+                    : {
+                        scale: [0.7, 1.5, 0.7],
+                        opacity: [0.3, 0.9, 0.3],
+                      }
+                }
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#30AFFF] shadow-[0_0_25px_#30AFFF]"
+              />
             </div>
 
             <motion.div
               whileHover={{
-                translateZ: 22,
+                z: 30,
+                scale: 1.08,
+              }}
+              style={{
+                transform: "translateZ(18px)",
               }}
               className="absolute -left-4 top-7 flex h-[60px] w-[60px] items-center justify-center rounded-2xl border border-[#62809A] bg-[#17324D] shadow-xl"
-              style={{
-                transform: "translateZ(15px)",
-              }}
             >
               <div className="grid grid-cols-2 gap-2">
                 <span className="h-4 w-4 rounded-full bg-black ring-1 ring-[#92EEFF]/50" />
-
                 <span className="h-4 w-4 rounded-full bg-black ring-1 ring-[#C4F7CA]/50" />
-
                 <span className="h-4 w-4 rounded-full bg-black ring-1 ring-[#92EEFF]/50" />
-
                 <span className="h-4 w-4 rounded-full bg-[#30AFFF]" />
               </div>
             </motion.div>
@@ -591,40 +763,86 @@ function Home() {
         </motion.div>
 
         <motion.div
-          style={{
-            x: macX,
-            y: macScrollY,
+          initial={{
+            opacity: 0,
+            x: 100,
+            y: 70,
+            scale: 0.8,
+            rotate: 12,
+            filter: "blur(16px)",
           }}
           animate={
             prefersReducedMotion
-              ? {}
+              ? {
+                  opacity: 1,
+                  x: 0,
+                  y: 0,
+                  scale: 1,
+                  rotate: 3,
+                  filter: "blur(0px)",
+                }
               : {
-                  y: [12, -12, 12],
+                  opacity: 1,
+                  x: 0,
+                  y: [5, -7, 5],
+                  scale: 1,
+                  rotate: 3,
+                  filter: "blur(0px)",
                 }
           }
           transition={{
+            opacity: {
+              duration: 1.2,
+              delay: 1.05,
+              ease: "easeOut",
+            },
+            x: {
+              duration: 1.4,
+              delay: 1.05,
+              ease: [0.16, 1, 0.3, 1],
+            },
+            scale: {
+              duration: 1.4,
+              delay: 1.05,
+              ease: [0.16, 1, 0.3, 1],
+            },
+            rotate: {
+              duration: 1.4,
+              delay: 1.05,
+              ease: [0.16, 1, 0.3, 1],
+            },
+            filter: {
+              duration: 1.2,
+              delay: 1.05,
+            },
             y: {
               duration: 7,
               repeat: Infinity,
               ease: "easeInOut",
             },
           }}
+          style={{
+            x: macX,
+            y: macY,
+            rotateX: macRotateX,
+            rotateY: macRotateY,
+            transformStyle: "preserve-3d",
+          }}
           className="absolute bottom-[11%] right-[3%] z-20 hidden lg:block"
         >
           <motion.div
             whileHover={{
-              rotateY: -10,
-              rotateX: 5,
-              scale: 1.03,
+              scale: 1.04,
+              rotateY: -12,
+              rotateX: 6,
             }}
             transition={{
               type: "spring",
               stiffness: 180,
-              damping: 20,
+              damping: 18,
             }}
             style={{
               transformStyle: "preserve-3d",
-              rotate: 3,
             }}
           >
             <div className="rounded-2xl border-[5px] border-[#62809A] bg-[#17324D] p-2 shadow-[0_35px_90px_rgba(23,50,77,0.18)]">
@@ -669,15 +887,33 @@ function Home() {
                       prefersReducedMotion
                         ? {}
                         : {
-                            scale: [0.9, 1.05, 0.9],
-                            opacity: [0.25, 0.65, 0.25],
+                            scale: [0.85, 1.08, 0.85],
+                            opacity: [0.2, 0.65, 0.2],
                           }
                     }
                     transition={{
                       duration: 4,
                       repeat: Infinity,
+                      ease: "easeInOut",
                     }}
                     className="h-24 w-24 rounded-full border border-[#92EEFF]/40"
+                  />
+
+                  <motion.div
+                    animate={
+                      prefersReducedMotion
+                        ? {}
+                        : {
+                            scale: [0.5, 1, 0.5],
+                            opacity: [0.2, 0.8, 0.2],
+                          }
+                    }
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="absolute h-3 w-3 rounded-full bg-[#30AFFF] shadow-[0_0_25px_#30AFFF]"
                   />
                 </div>
 
@@ -685,33 +921,67 @@ function Home() {
               </div>
             </div>
 
-            <div className="mx-auto h-[13px] w-[380px] rounded-b-2xl bg-gradient-to-b from-[#DDECF5] to-[#62809A] shadow-xl" />
+            <motion.div
+              whileHover={{
+                scaleX: 1.03,
+              }}
+              className="mx-auto h-[13px] w-[380px] rounded-b-2xl bg-gradient-to-b from-[#DDECF5] to-[#62809A] shadow-xl"
+            />
 
             <div className="mx-auto h-2 w-28 rounded-full bg-[#62809A]" />
           </motion.div>
         </motion.div>
 
         <motion.div
-          animate={
-            prefersReducedMotion
-              ? {}
-              : {
-                  y: [0, 7, 0],
-                  opacity: [0.5, 1, 0.5],
-                }
-          }
+          initial={{
+            opacity: 0,
+            y: 15,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
           transition={{
-            duration: 2.2,
-            repeat: Infinity,
-            ease: "easeInOut",
+            delay: 1.4,
+            duration: 0.8,
           }}
           className="absolute bottom-6 left-1/2 z-30 -translate-x-1/2 text-center text-[#62809A]"
         >
-          <p className="mb-2 text-[9px] font-semibold tracking-[0.35em]">
+          <motion.p
+            animate={
+              prefersReducedMotion
+                ? {}
+                : {
+                    opacity: [0.4, 1, 0.4],
+                  }
+            }
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="mb-2 text-[9px] font-semibold tracking-[0.35em]"
+          >
             SCROLL
-          </p>
+          </motion.p>
 
-          <span className="text-sm">↓</span>
+          <motion.span
+            animate={
+              prefersReducedMotion
+                ? {}
+                : {
+                    y: [0, 6, 0],
+                  }
+            }
+            transition={{
+              duration: 1.7,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="inline-block text-sm"
+          >
+            ↓
+          </motion.span>
         </motion.div>
       </section>
 
@@ -748,7 +1018,7 @@ function Home() {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="absolute right-[-10%] bottom-[0%] h-[450px] w-[450px] rounded-full bg-[#C4F7CA]/10 blur-[130px]"
+            className="absolute bottom-0 right-[-10%] h-[450px] w-[450px] rounded-full bg-[#C4F7CA]/10 blur-[130px]"
           />
 
           <div
@@ -992,11 +1262,8 @@ function Home() {
                 >
                   <div className="grid grid-cols-2 gap-2">
                     <span className="h-4 w-4 rounded-full bg-black ring-1 ring-[#92EEFF]/40" />
-
                     <span className="h-4 w-4 rounded-full bg-black ring-1 ring-[#C4F7CA]/40" />
-
                     <span className="h-4 w-4 rounded-full bg-black ring-1 ring-[#92EEFF]/40" />
-
                     <span className="h-4 w-4 rounded-full bg-[#30AFFF]" />
                   </div>
                 </motion.div>
@@ -1048,6 +1315,7 @@ function Home() {
                   }}
                   whileHover={{
                     x: 8,
+                    scale: 1.01,
                   }}
                   className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.035] p-6 backdrop-blur-xl sm:p-7"
                 >
@@ -1069,11 +1337,15 @@ function Home() {
                       whileHover={{
                         scale: 1.1,
                         rotate: 8,
+                        z: 25,
                       }}
                       transition={{
                         type: "spring",
                         stiffness: 300,
                         damping: 15,
+                      }}
+                      style={{
+                        transformStyle: "preserve-3d",
                       }}
                       className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#30AFFF]/20 bg-[#30AFFF]/5 text-lg text-[#92EEFF]"
                     >
@@ -1394,10 +1666,12 @@ function Home() {
             initial={{
               opacity: 0,
               scale: 0.85,
+              filter: "blur(15px)",
             }}
             whileInView={{
               opacity: 1,
               scale: 1,
+              filter: "blur(0px)",
             }}
             viewport={{
               once: true,
@@ -1500,22 +1774,6 @@ function Home() {
           APPLEHUB — DISCOVER WHAT IS INSIDE.
         </motion.p>
       </footer>
-
-      <style>{`
-        @keyframes appleGradient {
-          0% {
-            background-position: 0% center;
-          }
-
-          50% {
-            background-position: 100% center;
-          }
-
-          100% {
-            background-position: 200% center;
-          }
-        }
-      `}</style>
     </main>
   );
 }
