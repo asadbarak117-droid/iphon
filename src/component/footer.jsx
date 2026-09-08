@@ -1,342 +1,484 @@
 import { motion } from "motion/react";
 import { Link } from "react-router-dom";
 
+const COLORS = {
+  blue: "#30AFFF",
+  cyan: "#92EEFF",
+  green: "#D8FFC5",
+  mint: "#C4F7CA",
+  white: "#FFFFFF",
+  soft: "#F7FBFF",
+  softBlue: "#EEF9FF",
+  text: "#17324D",
+  textLight: "#62809A",
+  border: "#DDECF5",
+};
+
+const footerLinks = {
+  Explore: [
+    { name: "Home", path: "/" },
+    { name: "iPhone", path: "/iph" },
+    { name: "Mac", path: "/mac" },
+    { name: "Tools", path: "/tools" },
+    { name: "Guides", path: "/guides" },
+  ],
+  Company: [
+    { name: "About Us", path: "/about" },
+    { name: "Our Team", path: "/about" },
+    { name: "Resources", path: "/guides" },
+    { name: "Apple Tools", path: "/tools" },
+  ],
+};
+
 function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-black text-white">
-      {/* Background Glow */}
-      <div className="pointer-events-none absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
+    <footer
+      className="relative overflow-hidden border-t"
+      style={{
+        borderColor: COLORS.border,
+        background: COLORS.soft,
+        color: COLORS.text,
+      }}
+    >
+      <motion.div
+        animate={{
+          x: [-100, 100, -100],
+          y: [0, 30, 0],
+          scale: [1, 1.15, 1],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-[#92EEFF]/30 blur-3xl"
+      />
+
+      <motion.div
+        animate={{
+          x: [100, -80, 100],
+          y: [20, -20, 20],
+          scale: [1.1, 0.9, 1.1],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-[#D8FFC5]/35 blur-3xl"
+      />
+
+      <motion.div
+        animate={{
+          x: [-40, 60, -40],
+          scale: [0.9, 1.1, 0.9],
+        }}
+        transition={{
+          duration: 9,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="pointer-events-none absolute bottom-0 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-[#C4F7CA]/25 blur-3xl"
+      />
 
       <div className="relative mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10">
-        {/* ================= TOP ================= */}
-
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
-          {/* ================= BRAND ================= */}
-
           <div className="lg:col-span-1">
-            <Link to="/" className="inline-flex items-center gap-3">
+            <Link to="/" className="group inline-flex items-center gap-3">
               <motion.div
                 whileHover={{
-                  rotate: 180,
-                  scale: 1.1,
+                  scale: 1.12,
+                  rotateY: 180,
+                  rotateX: 15,
+                  z: 30,
                 }}
-                transition={{ duration: 0.5 }}
-                className="
-                  flex h-11 w-11
-                  items-center justify-center
-                  rounded-full
-                  bg-white
-                  font-bold
-                  text-black
-                "
+                whileTap={{
+                  scale: 0.9,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 280,
+                  damping: 15,
+                }}
+                style={{
+                  transformStyle: "preserve-3d",
+                  background: COLORS.blue,
+                }}
+                className="flex h-12 w-12 items-center justify-center rounded-full font-bold text-white shadow-[0_12px_30px_rgba(48,175,255,0.25)]"
               >
-                A
+                <span
+                  style={{
+                    transform: "translateZ(12px)",
+                  }}
+                >
+                  A
+                </span>
               </motion.div>
 
               <div>
-                <div className="text-lg font-semibold tracking-tight">
-                  Apple<span className="text-blue-500">Hub</span>
-                </div>
+                <motion.div
+                  whileHover={{
+                    x: 3,
+                    z: 10,
+                  }}
+                  style={{
+                    transformStyle: "preserve-3d",
+                  }}
+                  className="text-lg font-bold tracking-tight"
+                >
+                  Apple
+                  <span style={{ color: COLORS.blue }}>Hub</span>
+                </motion.div>
 
-                <div className="text-[9px] tracking-[0.25em] text-gray-500">
+                <motion.div
+                  animate={{
+                    opacity: [0.4, 1, 0.4],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                  }}
+                  className="text-[9px] tracking-[0.25em]"
+                  style={{
+                    color: COLORS.textLight,
+                  }}
+                >
                   ANATOMY
-                </div>
+                </motion.div>
               </div>
             </Link>
 
-            <p className="mt-6 max-w-xs text-sm leading-6 text-gray-500">
+            <p
+              className="mt-6 max-w-xs text-sm leading-6"
+              style={{
+                color: COLORS.textLight,
+              }}
+            >
               Explore the world of Apple. Discover iPhone, Mac, tools, guides,
               and everything Apple in one place.
             </p>
 
-            {/* STATUS */}
-
-            <div
-              className="
-              mt-6
-              inline-flex
-              items-center
-              gap-2
-              rounded-full
-              border border-white/10
-              bg-white/5
-              px-3
-              py-2
-            "
+            <motion.div
+              whileHover={{
+                scale: 1.03,
+                rotateX: -4,
+                rotateY: 4,
+                z: 10,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 250,
+                damping: 18,
+              }}
+              style={{
+                transformStyle: "preserve-3d",
+                borderColor: COLORS.border,
+                background: COLORS.white,
+              }}
+              className="mt-6 inline-flex items-center gap-2 rounded-full border px-3 py-2 shadow-[0_8px_25px_rgba(23,50,77,0.06)]"
             >
               <motion.span
                 animate={{
                   opacity: [0.3, 1, 0.3],
-                  scale: [0.8, 1, 0.8],
+                  scale: [0.8, 1.2, 0.8],
                 }}
                 transition={{
                   duration: 2,
                   repeat: Infinity,
                 }}
-                className="h-1.5 w-1.5 rounded-full bg-green-400"
+                className="h-1.5 w-1.5 rounded-full"
+                style={{
+                  background: COLORS.blue,
+                  boxShadow: "0 0 10px rgba(48,175,255,0.7)",
+                }}
               />
 
-              <span className="text-[9px] uppercase tracking-[0.2em] text-gray-500">
+              <span
+                className="text-[9px] uppercase tracking-[0.2em]"
+                style={{
+                  color: COLORS.textLight,
+                }}
+              >
                 System Online
               </span>
-            </div>
+            </motion.div>
           </div>
 
-          {/* ================= EXPLORE ================= */}
-
-          <div>
-            <h3 className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
-              Explore
-            </h3>
-
-            <div className="flex flex-col gap-3">
-              <Link
-                to="/"
-                className="text-sm text-gray-500 transition hover:translate-x-1 hover:text-white"
+          {Object.entries(footerLinks).map(([title, links], columnIndex) => (
+            <div key={title}>
+              <motion.h3
+                initial={{
+                  opacity: 0,
+                  y: 15,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                }}
+                transition={{
+                  delay: columnIndex * 0.1,
+                }}
+                className="mb-5 text-xs font-bold uppercase tracking-[0.2em]"
+                style={{
+                  color: COLORS.text,
+                }}
               >
-                Home
-              </Link>
+                {title}
+              </motion.h3>
 
-              <Link
-                to="/iph"
-                className="text-sm text-gray-500 transition hover:translate-x-1 hover:text-white"
-              >
-                iPhone
-              </Link>
+              <div className="flex flex-col gap-3">
+                {links.map((link, index) => (
+                  <motion.div
+                    key={link.name}
+                    initial={{
+                      opacity: 0,
+                      x: -15,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      x: 0,
+                    }}
+                    viewport={{
+                      once: true,
+                    }}
+                    transition={{
+                      delay: columnIndex * 0.1 + index * 0.05,
+                    }}
+                  >
+                    <Link
+                      to={link.path}
+                      className="group flex w-fit items-center gap-2 text-sm transition"
+                      style={{
+                        color: COLORS.textLight,
+                      }}
+                    >
+                      <motion.span
+                        whileHover={{
+                          x: 5,
+                          scale: 1.03,
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 15,
+                        }}
+                        className="group-hover:text-[#17324D]"
+                      >
+                        {link.name}
+                      </motion.span>
 
-              <Link
-                to="/mac"
-                className="text-sm text-gray-500 transition hover:translate-x-1 hover:text-white"
-              >
-                Mac
-              </Link>
-
-              <Link
-                to="/tools"
-                className="text-sm text-gray-500 transition hover:translate-x-1 hover:text-white"
-              >
-                Tools
-              </Link>
-
-              <Link
-                to="/guides"
-                className="text-sm text-gray-500 transition hover:translate-x-1 hover:text-white"
-              >
-                Guides
-              </Link>
+                      <motion.span
+                        initial={{
+                          opacity: 0,
+                          x: -5,
+                        }}
+                        whileHover={{
+                          opacity: 1,
+                          x: 0,
+                        }}
+                        className="text-[#30AFFF]"
+                      >
+                        →
+                      </motion.span>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
-
-          {/* ================= COMPANY ================= */}
+          ))}
 
           <div>
-            <h3 className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
-              Company
-            </h3>
-
-            <div className="flex flex-col gap-3">
-              <Link
-                to="/about"
-                className="text-sm text-gray-500 transition hover:translate-x-1 hover:text-white"
-              >
-                About Us
-              </Link>
-
-              <Link
-                to="/about"
-                className="text-sm text-gray-500 transition hover:translate-x-1 hover:text-white"
-              >
-                Our Team
-              </Link>
-
-              <Link
-                to="/guides"
-                className="text-sm text-gray-500 transition hover:translate-x-1 hover:text-white"
-              >
-                Resources
-              </Link>
-
-              <Link
-                to="/tools"
-                className="text-sm text-gray-500 transition hover:translate-x-1 hover:text-white"
-              >
-                Apple Tools
-              </Link>
-            </div>
-          </div>
-
-          {/* ================= CONNECT ================= */}
-
-          <div>
-            <h3 className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-white">
+            <h3
+              className="mb-5 text-xs font-bold uppercase tracking-[0.2em]"
+              style={{
+                color: COLORS.text,
+              }}
+            >
               Connect
             </h3>
 
-            <p className="mb-5 max-w-xs text-sm leading-6 text-gray-500">
+            <p
+              className="mb-5 max-w-xs text-sm leading-6"
+              style={{
+                color: COLORS.textLight,
+              }}
+            >
               Stay connected and discover what's new at AppleHub.
             </p>
 
-            {/* SOCIAL BUTTONS */}
-
             <div className="flex gap-2">
-              <motion.a
-                href="#"
-                whileHover={{ y: -3, scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="
-                  flex h-10 w-10
-                  items-center justify-center
-                  rounded-full
-                  border border-white/10
-                  bg-white/5
-                  text-xs
-                  text-gray-400
-                  transition
-                  hover:bg-white/10
-                  hover:text-white
-                "
-              >
-                X
-              </motion.a>
-
-              <motion.a
-                href="#"
-                whileHover={{ y: -3, scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="
-                  flex h-10 w-10
-                  items-center justify-center
-                  rounded-full
-                  border border-white/10
-                  bg-white/5
-                  text-xs
-                  text-gray-400
-                  transition
-                  hover:bg-white/10
-                  hover:text-white
-                "
-              >
-                IG
-              </motion.a>
-
-              <motion.a
-                href="#"
-                whileHover={{ y: -3, scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="
-                  flex h-10 w-10
-                  items-center justify-center
-                  rounded-full
-                  border border-white/10
-                  bg-white/5
-                  text-xs
-                  text-gray-400
-                  transition
-                  hover:bg-white/10
-                  hover:text-white
-                "
-              >
-                GH
-              </motion.a>
+              {["X", "IG", "GH"].map((social, index) => (
+                <motion.a
+                  key={social}
+                  href="#"
+                  whileHover={{
+                    y: -5,
+                    scale: 1.08,
+                    rotateX: -10,
+                    rotateY: 10,
+                    z: 20,
+                  }}
+                  whileTap={{
+                    scale: 0.9,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 280,
+                    damping: 15,
+                  }}
+                  style={{
+                    transformStyle: "preserve-3d",
+                    borderColor: COLORS.border,
+                    background: index === 0 ? COLORS.softBlue : COLORS.white,
+                    color: COLORS.blue,
+                  }}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border text-xs font-bold shadow-[0_8px_20px_rgba(23,50,77,0.06)]"
+                >
+                  <span
+                    style={{
+                      transform: "translateZ(8px)",
+                    }}
+                  >
+                    {social}
+                  </span>
+                </motion.a>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* ================= BIG APPLEHUB TEXT ================= */}
-
-        <div className="mt-20 overflow-hidden border-y border-white/5 py-6">
+        <div
+          className="relative mt-20 overflow-hidden border-y py-6"
+          style={{
+            borderColor: COLORS.border,
+          }}
+        >
           <motion.div
             animate={{
               x: ["0%", "-50%"],
             }}
             transition={{
-              duration: 20,
+              duration: 22,
               repeat: Infinity,
               ease: "linear",
             }}
-            className="
-              flex
-              w-max
-              whitespace-nowrap
-              text-[clamp(4rem,12vw,10rem)]
-              font-black
-              leading-none
-              tracking-[-0.08em]
-              text-white/[0.04]
-            "
+            className="flex w-max whitespace-nowrap text-[clamp(4rem,12vw,10rem)] font-black leading-none tracking-[-0.08em]"
+            style={{
+              color: "rgba(48,175,255,0.055)",
+            }}
           >
             APPLEHUB&nbsp;&nbsp;&nbsp; APPLEHUB&nbsp;&nbsp;&nbsp;
             APPLEHUB&nbsp;&nbsp;&nbsp; APPLEHUB&nbsp;&nbsp;&nbsp;
-            APPLEHUB&nbsp;&nbsp;&nbsp; APPLEHUB
+            APPLEHUB&nbsp;&nbsp;&nbsp; APPLEHUB&nbsp;&nbsp;&nbsp;
           </motion.div>
+
+          <motion.div
+            animate={{
+              x: ["0%", "50%"],
+            }}
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+            className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-1/3"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, #30AFFF, #92EEFF, transparent)",
+            }}
+          />
         </div>
 
-        {/* ================= BOTTOM ================= */}
-
-        <div
-          className="
-          flex
-          flex-col
-          gap-5
-          pt-8
-          sm:flex-row
-          sm:items-center
-          sm:justify-between
-        "
-        >
-          <p className="text-xs text-gray-600">
+        <div className="flex flex-col gap-5 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p
+            className="text-xs"
+            style={{
+              color: COLORS.textLight,
+            }}
+          >
             © {year} AppleHub. All rights reserved.
           </p>
 
           <div className="flex flex-wrap gap-5">
-            <a
-              href="#"
-              className="text-xs text-gray-600 transition hover:text-white"
+            <Link
+              to="/about"
+              className="text-xs transition hover:text-[#30AFFF]"
+              style={{
+                color: COLORS.textLight,
+              }}
             >
               Privacy
-            </a>
+            </Link>
 
-            <a
-              href="#"
-              className="text-xs text-gray-600 transition hover:text-white"
+            <Link
+              to="/about"
+              className="text-xs transition hover:text-[#30AFFF]"
+              style={{
+                color: COLORS.textLight,
+              }}
             >
               Terms
-            </a>
+            </Link>
 
-            <a
-              href="#"
-              className="text-xs text-gray-600 transition hover:text-white"
+            <Link
+              to="/about"
+              className="text-xs transition hover:text-[#30AFFF]"
+              style={{
+                color: COLORS.textLight,
+              }}
             >
               Contact
-            </a>
+            </Link>
           </div>
 
           <motion.button
             type="button"
-            whileHover={{ y: -3 }}
-            whileTap={{ scale: 0.9 }}
+            whileHover={{
+              y: -4,
+              scale: 1.08,
+              rotateX: -10,
+              rotateY: 8,
+              z: 15,
+            }}
+            whileTap={{
+              scale: 0.9,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 280,
+              damping: 15,
+            }}
             onClick={() =>
               window.scrollTo({
                 top: 0,
                 behavior: "smooth",
               })
             }
-            className="
-              flex h-9 w-9
-              items-center justify-center
-              rounded-full
-              border border-white/10
-              bg-white/5
-              text-gray-400
-              transition
-              hover:bg-white/10
-              hover:text-white
-            "
+            style={{
+              transformStyle: "preserve-3d",
+              borderColor: COLORS.border,
+              background: COLORS.white,
+              color: COLORS.blue,
+            }}
+            className="flex h-10 w-10 items-center justify-center rounded-full border shadow-[0_8px_20px_rgba(23,50,77,0.08)]"
             aria-label="Back to top"
           >
-            ↑
+            <motion.span
+              animate={{
+                y: [0, -3, 0],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+              }}
+            >
+              ↑
+            </motion.span>
           </motion.button>
         </div>
       </div>

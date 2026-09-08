@@ -1,10 +1,25 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "motion/react";
 import { Link, useLocation } from "react-router-dom";
 
-/* =========================================================
-   PROBLEMS ARRAY
-========================================================= */
+const COLORS = {
+  blue: "#30AFFF",
+  cyan: "#92EEFF",
+  green: "#D8FFC5",
+  mint: "#C4F7CA",
+  white: "#FFFFFF",
+  soft: "#F7FBFF",
+  softBlue: "#EEF9FF",
+  text: "#17324D",
+  textLight: "#62809A",
+  border: "#DDECF5",
+};
 
 const problems = [
   {
@@ -87,7 +102,6 @@ const problems = [
     solution:
       "Try another compatible cable and adapter, inspect the charging port, restart the iPhone, and make sure the power source works.",
   },
-
   {
     id: 9,
     device: "Mac",
@@ -170,15 +184,46 @@ const problems = [
   },
 ];
 
-/* =========================================================
-   DEVICE FILTER ARRAY
-========================================================= */
-
 const devices = ["All", "iPhone", "Mac"];
 
-/* =========================================================
-   GUIDES COMPONENT
-========================================================= */
+const navItems = [
+  {
+    name: "Home",
+    subtitle: "Main experience",
+    path: "/",
+    icon: "⌂",
+  },
+  {
+    name: "iPhone",
+    subtitle: "Explore iPhone",
+    path: "/iph",
+    icon: "▣",
+  },
+  {
+    name: "Mac",
+    subtitle: "Explore Mac",
+    path: "/mac",
+    icon: "▱",
+  },
+  {
+    name: "Tools",
+    subtitle: "Useful tools",
+    path: "/tools",
+    icon: "✦",
+  },
+  {
+    name: "Guides",
+    subtitle: "Fix problems",
+    path: "/guides",
+    icon: "◈",
+  },
+  {
+    name: "About",
+    subtitle: "About AppleHub",
+    path: "/about",
+    icon: "●",
+  },
+];
 
 function Guides() {
   const [activeDevice, setActiveDevice] = useState("All");
@@ -188,23 +233,48 @@ function Guides() {
 
   const location = useLocation();
 
-  /* =======================================================
-     ACTIVE NAVIGATION
-  ======================================================= */
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const smoothX = useSpring(mouseX, {
+    stiffness: 160,
+    damping: 20,
+    mass: 0.6,
+  });
+
+  const smoothY = useSpring(mouseY, {
+    stiffness: 160,
+    damping: 20,
+    mass: 0.6,
+  });
+
+  const rotateX = useTransform(smoothY, [-1, 1], [7, -7]);
+  const rotateY = useTransform(smoothX, [-1, 1], [-8, 8]);
+
+  const glowX = useTransform(smoothX, [-1, 1], ["20%", "80%"]);
+  const glowY = useTransform(smoothY, [-1, 1], ["20%", "80%"]);
+
+  const handlePointerMove = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+
+    mouseX.set(((event.clientX - rect.left) / rect.width - 0.5) * 2);
+    mouseY.set(((event.clientY - rect.top) / rect.height - 0.5) * 2);
+  };
+
+  const resetPointer = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
 
   const isActive = (path) => {
     return location.pathname === path;
   };
 
-  /* =======================================================
-     FILTER PROBLEMS
-  ======================================================= */
-
   const filteredProblems = problems.filter((item) => {
     const matchesDevice =
       activeDevice === "All" || item.device === activeDevice;
 
-    const searchText = search.toLowerCase();
+    const searchText = search.toLowerCase().trim();
 
     const matchesSearch =
       item.question.toLowerCase().includes(searchText) ||
@@ -214,48 +284,41 @@ function Guides() {
     return matchesDevice && matchesSearch;
   });
 
-  /* =======================================================
-     CLOSE MOBILE MENU
-  ======================================================= */
-
   const closeMenu = () => {
     setMobileMenuOpen(false);
   };
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#050608] text-white">
-      {/* =====================================================
-          BACKGROUND
-      ===================================================== */}
-
+    <main
+      className="min-h-screen overflow-hidden"
+      style={{
+        background: COLORS.soft,
+        color: COLORS.text,
+      }}
+    >
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <motion.div
           animate={{
-            x: [-120, 120, -120],
+            x: [-100, 120, -100],
             y: [-50, 100, -50],
             scale: [1, 1.25, 1],
+            rotate: [0, 45, 0],
           }}
           transition={{
             duration: 18,
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="
-            absolute
-            left-[-150px]
-            top-[100px]
-            h-[500px]
-            w-[500px]
-            rounded-full
-            bg-blue-600/10
-            blur-[150px]
-          "
+          className="absolute left-[-180px] top-[80px] h-[520px] w-[520px] rounded-full blur-[130px]"
+          style={{
+            background: `${COLORS.cyan}80`,
+          }}
         />
 
         <motion.div
           animate={{
-            x: [100, -100, 100],
-            y: [50, -80, 50],
+            x: [100, -120, 100],
+            y: [50, -100, 50],
             scale: [1, 1.3, 1],
           }}
           transition={{
@@ -263,124 +326,90 @@ function Guides() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="
-            absolute
-            right-[-150px]
-            top-[500px]
-            h-[500px]
-            w-[500px]
-            rounded-full
-            bg-purple-600/10
-            blur-[150px]
-          "
+          className="absolute right-[-180px] top-[500px] h-[500px] w-[500px] rounded-full blur-[140px]"
+          style={{
+            background: `${COLORS.green}80`,
+          }}
+        />
+
+        <motion.div
+          className="absolute h-[420px] w-[420px] rounded-full blur-[110px]"
+          style={{
+            left: glowX,
+            top: glowY,
+            x: "-50%",
+            y: "-50%",
+            background: `radial-gradient(circle, ${COLORS.blue}35, transparent 68%)`,
+          }}
+        />
+
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage: `linear-gradient(${COLORS.border} 1px, transparent 1px), linear-gradient(90deg, ${COLORS.border} 1px, transparent 1px)`,
+            backgroundSize: "70px 70px",
+            maskImage: "linear-gradient(to bottom, black, transparent 80%)",
+          }}
         />
       </div>
-
-      {/* =====================================================
-          MOBILE BACKDROP
-      ===================================================== */}
 
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={closeMenu}
-            className="
-              fixed
-              inset-0
-              z-30
-              bg-black/40
-              backdrop-blur-sm
-              md:hidden
-            "
+            className="fixed inset-0 z-30 bg-[#17324D]/20 backdrop-blur-md md:hidden"
           />
         )}
       </AnimatePresence>
 
-      {/* =====================================================
-          MOBILE DROPDOWN
-      ===================================================== */}
-
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{
               opacity: 0,
-              y: -25,
-              scale: 0.95,
+              y: -30,
+              scale: 0.94,
+              rotateX: -8,
             }}
             animate={{
               opacity: 1,
               y: 0,
               scale: 1,
+              rotateX: 0,
             }}
             exit={{
               opacity: 0,
-              y: -25,
-              scale: 0.95,
+              y: -30,
+              scale: 0.94,
+              rotateX: -8,
             }}
             transition={{
-              duration: 0.3,
+              duration: 0.45,
               ease: [0.16, 1, 0.3, 1],
             }}
-            className="
-              fixed
-              left-4
-              right-4
-              top-[88px]
-              z-40
-              overflow-hidden
-              rounded-[28px]
-              border
-              border-white/10
-              bg-black/90
-              shadow-2xl
-              shadow-black/50
-              backdrop-blur-2xl
-              md:hidden
-            "
+            style={{
+              transformPerspective: 1000,
+            }}
+            className="fixed left-4 right-4 top-[88px] z-40 overflow-hidden rounded-[30px] border bg-white/95 shadow-2xl backdrop-blur-2xl md:hidden"
           >
-            {/* MENU HEADER */}
-
             <div
-              className="
-              border-b
-              border-white/10
-              px-6
-              py-5
-            "
+              className="border-b px-6 py-5"
+              style={{ borderColor: COLORS.border }}
             >
               <p
-                className="
-                text-[9px]
-                uppercase
-                tracking-[0.3em]
-                text-gray-600
-              "
+                className="text-[9px] uppercase tracking-[0.3em]"
+                style={{ color: COLORS.blue }}
               >
                 AppleHub
               </p>
 
-              <p
-                className="
-                mt-1
-                text-sm
-                text-gray-400
-              "
-              >
+              <p className="mt-1 text-sm" style={{ color: COLORS.textLight }}>
                 Explore the anatomy
               </p>
             </div>
-
-            {/* MOBILE ITEMS */}
 
             <div className="p-3">
               {navItems.map((item, index) => {
@@ -389,103 +418,62 @@ function Guides() {
                 return (
                   <motion.div
                     key={item.name}
-                    initial={{
-                      opacity: 0,
-                      x: -25,
-                    }}
-                    animate={{
-                      opacity: 1,
-                      x: 0,
-                    }}
+                    initial={{ opacity: 0, x: -25 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{
                       delay: 0.05 + index * 0.07,
+                      type: "spring",
+                      stiffness: 180,
                     }}
                   >
                     <Link
                       to={item.path}
                       onClick={closeMenu}
-                      className={`
-                        group
-                        flex
-                        items-center
-                        justify-between
-                        rounded-2xl
-                        px-4
-                        py-4
-                        transition
-                        ${
-                          active
-                            ? "bg-white/10 text-white"
-                            : "text-gray-400 hover:bg-white/[0.06] hover:text-white"
-                        }
-                      `}
+                      className="group flex items-center justify-between rounded-2xl px-4 py-4 transition"
+                      style={{
+                        background: active
+                          ? `${COLORS.softBlue}`
+                          : "transparent",
+                        color: active ? COLORS.text : COLORS.textLight,
+                      }}
                     >
-                      {/* LEFT SIDE */}
-
                       <div className="flex items-center gap-4">
-                        {/* ICON */}
-
                         <motion.div
                           whileHover={{
                             scale: 1.15,
                             rotate: 8,
+                            z: 20,
                           }}
-                          className={`
-                            flex
-                            h-10
-                            w-10
-                            items-center
-                            justify-center
-                            rounded-xl
-                            border
-                            ${
-                              active
-                                ? "border-white/20 bg-white/10"
-                                : "border-white/10 bg-white/[0.04]"
-                            }
-                          `}
+                          className="flex h-10 w-10 items-center justify-center rounded-xl border"
+                          style={{
+                            borderColor: active
+                              ? `${COLORS.blue}55`
+                              : COLORS.border,
+                            background: active
+                              ? `${COLORS.cyan}55`
+                              : COLORS.soft,
+                          }}
                         >
                           {item.icon}
                         </motion.div>
 
-                        {/* TEXT */}
-
                         <div>
-                          <span
-                            className="
-                            block
-                            text-sm
-                            font-medium
-                          "
-                          >
+                          <span className="block text-sm font-semibold">
                             {item.name}
                           </span>
 
                           <span
-                            className="
-                            block
-                            text-[9px]
-                            uppercase
-                            tracking-[0.2em]
-                            text-gray-600
-                          "
+                            className="block text-[9px] uppercase tracking-[0.2em]"
+                            style={{ color: COLORS.textLight }}
                           >
                             {item.subtitle}
                           </span>
                         </div>
                       </div>
 
-                      {/* ARROW */}
-
                       <motion.span
-                        whileHover={{
-                          x: 5,
-                        }}
-                        className="
-                          text-gray-600
-                          transition
-                          group-hover:text-white
-                        "
+                        whileHover={{ x: 5 }}
+                        style={{ color: COLORS.blue }}
                       >
                         →
                       </motion.span>
@@ -495,33 +483,18 @@ function Guides() {
               })}
             </div>
 
-            {/* MOBILE CTA */}
-
             <div
-              className="
-              border-t
-              border-white/10
-              p-4
-            "
+              className="border-t p-4"
+              style={{ borderColor: COLORS.border }}
             >
               <Link
                 to="/iph"
                 onClick={closeMenu}
-                className="
-                  flex
-                  items-center
-                  justify-center
-                  gap-2
-                  rounded-2xl
-                  bg-white
-                  px-5
-                  py-4
-                  text-sm
-                  font-semibold
-                  text-black
-                  transition
-                  hover:scale-[1.02]
-                "
+                className="flex items-center justify-center gap-2 rounded-2xl px-5 py-4 text-sm font-bold text-white shadow-lg"
+                style={{
+                  background: COLORS.blue,
+                  boxShadow: `0 15px 40px ${COLORS.blue}35`,
+                }}
               >
                 Explore iPhone
                 <span>→</span>
@@ -531,202 +504,177 @@ function Guides() {
         )}
       </AnimatePresence>
 
-      {/* =====================================================
-          HERO
-      ===================================================== */}
-
-      <section
-        className="
-        relative
-        px-6
-        pb-20
-        pt-40
-      "
-      >
+      <section className="relative px-6 pb-20 pt-40">
         <div className="mx-auto max-w-7xl">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.9,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+          >
+            <motion.p
+              animate={{
+                letterSpacing: ["0.3em", "0.42em", "0.3em"],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="text-xs uppercase"
+              style={{ color: COLORS.blue }}
+            >
+              AppleHub Support
+            </motion.p>
+
+            <h1 className="mt-5 text-5xl font-black tracking-tighter md:text-7xl">
+              Problems?
+              <br />
+              <motion.span
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{
+                  duration: 7,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+                className="bg-gradient-to-r from-[#30AFFF] via-[#17324D] to-[#92EEFF] bg-[length:200%_auto] bg-clip-text text-transparent"
+              >
+                Let's solve them.
+              </motion.span>
+            </h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25, duration: 0.7 }}
+              className="mt-6 max-w-2xl text-base leading-relaxed md:text-lg"
+              style={{ color: COLORS.textLight }}
+            >
+              Common iPhone and Mac problems explained simply. Find out why a
+              problem happens and what you can do to solve it.
+            </motion.p>
+          </motion.div>
+
           <motion.div
             initial={{
               opacity: 0,
               y: 30,
+              scale: 0.97,
             }}
             animate={{
               opacity: 1,
               y: 0,
+              scale: 1,
             }}
             transition={{
+              delay: 0.35,
               duration: 0.8,
-            }}
-          >
-            <p
-              className="
-              text-xs
-              uppercase
-              tracking-[0.35em]
-              text-blue-300/70
-            "
-            >
-              AppleHub Support
-            </p>
-
-            <h1
-              className="
-              mt-5
-              text-5xl
-              font-black
-              tracking-tighter
-              md:text-7xl
-            "
-            >
-              Problems?
-              <br />
-              <span
-                className="
-                bg-gradient-to-r
-                from-blue-200
-                via-white
-                to-purple-200
-                bg-clip-text
-                text-transparent
-              "
-              >
-                Let's solve them.
-              </span>
-            </h1>
-
-            <p
-              className="
-              mt-6
-              max-w-2xl
-              text-base
-              leading-relaxed
-              text-gray-400
-              md:text-lg
-            "
-            >
-              Common iPhone and Mac problems explained simply. Find out why a
-              problem happens and what you can do to solve it.
-            </p>
-          </motion.div>
-
-          {/* =================================================
-              SEARCH
-          ================================================= */}
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 25,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.2,
-              duration: 0.7,
             }}
             className="mt-10 max-w-2xl"
           >
-            <div
-              className="
-              group
-              flex
-              items-center
-              rounded-2xl
-              border
-              border-white/10
-              bg-white/[0.04]
-              px-5
-              py-4
-              transition
-              focus-within:border-white/20
-            "
+            <motion.div
+              whileHover={{
+                y: -4,
+                scale: 1.01,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 20,
+              }}
+              className="group flex items-center rounded-2xl border bg-white/80 px-5 py-4 shadow-sm backdrop-blur-xl"
+              style={{
+                borderColor: COLORS.border,
+                boxShadow: `0 15px 50px ${COLORS.blue}12`,
+              }}
             >
-              <span
-                className="
-                mr-3
-                text-xl
-                text-gray-500
-              "
+              <motion.span
+                animate={{
+                  scale: [1, 1.15, 1],
+                  rotate: [0, -8, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                }}
+                className="mr-3 text-xl"
+                style={{ color: COLORS.blue }}
               >
                 ⌕
-              </span>
+              </motion.span>
 
               <input
                 type="text"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search a problem..."
-                className="
-                  w-full
-                  bg-transparent
-                  text-sm
-                  text-white
-                  outline-none
-                  placeholder:text-gray-600
-                "
+                className="w-full bg-transparent text-sm outline-none placeholder:opacity-50"
+                style={{ color: COLORS.text }}
               />
 
               {search && (
-                <button
+                <motion.button
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  whileHover={{ scale: 1.2, rotate: 90 }}
                   onClick={() => setSearch("")}
-                  className="
-                    text-gray-500
-                    transition
-                    hover:text-white
-                  "
+                  className="text-xl"
+                  style={{ color: COLORS.textLight }}
                 >
                   ×
-                </button>
+                </motion.button>
               )}
-            </div>
+            </motion.div>
           </motion.div>
 
-          {/* =================================================
-              FILTER
-          ================================================= */}
-
-          <div
-            className="
-            mt-6
-            flex
-            flex-wrap
-            gap-3
-          "
-          >
-            {devices.map((device) => (
+          <div className="mt-6 flex flex-wrap gap-3">
+            {devices.map((device, index) => (
               <motion.button
                 key={device}
+                initial={{
+                  opacity: 0,
+                  y: 15,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  delay: 0.45 + index * 0.08,
+                }}
                 whileHover={{
-                  y: -2,
+                  y: -4,
+                  scale: 1.04,
                 }}
                 whileTap={{
-                  scale: 0.96,
+                  scale: 0.94,
                 }}
                 onClick={() => {
                   setActiveDevice(device);
                   setOpenId(null);
                 }}
-                className={`
-                  rounded-full
-                  border
-                  px-6
-                  py-3
-                  text-sm
-                  transition
-                  ${
+                className="rounded-full border px-6 py-3 text-sm font-medium transition"
+                style={{
+                  borderColor:
+                    activeDevice === device ? COLORS.blue : COLORS.border,
+                  background:
+                    activeDevice === device ? COLORS.blue : COLORS.white,
+                  color:
+                    activeDevice === device ? COLORS.white : COLORS.textLight,
+                  boxShadow:
                     activeDevice === device
-                      ? "border-white bg-white text-black"
-                      : "border-white/10 bg-white/[0.04] text-gray-400 hover:bg-white/[0.08] hover:text-white"
-                  }
-                `}
+                      ? `0 10px 30px ${COLORS.blue}30`
+                      : "none",
+                }}
               >
                 {device}
               </motion.button>
             ))}
           </div>
-
-          {/* RESULT COUNT */}
 
           <motion.p
             key={filteredProblems.length}
@@ -738,79 +686,66 @@ function Guides() {
               opacity: 1,
               y: 0,
             }}
-            className="
-              mt-6
-              text-xs
-              uppercase
-              tracking-[0.25em]
-              text-gray-600
-            "
+            className="mt-6 text-xs uppercase tracking-[0.25em]"
+            style={{ color: COLORS.textLight }}
           >
             {filteredProblems.length} problems found
           </motion.p>
         </div>
       </section>
 
-      {/* =====================================================
-          PROBLEMS
-      ===================================================== */}
-
-      <section
-        className="
-        relative
-        px-6
-        pb-32
-      "
-      >
+      <section className="relative px-6 pb-32">
         <div className="mx-auto max-w-7xl">
           {filteredProblems.length === 0 ? (
             <motion.div
               initial={{
                 opacity: 0,
-                scale: 0.95,
+                scale: 0.9,
+                rotateX: 10,
               }}
               animate={{
                 opacity: 1,
                 scale: 1,
+                rotateX: 0,
               }}
-              className="
-                rounded-[30px]
-                border
-                border-white/10
-                bg-white/[0.035]
-                p-16
-                text-center
-              "
+              transition={{
+                duration: 0.6,
+              }}
+              className="rounded-[30px] border bg-white/80 p-16 text-center shadow-xl backdrop-blur-xl"
+              style={{
+                borderColor: COLORS.border,
+                transformPerspective: 1000,
+              }}
             >
-              <div className="text-5xl">⌕</div>
-
-              <h2
-                className="
-                mt-6
-                text-2xl
-                font-bold
-              "
+              <motion.div
+                animate={{
+                  y: [0, -10, 0],
+                  rotate: [0, 8, 0],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                }}
+                className="text-5xl"
               >
-                No problem found
-              </h2>
+                ⌕
+              </motion.div>
 
-              <p
-                className="
-                mt-3
-                text-gray-500
-              "
-              >
+              <h2 className="mt-6 text-2xl font-bold">No problem found</h2>
+
+              <p className="mt-3" style={{ color: COLORS.textLight }}>
                 Try another search term.
               </p>
             </motion.div>
           ) : (
-            <div
-              className="
-              grid
-              gap-5
-              sm:grid-cols-2
-              lg:grid-cols-3
-            "
+            <motion.div
+              layout
+              className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+              onPointerMove={handlePointerMove}
+              onPointerLeave={resetPointer}
+              style={{
+                perspective: 1600,
+              }}
             >
               {filteredProblems.map((item, index) => {
                 const isOpen = openId === item.id;
@@ -821,164 +756,152 @@ function Guides() {
                     layout
                     initial={{
                       opacity: 0,
-                      y: 40,
+                      y: 60,
+                      scale: 0.94,
+                      rotateX: 8,
                     }}
                     animate={{
                       opacity: 1,
                       y: 0,
+                      scale: 1,
+                      rotateX: 0,
                     }}
                     transition={{
-                      delay: index * 0.05,
-                      duration: 0.5,
+                      delay: index * 0.055,
+                      duration: 0.65,
+                      ease: [0.16, 1, 0.3, 1],
                     }}
                     whileHover={{
-                      y: -8,
+                      y: -12,
+                      scale: 1.025,
+                      rotateX: 3,
+                      rotateY: index % 2 === 0 ? -2 : 2,
                     }}
-                    className="
-                      group
-                      relative
-                      overflow-hidden
-                      rounded-[28px]
-                      border
-                      border-white/10
-                      bg-white/[0.035]
-                    "
+                    style={{
+                      transformStyle: "preserve-3d",
+                      transformPerspective: 1200,
+                      borderColor: COLORS.border,
+                      background: `${COLORS.white}E8`,
+                      boxShadow: `0 20px 60px ${COLORS.blue}10`,
+                    }}
+                    className="group relative overflow-hidden rounded-[28px] border backdrop-blur-xl"
                   >
-                    {/* HOVER GLOW */}
+                    <motion.div
+                      className="pointer-events-none absolute inset-y-0 -left-[70%] w-1/3 rotate-12 blur-xl"
+                      animate={{
+                        x: ["0%", "520%"],
+                      }}
+                      transition={{
+                        duration: 4.5,
+                        repeat: Infinity,
+                        repeatDelay: 2,
+                        ease: "linear",
+                      }}
+                      style={{
+                        background: `linear-gradient(90deg, transparent, ${COLORS.white}CC, transparent)`,
+                      }}
+                    />
 
-                    <div
-                      className="
-                      pointer-events-none
-                      absolute
-                      -right-20
-                      -top-20
-                      h-48
-                      w-48
-                      rounded-full
-                      bg-blue-500/10
-                      blur-3xl
-                      opacity-0
-                      transition
-                      duration-500
-                      group-hover:opacity-100
-                    "
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.1, 0.2, 0.1],
+                      }}
+                      transition={{
+                        duration: 4,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full blur-3xl"
+                      style={{
+                        background: COLORS.cyan,
+                      }}
                     />
 
                     <div className="relative p-7">
-                      {/* TOP */}
-
-                      <div
-                        className="
-                        flex
-                        items-center
-                        justify-between
-                      "
-                      >
+                      <div className="flex items-center justify-between">
                         <motion.div
                           whileHover={{
-                            rotate: 8,
-                            scale: 1.1,
+                            rotateX: 15,
+                            rotateY: -15,
+                            rotateZ: 5,
+                            scale: 1.15,
+                            z: 40,
                           }}
-                          className="
-                            flex
-                            h-14
-                            w-14
-                            items-center
-                            justify-center
-                            rounded-2xl
-                            border
-                            border-white/10
-                            bg-white/[0.05]
-                            text-2xl
-                          "
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 15,
+                          }}
+                          className="flex h-14 w-14 items-center justify-center rounded-2xl border text-2xl shadow-lg"
+                          style={{
+                            borderColor: `${COLORS.blue}35`,
+                            background: `linear-gradient(145deg, ${COLORS.white}, ${COLORS.softBlue})`,
+                            transformStyle: "preserve-3d",
+                          }}
                         >
                           {item.icon}
                         </motion.div>
 
-                        <span
-                          className="
-                          rounded-full
-                          border
-                          border-white/10
-                          px-3
-                          py-1.5
-                          text-[9px]
-                          uppercase
-                          tracking-[0.25em]
-                          text-gray-500
-                        "
+                        <motion.span
+                          whileHover={{
+                            scale: 1.05,
+                          }}
+                          className="rounded-full border px-3 py-1.5 text-[9px] uppercase tracking-[0.25em]"
+                          style={{
+                            borderColor: COLORS.border,
+                            color: COLORS.textLight,
+                            background: COLORS.soft,
+                          }}
                         >
                           {item.device}
-                        </span>
+                        </motion.span>
                       </div>
 
-                      {/* QUESTION */}
-
-                      <h2
-                        className="
-                        mt-7
-                        text-xl
-                        font-bold
-                        leading-tight
-                      "
+                      <motion.h2
+                        layout
+                        className="mt-7 text-xl font-bold leading-tight"
+                        style={{ color: COLORS.text }}
                       >
                         {item.question}
-                      </h2>
-
-                      {/* WHY */}
+                      </motion.h2>
 
                       <div className="mt-6">
                         <p
-                          className="
-                          text-[9px]
-                          uppercase
-                          tracking-[0.3em]
-                          text-gray-600
-                        "
+                          className="text-[9px] uppercase tracking-[0.3em]"
+                          style={{ color: COLORS.blue }}
                         >
                           Why it happens
                         </p>
 
                         <p
-                          className="
-                          mt-2
-                          text-sm
-                          leading-relaxed
-                          text-gray-400
-                        "
+                          className="mt-2 text-sm leading-relaxed"
+                          style={{ color: COLORS.textLight }}
                         >
                           {item.problem}
                         </p>
                       </div>
 
-                      {/* SOLUTION BUTTON */}
-
-                      <button
+                      <motion.button
+                        whileHover={{
+                          scale: 1.015,
+                          y: -2,
+                        }}
+                        whileTap={{
+                          scale: 0.98,
+                        }}
                         onClick={() => setOpenId(isOpen ? null : item.id)}
-                        className="
-                          mt-6
-                          flex
-                          w-full
-                          items-center
-                          justify-between
-                          rounded-2xl
-                          border
-                          border-white/10
-                          bg-white/[0.025]
-                          p-4
-                          text-left
-                          transition
-                          hover:bg-white/[0.06]
-                        "
+                        className="mt-6 flex w-full items-center justify-between rounded-2xl border p-4 text-left transition"
+                        style={{
+                          borderColor: isOpen
+                            ? `${COLORS.blue}45`
+                            : COLORS.border,
+                          background: isOpen ? `${COLORS.cyan}35` : COLORS.soft,
+                        }}
                       >
                         <span
-                          className="
-                          text-[10px]
-                          font-semibold
-                          uppercase
-                          tracking-[0.25em]
-                          text-blue-300/70
-                        "
+                          className="text-[10px] font-bold uppercase tracking-[0.25em]"
+                          style={{ color: COLORS.blue }}
                         >
                           {isOpen ? "Hide solution" : "Show solution"}
                         </span>
@@ -986,98 +909,96 @@ function Guides() {
                         <motion.span
                           animate={{
                             rotate: isOpen ? 180 : 0,
+                            y: isOpen ? 2 : 0,
                           }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 250,
+                          }}
+                          style={{ color: COLORS.blue }}
                           className="text-lg"
                         >
                           ↓
                         </motion.span>
-                      </button>
+                      </motion.button>
 
-                      {/* SOLUTION */}
-
-                      <AnimatePresence>
+                      <AnimatePresence mode="wait">
                         {isOpen && (
                           <motion.div
                             initial={{
                               height: 0,
                               opacity: 0,
+                              y: -10,
                             }}
                             animate={{
                               height: "auto",
                               opacity: 1,
+                              y: 0,
                             }}
                             exit={{
                               height: 0,
                               opacity: 0,
+                              y: -10,
                             }}
                             transition={{
-                              duration: 0.35,
+                              duration: 0.4,
+                              ease: [0.16, 1, 0.3, 1],
                             }}
                             className="overflow-hidden"
                           >
-                            <div
-                              className="
-                              mt-3
-                              rounded-2xl
-                              border
-                              border-blue-400/10
-                              bg-blue-400/[0.03]
-                              p-4
-                            "
+                            <motion.div
+                              initial={{
+                                scale: 0.96,
+                              }}
+                              animate={{
+                                scale: 1,
+                              }}
+                              className="mt-3 rounded-2xl border p-4"
+                              style={{
+                                borderColor: `${COLORS.blue}25`,
+                                background: `linear-gradient(135deg, ${COLORS.softBlue}, ${COLORS.mint}55)`,
+                              }}
                             >
                               <p
-                                className="
-                                text-[9px]
-                                uppercase
-                                tracking-[0.3em]
-                                text-blue-300/60
-                              "
+                                className="text-[9px] uppercase tracking-[0.3em]"
+                                style={{ color: COLORS.blue }}
                               >
                                 Solution
                               </p>
 
                               <p
-                                className="
-                                mt-2
-                                text-sm
-                                leading-relaxed
-                                text-gray-300
-                              "
+                                className="mt-2 text-sm leading-relaxed"
+                                style={{ color: COLORS.text }}
                               >
                                 {item.solution}
                               </p>
-                            </div>
+                            </motion.div>
                           </motion.div>
                         )}
                       </AnimatePresence>
 
-                      {/* BOTTOM */}
-
                       <div
-                        className="
-                        mt-6
-                        flex
-                        items-center
-                        justify-between
-                        border-t
-                        border-white/10
-                        pt-5
-                      "
+                        className="mt-6 flex items-center justify-between border-t pt-5"
+                        style={{
+                          borderColor: COLORS.border,
+                        }}
                       >
                         <span
-                          className="
-                          text-xs
-                          text-gray-600
-                        "
+                          className="text-xs"
+                          style={{ color: COLORS.textLight }}
                         >
                           AppleHub Help
                         </span>
 
                         <motion.span
                           animate={{
-                            x: isOpen ? 5 : 0,
+                            x: isOpen ? 6 : 0,
                           }}
-                          className="text-white"
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                          }}
+                          style={{ color: COLORS.blue }}
                         >
                           →
                         </motion.span>
@@ -1086,173 +1007,173 @@ function Guides() {
                   </motion.article>
                 );
               })}
-            </div>
+            </motion.div>
           )}
-
-          {/* =================================================
-              CTA
-          ================================================= */}
 
           <motion.div
             initial={{
               opacity: 0,
-              y: 30,
+              y: 50,
+              scale: 0.96,
             }}
             whileInView={{
               opacity: 1,
               y: 0,
+              scale: 1,
             }}
             viewport={{
               once: true,
+              margin: "-80px",
             }}
             transition={{
-              duration: 0.7,
+              duration: 0.8,
+              ease: [0.16, 1, 0.3, 1],
             }}
-            className="
-              mt-12
-              rounded-[32px]
-              border
-              border-white/10
-              bg-white/[0.035]
-              p-8
-              text-center
-              md:p-12
-            "
+            className="relative mt-12 overflow-hidden rounded-[32px] border p-8 text-center shadow-xl backdrop-blur-xl md:p-12"
+            style={{
+              borderColor: COLORS.border,
+              background: `linear-gradient(135deg, ${COLORS.white}, ${COLORS.softBlue}, ${COLORS.mint}55)`,
+              boxShadow: `0 30px 80px ${COLORS.blue}15`,
+            }}
           >
-            <p
-              className="
-              text-xs
-              uppercase
-              tracking-[0.3em]
-              text-gray-600
-            "
-            >
-              AppleHub
-            </p>
+            <motion.div
+              animate={{
+                x: [-100, 400, -100],
+                rotate: [0, 15, 0],
+              }}
+              transition={{
+                duration: 9,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              className="pointer-events-none absolute -top-20 h-40 w-72 rounded-full blur-3xl"
+              style={{
+                background: `${COLORS.cyan}70`,
+              }}
+            />
 
-            <h2
-              className="
-              mt-4
-              text-3xl
-              font-bold
-              md:text-4xl
-            "
-            >
-              Want to understand your device?
-            </h2>
+            <motion.div
+              animate={{
+                scale: [1, 1.08, 1],
+                opacity: [0.5, 0.8, 0.5],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+              }}
+              className="pointer-events-none absolute bottom-[-100px] right-[-80px] h-56 w-56 rounded-full blur-3xl"
+              style={{
+                background: `${COLORS.green}90`,
+              }}
+            />
 
-            <p
-              className="
-              mx-auto
-              mt-4
-              max-w-xl
-              text-sm
-              leading-relaxed
-              text-gray-500
-            "
-            >
-              Explore the anatomy of iPhone and Mac and learn how the hardware
-              and software work together.
-            </p>
-
-            <div
-              className="
-              mt-7
-              flex
-              flex-wrap
-              justify-center
-              gap-3
-            "
-            >
-              <Link
-                to="/iph"
-                className="
-                  rounded-full
-                  bg-white
-                  px-7
-                  py-4
-                  text-sm
-                  font-semibold
-                  text-black
-                  transition
-                  hover:scale-105
-                "
+            <div className="relative">
+              <p
+                className="text-xs uppercase tracking-[0.3em]"
+                style={{ color: COLORS.blue }}
               >
-                Explore iPhone →
-              </Link>
+                AppleHub
+              </p>
 
-              <Link
-                to="/mac"
-                className="
-                  rounded-full
-                  border
-                  border-white/10
-                  bg-white/[0.04]
-                  px-7
-                  py-4
-                  text-sm
-                  font-semibold
-                  text-white
-                  transition
-                  hover:bg-white/[0.08]
-                "
+              <h2 className="mt-4 text-3xl font-black tracking-tight md:text-4xl">
+                Want to understand your device?
+              </h2>
+
+              <p
+                className="mx-auto mt-4 max-w-xl text-sm leading-relaxed"
+                style={{ color: COLORS.textLight }}
               >
-                Explore Mac →
-              </Link>
+                Explore the anatomy of iPhone and Mac and learn how the hardware
+                and software work together.
+              </p>
+
+              <div className="mt-7 flex flex-wrap justify-center gap-3">
+                <motion.div
+                  whileHover={{
+                    scale: 1.07,
+                    y: -4,
+                    rotateX: 4,
+                  }}
+                  whileTap={{
+                    scale: 0.96,
+                  }}
+                  style={{
+                    transformPerspective: 800,
+                  }}
+                >
+                  <Link
+                    to="/iph"
+                    className="block rounded-full px-7 py-4 text-sm font-bold text-white shadow-xl"
+                    style={{
+                      background: COLORS.blue,
+                      boxShadow: `0 15px 40px ${COLORS.blue}35`,
+                    }}
+                  >
+                    Explore iPhone →
+                  </Link>
+                </motion.div>
+
+                <motion.div
+                  whileHover={{
+                    scale: 1.07,
+                    y: -4,
+                    rotateX: 4,
+                  }}
+                  whileTap={{
+                    scale: 0.96,
+                  }}
+                  style={{
+                    transformPerspective: 800,
+                  }}
+                >
+                  <Link
+                    to="/mac"
+                    className="block rounded-full border bg-white px-7 py-4 text-sm font-bold"
+                    style={{
+                      borderColor: COLORS.border,
+                      color: COLORS.text,
+                    }}
+                  >
+                    Explore Mac →
+                  </Link>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* =====================================================
-          FOOTER
-      ===================================================== */}
-
       <footer
-        className="
-        relative
-        border-t
-        border-white/10
-        px-6
-        py-10
-      "
+        className="relative border-t px-6 py-10"
+        style={{
+          borderColor: COLORS.border,
+          background: `${COLORS.white}B8`,
+        }}
       >
-        <div
-          className="
-          mx-auto
-          flex
-          max-w-7xl
-          flex-col
-          items-center
-          justify-between
-          gap-4
-          text-center
-          md:flex-row
-          md:text-left
-        "
-        >
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
           <div>
-            <p className="font-semibold">
-              Apple<span className="text-blue-500">Hub</span>
+            <p className="font-bold">
+              Apple
+              <motion.span
+                animate={{
+                  opacity: [0.6, 1, 0.6],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                }}
+                style={{ color: COLORS.blue }}
+              >
+                Hub
+              </motion.span>
             </p>
 
-            <p
-              className="
-              mt-1
-              text-xs
-              text-gray-600
-            "
-            >
+            <p className="mt-1 text-xs" style={{ color: COLORS.textLight }}>
               Understand what's inside.
             </p>
           </div>
 
-          <p
-            className="
-            text-xs
-            text-gray-600
-          "
-          >
+          <p className="text-xs" style={{ color: COLORS.textLight }}>
             © 2026 AppleHub. Educational project.
           </p>
         </div>
