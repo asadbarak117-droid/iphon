@@ -74,6 +74,9 @@ const IMAGES = {
 
   sensors:
     "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=85",
+
+  durability:
+    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1200&q=85",
 };
 
 const getSmartImage = (title = "", category = "") => {
@@ -102,7 +105,8 @@ const getSmartImage = (title = "", category = "") => {
     text.includes("gpu") ||
     text.includes("processor") ||
     text.includes("neural") ||
-    text.includes("silicon")
+    text.includes("silicon") ||
+    text.includes("soc")
   ) {
     return IMAGES.processor;
   }
@@ -133,7 +137,8 @@ const getSmartImage = (title = "", category = "") => {
     text.includes("antenna") ||
     text.includes("wireless") ||
     text.includes("cellular") ||
-    text.includes("connectivity")
+    text.includes("connectivity") ||
+    text.includes("gps")
   ) {
     return IMAGES.wireless;
   }
@@ -154,7 +159,8 @@ const getSmartImage = (title = "", category = "") => {
   if (
     text.includes("usb") ||
     text.includes("magsafe") ||
-    text.includes("connector")
+    text.includes("connector") ||
+    text.includes("port")
   ) {
     return IMAGES.connector;
   }
@@ -162,7 +168,8 @@ const getSmartImage = (title = "", category = "") => {
   if (
     text.includes("face id") ||
     text.includes("secure enclave") ||
-    text.includes("security")
+    text.includes("security") ||
+    text.includes("truedepth")
   ) {
     return IMAGES.security;
   }
@@ -174,8 +181,7 @@ const getSmartImage = (title = "", category = "") => {
   if (
     text.includes("logic board") ||
     text.includes("motherboard") ||
-    text.includes("emi") ||
-    text.includes("frame")
+    text.includes("emi")
   ) {
     return IMAGES.motherboard;
   }
@@ -189,6 +195,17 @@ const getSmartImage = (title = "", category = "") => {
     text.includes("sensor")
   ) {
     return IMAGES.sensors;
+  }
+
+  if (
+    text.includes("frame") ||
+    text.includes("durability") ||
+    text.includes("water") ||
+    text.includes("dust") ||
+    text.includes("repair") ||
+    text.includes("damage")
+  ) {
+    return IMAGES.durability;
   }
 
   if (
@@ -249,6 +266,152 @@ const history = [
     category: "Architecture",
     image: IMAGES.iphone,
     text: "Modern iPhones combine Apple silicon, advanced cameras, high-resolution displays, sensors, wireless systems, security hardware and sophisticated software.",
+  },
+];
+
+const externalAnatomy = [
+  {
+    id: "display",
+    icon: "▤",
+    title: "Display",
+    category: "Front",
+    location: "The entire front face of the iPhone.",
+    function:
+      "Produces visual output including text, images, video, system interfaces and application content.",
+    interaction:
+      "The display works with the touch digitizer, display controller, GPU and iOS to transform digital information into an interactive visual experience.",
+    image: IMAGES.display,
+  },
+  {
+    id: "front-glass",
+    icon: "◇",
+    title: "Front Glass",
+    category: "Front",
+    location: "Protective layer covering the front display assembly.",
+    function:
+      "Protects the display and touch system from scratches, impacts and everyday contact.",
+    interaction:
+      "The glass sits above the touch and display layers while allowing visual output and touch input to pass through.",
+    image: IMAGES.display,
+  },
+  {
+    id: "frame",
+    icon: "▣",
+    title: "Frame / Body",
+    category: "Structure",
+    location: "The outer perimeter and structural body of the device.",
+    function: "Provides structural support and protects internal components.",
+    interaction:
+      "The frame supports the display, rear glass, buttons, antennas and internal assemblies.",
+    image: IMAGES.durability,
+  },
+  {
+    id: "volume",
+    icon: "＋",
+    title: "Volume Buttons",
+    category: "Controls",
+    location: "Along the side edge of supported iPhone models.",
+    function:
+      "Increase or decrease audio volume and perform additional system controls in certain situations.",
+    interaction:
+      "Physical button input is detected by hardware and interpreted by iOS.",
+    image: IMAGES.iphone,
+  },
+  {
+    id: "action",
+    icon: "●",
+    title: "Action Button",
+    category: "Controls",
+    location: "Side edge on supported modern models.",
+    function:
+      "Provides a customizable physical shortcut for actions such as Silent Mode, Focus, Camera or other configured functions.",
+    interaction:
+      "The button generates an input event that iOS maps to the configured action.",
+    image: IMAGES.iphone,
+  },
+  {
+    id: "side-button",
+    icon: "▰",
+    title: "Side Button",
+    category: "Controls",
+    location: "Side edge of the iPhone.",
+    function:
+      "Controls locking, waking, powering and other system interactions.",
+    interaction:
+      "The physical switch sends an input event to the device control system.",
+    image: IMAGES.iphone,
+  },
+  {
+    id: "usb-c",
+    icon: "⌁",
+    title: "USB-C Port",
+    category: "Connectivity",
+    location: "Bottom edge on newer USB-C iPhone models.",
+    function:
+      "Provides wired charging, data communication and accessory connectivity.",
+    interaction:
+      "The connector works with power-management hardware, charging circuits and data controllers.",
+    image: IMAGES.connector,
+  },
+  {
+    id: "camera-modules",
+    icon: "◉",
+    title: "Camera Modules",
+    category: "Camera",
+    location: "Rear camera area and front camera system.",
+    function:
+      "Capture photographs and video using lenses, sensors and computational processing.",
+    interaction:
+      "Camera sensors communicate with image-processing hardware and iOS camera software.",
+    image: IMAGES.camera,
+  },
+  {
+    id: "speaker",
+    icon: ")))",
+    title: "Speakers",
+    category: "Audio",
+    location: "Bottom speaker openings and front earpiece area.",
+    function: "Produce music, calls, notifications, videos and system sounds.",
+    interaction:
+      "Audio data is processed by the system and converted into sound by speaker hardware.",
+    image: IMAGES.audio,
+  },
+  {
+    id: "microphones",
+    icon: "◌",
+    title: "Microphones",
+    category: "Audio",
+    location: "Multiple openings distributed around the device.",
+    function: "Capture voice and environmental sound.",
+    interaction:
+      "Microphone signals are processed by audio hardware and software for calls, recordings, video and voice assistants.",
+    image: IMAGES.audio,
+  },
+  {
+    id: "sim",
+    icon: "▱",
+    title: "SIM / eSIM System",
+    category: "Connectivity",
+    location:
+      "Model and regional configuration determine whether a physical SIM tray is present; many modern models also support eSIM.",
+    function:
+      "Provides subscriber identity information required for cellular service.",
+    interaction:
+      "The cellular modem communicates with the SIM/eSIM system to authenticate with a carrier network.",
+    image: IMAGES.wireless,
+  },
+  {
+    id: "sensors-visible",
+    icon: "⌁",
+    title: "Visible Sensor Areas",
+    category: "Sensors",
+    location:
+      "Front camera / sensor area and selected openings around the enclosure.",
+    function:
+      "Support functions such as proximity detection, ambient-light measurement and biometric sensing.",
+    interaction:
+      "Sensor information is processed by dedicated hardware and system software.",
+    image: IMAGES.sensors,
   },
 ];
 
@@ -338,7 +501,7 @@ const software = [
     flow: ["iOS", "Firmware", "Component"],
   },
   {
-    id: "security",
+    id: "security-software",
     icon: "◇",
     category: "Security",
     group: "Software",
@@ -351,436 +514,534 @@ const software = [
   },
 ];
 
-const hardware = [
+const internalAnatomy = [
   {
-    id: "display",
-    icon: "▤",
-    category: "Display",
-    group: "Hardware",
-    title: "Display",
+    id: "logic-board",
+    title: "Logic Board",
+    category: "Electronics",
     definition:
-      "The display is the hardware system that produces visual information for the user.",
-    explanation:
-      "Modern iPhones use advanced display technology together with protective glass and touch-sensing electronics.",
-    components: ["Glass", "OLED", "Digitizer", "Controller"],
-  },
-  {
-    id: "camera",
-    icon: "◉",
-    category: "Camera",
-    group: "Hardware",
-    title: "Camera System",
-    definition:
-      "The camera system captures light and converts it into digital photographs and video.",
-    explanation:
-      "A camera combines lenses, image sensors, stabilization, electronics and computational image processing.",
-    components: ["Lens", "Sensor", "OIS", "Flash", "Controller"],
+      "The logic board is the primary circuit board that connects many of the iPhone's electronic systems.",
+    where:
+      "Located inside the enclosure and arranged to maximize space efficiency.",
+    function:
+      "Provides electrical and communication pathways between processing, memory, storage, power and connectivity systems.",
+    interaction:
+      "The logic board connects the SoC, memory, storage, power-management circuits, wireless systems, sensors and peripheral connectors.",
+    image: IMAGES.motherboard,
   },
   {
     id: "soc",
-    icon: "◆",
+    title: "SoC / Apple Silicon",
     category: "Processing",
-    group: "Hardware",
-    title: "Apple Silicon",
     definition:
-      "The Apple Silicon A-series chip performs major computing, graphics and machine-learning tasks.",
-    explanation:
-      "The system-on-chip integrates specialized processing systems including CPU, GPU and Neural Engine.",
-    components: ["CPU", "GPU", "Neural Engine", "Media Engine"],
+      "The system-on-chip integrates major computing functions into a highly integrated processor package.",
+    where: "Mounted on the logic board.",
+    function:
+      "Executes instructions, processes graphics, accelerates machine learning and coordinates many system operations.",
+    interaction:
+      "It communicates with memory, storage, cameras, display controllers, neural-processing hardware and other subsystems.",
+    image: IMAGES.processor,
   },
   {
-    id: "ram",
-    icon: "▦",
-    category: "Memory",
-    group: "Hardware",
-    title: "RAM",
+    id: "cpu",
+    title: "CPU",
+    category: "Processing",
     definition:
-      "RAM is high-speed temporary memory used by iOS and active applications.",
-    explanation:
-      "RAM acts as a workspace where applications and system processes temporarily keep information.",
-    components: ["Working Data", "Apps", "Processes", "Memory"],
+      "The Central Processing Unit executes general-purpose instructions.",
+    where: "Integrated into the Apple silicon SoC.",
+    function:
+      "Runs operating-system tasks, applications, calculations and control logic.",
+    interaction:
+      "The CPU uses RAM for active data and communicates with hardware through controllers and system buses.",
+    image: IMAGES.processor,
+  },
+  {
+    id: "gpu",
+    title: "GPU",
+    category: "Processing",
+    definition:
+      "The Graphics Processing Unit performs highly parallel graphics calculations.",
+    where: "Integrated into the Apple silicon SoC.",
+    function:
+      "Renders interfaces, games, video effects and other visual workloads.",
+    interaction:
+      "The GPU processes data and sends rendered results toward the display subsystem.",
+    image: IMAGES.processor,
+  },
+  {
+    id: "neural-engine",
+    title: "Neural Engine",
+    category: "Machine Learning",
+    definition:
+      "Dedicated processing hardware designed to accelerate machine-learning workloads.",
+    where: "Integrated into supported Apple silicon SoCs.",
+    function: "Accelerates selected machine-learning operations.",
+    interaction:
+      "It can work with the CPU, GPU, camera pipeline and system software for tasks involving image, speech and other ML workloads.",
+    image: IMAGES.processor,
+  },
+  {
+    id: "memory",
+    title: "Memory",
+    category: "RAM",
+    definition: "RAM is high-speed temporary working memory.",
+    where:
+      "Integrated into the iPhone's system architecture close to the main processor.",
+    function:
+      "Stores active application data and temporary working information.",
+    interaction:
+      "The processor continuously reads and writes data to memory while applications and iOS are running.",
+    image: IMAGES.memory,
   },
   {
     id: "storage",
-    icon: "▥",
+    title: "NAND Flash Storage",
     category: "Storage",
-    group: "Hardware",
-    title: "Flash Storage",
     definition:
-      "Flash storage is non-volatile memory used to permanently store software and user data.",
-    explanation:
-      "Photos, videos, applications, documents and iOS remain stored even when the iPhone is powered off.",
-    components: ["NAND", "Controller", "System Data", "User Data"],
+      "NAND flash is non-volatile memory used for persistent data storage.",
+    where: "Connected to the logic-board storage subsystem.",
+    function:
+      "Stores iOS, applications, photographs, videos, documents and other user data.",
+    interaction:
+      "The processor and operating system access storage through dedicated controllers and software layers.",
+    image: IMAGES.storage,
   },
   {
     id: "battery",
-    icon: "▰",
+    title: "Lithium-ion Battery",
     category: "Power",
-    group: "Hardware",
-    title: "Battery",
-    definition:
-      "The battery stores chemical energy and provides electrical power to the iPhone.",
-    explanation:
-      "It supplies energy to the processor, display, cameras, sensors, speakers and wireless systems.",
-    components: ["Cell", "Connector", "Management", "Charging"],
+    definition: "A rechargeable electrochemical energy-storage system.",
+    where: "Occupies a significant portion of the internal chassis.",
+    function: "Supplies electrical energy to the phone's electronic systems.",
+    interaction:
+      "The battery works with charging circuitry and power-management components to provide controlled energy.",
+    image: IMAGES.battery,
   },
   {
-    id: "connectivity",
-    icon: "⌁",
-    category: "Connectivity",
-    group: "Hardware",
-    title: "Wireless Systems",
+    id: "power-management",
+    title: "Power Management",
+    category: "Power",
     definition:
-      "Wireless systems allow the iPhone to communicate with networks and nearby devices.",
-    explanation:
-      "Cellular, Wi-Fi, Bluetooth, GPS, NFC and UWB work together to provide wireless communication.",
-    components: ["Cellular", "Wi-Fi", "Bluetooth", "GPS", "NFC", "UWB"],
+      "Power-management circuits regulate electrical energy throughout the device.",
+    where: "Located on and around the logic-board power architecture.",
+    function: "Convert, regulate and distribute power to different components.",
+    interaction:
+      "Power-management hardware coordinates battery energy with processor, display, camera, wireless and charging requirements.",
+    image: IMAGES.battery,
+  },
+  {
+    id: "camera-sensors",
+    title: "Camera Image Sensors",
+    category: "Camera",
+    definition:
+      "Image sensors convert incoming light into electronic image information.",
+    where: "Inside the rear and front camera modules.",
+    function: "Capture light information for photographs and video.",
+    interaction:
+      "Sensor data is processed through the image pipeline and computational photography system.",
+    image: IMAGES.camera,
+  },
+  {
+    id: "taptic",
+    title: "Taptic Engine",
+    category: "Haptic",
+    definition:
+      "A precision haptic actuator that generates controlled physical feedback.",
+    where: "Mounted inside the lower internal structure.",
+    function: "Creates vibrations and tactile feedback.",
+    interaction:
+      "iOS sends commands to the haptic controller, which drives the actuator.",
+    image: IMAGES.haptic,
+  },
+  {
+    id: "antennas",
+    title: "Antennas",
+    category: "Connectivity",
+    definition: "Antennas transmit and receive radio-frequency signals.",
+    where: "Distributed around the internal enclosure.",
+    function:
+      "Enable cellular, Wi-Fi, Bluetooth, GPS and other wireless communication.",
+    interaction:
+      "Antennas work with radio-frequency circuits and wireless modems to communicate with external networks and devices.",
+    image: IMAGES.wireless,
   },
   {
     id: "audio",
-    icon: ")))",
+    title: "Speaker System",
     category: "Audio",
-    group: "Hardware",
-    title: "Audio System",
     definition:
-      "The audio system converts digital audio information into sound and captures sound through microphones.",
-    explanation:
-      "Speakers produce sound while microphones capture voice and environmental audio.",
-    components: ["Speakers", "Earpiece", "Microphones", "Amplifiers"],
+      "Electromechanical hardware that converts electrical audio information into sound.",
+    where: "Located in dedicated speaker assemblies inside the enclosure.",
+    function:
+      "Produces calls, music, video audio, notifications and system sounds.",
+    interaction:
+      "Digital audio is processed and amplified before reaching the speaker drivers.",
+    image: IMAGES.audio,
   },
   {
-    id: "sensors",
-    icon: "⌁",
-    category: "Sensors",
-    group: "Hardware",
-    title: "Sensor System",
+    id: "connectors",
+    title: "Internal Connectors",
+    category: "Interconnect",
     definition:
-      "Sensors detect movement, rotation, light, magnetic fields, pressure and other physical conditions.",
-    explanation:
-      "Sensors allow the iPhone to understand movement and environmental conditions.",
-    components: ["Accelerometer", "Gyroscope", "Light", "Barometer"],
+      "Connectors provide electrical and data pathways between assemblies.",
+    where: "Distributed throughout the internal architecture.",
+    function:
+      "Link displays, cameras, batteries, buttons, speakers, sensors and other modules.",
+    interaction:
+      "They allow different assemblies to communicate with the main board.",
+    image: IMAGES.connector,
   },
   {
-    id: "haptic",
-    icon: "≈",
-    category: "Haptic",
-    group: "Hardware",
-    title: "Taptic Engine",
-    definition:
-      "The Taptic Engine is a haptic component that creates precise physical feedback.",
-    explanation:
-      "It produces controlled vibrations that allow users to physically feel interactions.",
-    components: ["Actuator", "Controller", "Precision Vibration"],
-  },
-  {
-    id: "logic",
-    icon: "▣",
-    category: "Electronics",
-    group: "Hardware",
-    title: "Logic Board",
-    definition:
-      "The logic board is the main circuit board connecting many electronic components.",
-    explanation:
-      "Processor, memory, storage, power-management and communication systems are connected through the logic-board architecture.",
-    components: ["SoC", "RAM", "Storage", "Power IC", "RF"],
-  },
-  {
-    id: "security-hardware",
-    icon: "◇",
-    category: "Security",
-    group: "Hardware",
+    id: "secure-enclave",
     title: "Secure Enclave",
+    category: "Security",
     definition:
-      "The Secure Enclave is a dedicated security subsystem designed to protect sensitive authentication and cryptographic information.",
-    explanation:
-      "It helps isolate sensitive security operations from normal application processing.",
-    components: ["Secure Processing", "Crypto", "Biometric Security"],
+      "A dedicated security subsystem designed to isolate sensitive authentication and cryptographic operations.",
+    where: "Integrated into the processor/security architecture.",
+    function:
+      "Protect sensitive security information and support secure authentication.",
+    interaction:
+      "It works with biometric systems, cryptographic services and secure boot mechanisms.",
+    image: IMAGES.security,
   },
 ];
 
-const detailedComponents = [
+const sensors = [
   {
-    category: "Display",
-    title: "Front Glass",
-    definition:
-      "The transparent protective layer covering the front of the iPhone.",
-    explanation:
-      "It protects the display and touch system while allowing light and touch interaction to pass through.",
-  },
-  {
-    category: "Display",
-    title: "OLED",
-    definition:
-      "OLED is a display technology where individual pixels produce their own light.",
-    explanation:
-      "Because pixels can turn themselves off, OLED displays can produce deep blacks and high contrast.",
-  },
-  {
-    category: "Display",
-    title: "Touch Digitizer",
-    definition:
-      "The touch digitizer detects where and how the user touches the screen.",
-    explanation:
-      "It converts physical touches into digital coordinates that iOS can understand.",
-  },
-  {
-    category: "Camera",
-    title: "Camera Lens",
-    definition:
-      "A lens is an optical system that focuses incoming light onto an image sensor.",
-    explanation:
-      "The lens influences field of view, focus and how light enters the camera.",
-  },
-  {
-    category: "Camera",
-    title: "Image Sensor",
-    definition:
-      "An image sensor converts incoming light into electrical information.",
-    explanation:
-      "It provides raw image information that is later processed into photographs and video.",
-  },
-  {
-    category: "Camera",
-    title: "OIS",
-    definition: "OIS means Optical Image Stabilization.",
-    explanation:
-      "The stabilization system compensates for small movements to reduce camera shake and blur.",
-  },
-  {
-    category: "Camera",
-    title: "LiDAR",
-    definition: "LiDAR uses light to estimate distance and depth.",
-    explanation:
-      "On supported Pro models, LiDAR contributes to depth sensing, augmented reality and certain focusing tasks.",
-  },
-  {
-    category: "Processing",
-    title: "CPU",
-    definition: "CPU means Central Processing Unit.",
-    explanation:
-      "The CPU executes general-purpose instructions required by iOS and applications.",
-  },
-  {
-    category: "Processing",
-    title: "GPU",
-    definition: "GPU means Graphics Processing Unit.",
-    explanation:
-      "The GPU specializes in graphics calculations used by games, animations and visual workloads.",
-  },
-  {
-    category: "Processing",
-    title: "Neural Engine",
-    definition:
-      "The Neural Engine is specialized hardware designed to accelerate machine-learning operations.",
-    explanation:
-      "It can accelerate workloads involving image analysis, speech processing and other machine-learning tasks.",
-  },
-  {
-    category: "Memory",
-    title: "RAM",
-    definition: "RAM is temporary high-speed working memory.",
-    explanation:
-      "It provides workspace for active applications and system processes.",
-  },
-  {
-    category: "Storage",
-    title: "NAND Flash",
-    definition:
-      "NAND flash is non-volatile memory used for permanent data storage.",
-    explanation:
-      "It stores iOS, applications, photos, videos and other information even when the phone is powered off.",
-  },
-  {
-    category: "Power",
-    title: "Lithium-ion Battery",
-    definition:
-      "A rechargeable battery technology that stores and releases electrical energy.",
-    explanation:
-      "The battery provides energy to the major electrical systems inside the iPhone.",
-  },
-  {
-    category: "Power",
-    title: "Power Management",
-    definition:
-      "Power-management hardware regulates and distributes electrical power.",
-    explanation:
-      "Different components require different electrical conditions, so power circuits control energy delivery.",
-  },
-  {
-    category: "Connectivity",
-    title: "Cellular Antenna",
-    definition:
-      "An antenna sends and receives radio-frequency signals used by cellular networks.",
-    explanation:
-      "The cellular system connects the iPhone to mobile networks for calls, messaging and internet access.",
-  },
-  {
-    category: "Connectivity",
-    title: "Wi-Fi",
-    definition:
-      "Wi-Fi is a wireless networking technology used to connect the iPhone to local networks.",
-    explanation:
-      "It allows the phone to communicate with routers and internet services.",
-  },
-  {
-    category: "Connectivity",
-    title: "Bluetooth",
-    definition: "Bluetooth is a short-range wireless communication technology.",
-    explanation:
-      "It is commonly used for headphones, speakers, keyboards, watches and other nearby devices.",
-  },
-  {
-    category: "Connectivity",
-    title: "NFC",
-    definition: "NFC means Near Field Communication.",
-    explanation:
-      "It enables very short-range communication and supports functions such as contactless payments and NFC tags.",
-  },
-  {
-    category: "Sensors",
-    title: "Accelerometer",
-    definition:
-      "An accelerometer detects changes in movement and acceleration.",
-    explanation:
-      "It helps determine movement and orientation and supports games, fitness applications and screen rotation.",
-  },
-  {
-    category: "Sensors",
-    title: "Gyroscope",
-    definition: "A gyroscope detects rotational movement.",
-    explanation:
-      "It helps the iPhone understand how the device is rotating and supports games, AR and motion tracking.",
-  },
-  {
-    category: "Sensors",
     title: "Proximity Sensor",
-    definition:
-      "A proximity sensor detects when an object is close to the phone.",
-    explanation:
-      "During calls, it can detect when the phone is near the face so the display can be turned off.",
+    purpose: "Detects when an object is close to the device.",
+    location: "Front sensor system.",
+    function:
+      "During phone calls, proximity information can be used to turn the display off when the phone is near the user's face.",
+    image: IMAGES.sensors,
   },
   {
-    category: "Sensors",
     title: "Ambient Light Sensor",
-    definition: "An ambient light sensor measures the surrounding light level.",
-    explanation: "The information can be used to adjust display brightness.",
+    purpose: "Measures surrounding light.",
+    location: "Front sensor area.",
+    function:
+      "Provides information used by the system for automatic display brightness and other environmental adjustments.",
+    image: IMAGES.sensors,
   },
   {
-    category: "Sensors",
-    title: "Barometer",
-    definition: "A barometer measures atmospheric pressure.",
-    explanation:
-      "Pressure information can contribute to altitude estimation and location-related applications.",
+    title: "Accelerometer",
+    purpose: "Measures acceleration and movement.",
+    location: "Inside the device.",
+    function:
+      "Supports orientation, motion detection, gaming, fitness applications and other motion-aware features.",
+    image: IMAGES.sensors,
   },
   {
-    category: "Sensors",
+    title: "Gyroscope",
+    purpose: "Measures rotational movement.",
+    location: "Inside the device.",
+    function:
+      "Helps detect device rotation and supports games, augmented reality and motion tracking.",
+    image: IMAGES.sensors,
+  },
+  {
     title: "Magnetometer",
-    definition: "A magnetometer detects magnetic fields.",
-    explanation:
-      "It contributes to compass functionality and direction detection.",
+    purpose: "Detects magnetic fields.",
+    location: "Inside the device.",
+    function: "Contributes to compass and directional calculations.",
+    image: IMAGES.sensors,
   },
   {
-    category: "Security",
-    title: "Face ID",
-    definition:
-      "Face ID is Apple's biometric authentication system for supported iPhone models.",
-    explanation:
-      "The TrueDepth system uses infrared components and depth information to recognize facial structure.",
+    title: "Barometer",
+    purpose: "Measures atmospheric pressure.",
+    location: "Inside the device.",
+    function:
+      "Pressure measurements can contribute to altitude estimation and location-related features.",
+    image: IMAGES.sensors,
   },
   {
-    category: "Security",
-    title: "Secure Enclave",
-    definition:
-      "A dedicated security subsystem that protects sensitive authentication and cryptographic information.",
-    explanation:
-      "It helps isolate important security operations from the main application environment.",
-  },
-  {
-    category: "Audio",
-    title: "Speaker",
-    definition:
-      "A speaker converts electrical audio signals into physical sound waves.",
-    explanation:
-      "Speakers produce music, calls, notifications, videos and other audio.",
-  },
-  {
-    category: "Audio",
-    title: "Microphone",
-    definition:
-      "A microphone converts sound into electrical or digital information.",
-    explanation:
-      "Microphones are used for calls, recordings, video, Siri and other audio functions.",
-  },
-  {
-    category: "Haptic",
-    title: "Taptic Engine",
-    definition: "The Taptic Engine is a precision haptic actuator.",
-    explanation:
-      "It produces controlled physical feedback so users can feel system interactions.",
-  },
-  {
-    category: "Connectivity",
-    title: "USB-C",
-    definition:
-      "USB-C is a physical connector used by newer iPhones for charging and data communication.",
-    explanation:
-      "Depending on the model, USB-C can support charging, data transfer and accessories.",
-  },
-  {
-    category: "Connectivity",
-    title: "MagSafe",
-    definition: "MagSafe is Apple's magnetic alignment and accessory system.",
-    explanation:
-      "Magnets help accessories align with the charging area and attach securely to the back.",
-  },
-  {
-    category: "Structure",
-    title: "Internal Frame",
-    definition:
-      "The internal frame is the structural foundation supporting many components.",
-    explanation:
-      "It maintains the physical structure and provides mounting points for internal hardware.",
-  },
-  {
-    category: "Structure",
-    title: "EMI Shielding",
-    definition:
-      "EMI shielding helps protect electronic circuits from electromagnetic interference.",
-    explanation:
-      "Sensitive electronic components can use shielding materials to reduce unwanted interference.",
+    title: "Face ID / TrueDepth",
+    purpose: "Provides biometric facial authentication on supported models.",
+    location: "Front sensor/camera system.",
+    function:
+      "Uses infrared sensing and depth information to recognize facial structure for authentication.",
+    image: IMAGES.security,
   },
 ];
 
-const architectureFlow = [
+const functionalFlows = [
   {
-    number: "01",
-    title: "User",
-    image: IMAGES.iphone,
-    text: "The user interacts through touch, voice, buttons and other inputs.",
+    title: "Power System",
+    icon: "01",
+    steps: ["Battery", "Power Management", "SoC", "Memory", "Display"],
+    explanation:
+      "Electrical energy begins at the battery. Power-management circuits regulate that energy before different subsystems receive it. The processor and memory use the supplied power to execute software, while the display converts processed information into visual output.",
   },
   {
-    number: "02",
-    title: "Application",
-    image: IMAGES.technology,
-    text: "The application receives the action and requests the required functionality.",
+    title: "Camera System",
+    icon: "02",
+    steps: ["Camera Sensor", "Image Processing", "SoC", "Storage", "Display"],
+    explanation:
+      "Light enters the camera lens and reaches the image sensor. The captured information is processed by the image pipeline and processor, saved to storage and then displayed through the Photos or Camera interface.",
   },
   {
-    number: "03",
-    title: "iOS",
-    image: IMAGES.technology,
-    text: "The operating system manages the request through system services.",
+    title: "Touch Interaction",
+    icon: "03",
+    steps: ["Finger", "Digitizer", "iOS", "Processor", "Display"],
+    explanation:
+      "A finger changes the electrical characteristics detected by the touch digitizer. iOS interprets the touch event, the processor executes the required operation and the display updates the interface.",
   },
   {
-    number: "04",
-    title: "Hardware",
-    image: IMAGES.processor,
-    text: "The physical hardware performs the required operation.",
+    title: "Wireless Communication",
+    icon: "04",
+    steps: ["Application", "iOS", "Wireless Modem", "Antenna", "Network"],
+    explanation:
+      "An application requests network communication through system software. The wireless subsystem prepares the data, the modem manages radio communication and the antenna sends or receives the signal.",
   },
   {
-    number: "05",
-    title: "Result",
+    title: "Biometric Security",
+    icon: "05",
+    steps: ["Face", "TrueDepth", "Secure Processing", "Secure Enclave", "iOS"],
+    explanation:
+      "The front biometric system captures facial information. Security hardware processes the authentication information and protected security functions determine whether the user should be authenticated.",
+  },
+];
+
+const durability = [
+  {
+    title: "Materials",
+    category: "Construction",
+    text: "Modern iPhones combine engineered glass, metal or titanium/aluminum structural elements depending on model generation, and carefully designed internal supports.",
+    image: IMAGES.durability,
+  },
+  {
+    title: "Structural Design",
+    category: "Engineering",
+    text: "The enclosure is designed to maintain rigidity while creating enough internal volume for the battery, logic board, cameras, speakers and other assemblies.",
+    image: IMAGES.durability,
+  },
+  {
+    title: "Glass Protection",
+    category: "Surface",
+    text: "Front and rear glass protect internal systems but remain vulnerable to impact, scratches, drops and concentrated force.",
     image: IMAGES.display,
-    text: "The result returns through the display, speaker, camera or vibration.",
+  },
+  {
+    title: "Water & Dust Resistance",
+    category: "Protection",
+    text: "Supported models are designed with water and dust resistance ratings. Resistance is not permanent and can decrease after damage, wear or repair.",
+    image: IMAGES.durability,
+  },
+  {
+    title: "Battery Aging",
+    category: "Battery",
+    text: "Rechargeable batteries chemically age over time. Heat, charging patterns, workload and battery cycles can influence long-term capacity.",
+    image: IMAGES.battery,
+  },
+  {
+    title: "Thermal Management",
+    category: "Thermal",
+    text: "The processor, battery and wireless systems generate heat. Internal materials and system-level power management help control operating temperature.",
+    image: IMAGES.processor,
+  },
+];
+
+const troubleshooting = [
+  {
+    id: "charging",
+    problem: "iPhone is not charging",
+    causes: [
+      "Damaged or contaminated charging port",
+      "Faulty cable or power adapter",
+      "Battery or charging circuit problem",
+      "Software issue",
+      "Liquid exposure",
+    ],
+    steps: [
+      "Inspect the charging connector and cable for visible damage.",
+      "Try a known-good compatible cable and power source.",
+      "Check whether the device recognizes wired or wireless charging.",
+      "Restart the device if it has enough power.",
+      "If charging remains unavailable, inspect the port and power system professionally.",
+    ],
+    solution:
+      "Clean only with safe, non-damaging methods and use a known-good charger. If the issue persists after eliminating the cable and power-source variables, professional hardware diagnosis may be required.",
+    image: IMAGES.connector,
+  },
+  {
+    id: "battery",
+    problem: "Battery drains quickly",
+    causes: [
+      "High screen brightness",
+      "Heavy applications or background activity",
+      "Poor cellular signal",
+      "Battery aging",
+      "High device temperature",
+    ],
+    steps: [
+      "Open Battery settings and identify applications with unusually high usage.",
+      "Check whether the device is frequently operating in poor cellular coverage.",
+      "Compare battery behavior after reducing brightness and background activity.",
+      "Check battery health information where available.",
+      "Observe whether unusual heat accompanies the rapid drain.",
+    ],
+    solution:
+      "Reduce unnecessary background activity and display power consumption. If battery health is significantly degraded or the device becomes unusually hot, professional battery evaluation may be appropriate.",
+    image: IMAGES.battery,
+  },
+  {
+    id: "overheating",
+    problem: "iPhone is overheating",
+    causes: [
+      "Heavy processor workload",
+      "Direct sunlight or high ambient temperature",
+      "Charging while under heavy load",
+      "Poor cellular conditions",
+      "Battery or hardware fault",
+    ],
+    steps: [
+      "Check whether the phone is running a demanding application.",
+      "Move the device away from direct sunlight and hot environments.",
+      "Stop intensive tasks and allow the device to cool naturally.",
+      "Check whether overheating occurs repeatedly during ordinary use.",
+      "If abnormal heat persists, stop using the device and seek professional evaluation.",
+    ],
+    solution:
+      "Reduce workload and environmental heat first. Persistent abnormal heating should be treated as a hardware or battery diagnostic issue rather than simply a performance problem.",
+    image: IMAGES.processor,
+  },
+  {
+    id: "camera",
+    problem: "Camera is not working",
+    causes: [
+      "Camera application software problem",
+      "Permission issue",
+      "Obstructed lens",
+      "Camera module fault",
+      "Damage from impact or liquid",
+    ],
+    steps: [
+      "Clean the external camera lens carefully.",
+      "Close and reopen the Camera application.",
+      "Restart the iPhone.",
+      "Test the front and rear cameras separately.",
+      "Test camera behavior in another application that uses the camera.",
+    ],
+    solution:
+      "If software checks do not resolve the issue and one camera system consistently fails, the affected camera module or its connection may require professional inspection.",
+    image: IMAGES.camera,
+  },
+  {
+    id: "display",
+    problem: "Display is not responding",
+    causes: [
+      "Temporary software freeze",
+      "Damaged display assembly",
+      "Touch digitizer failure",
+      "Liquid or impact damage",
+      "Internal connector issue",
+    ],
+    steps: [
+      "Determine whether the display image is visible.",
+      "Test whether physical buttons still respond.",
+      "Perform the appropriate restart procedure.",
+      "Check whether the problem affects the whole display or only a region.",
+      "Look for signs of impact or liquid damage.",
+    ],
+    solution:
+      "A software restart can resolve temporary freezes. Persistent touch failure, dead regions or physical damage require display and connector diagnostics.",
+    image: IMAGES.display,
+  },
+  {
+    id: "speaker",
+    problem: "Speaker produces no sound",
+    causes: [
+      "Muted or low volume",
+      "Incorrect audio output",
+      "Blocked speaker opening",
+      "Software problem",
+      "Speaker hardware fault",
+    ],
+    steps: [
+      "Increase the volume and verify silent-related settings.",
+      "Disconnect Bluetooth audio devices.",
+      "Test music, ringtone and speakerphone separately.",
+      "Inspect the speaker opening for contamination.",
+      "Restart the device and test again.",
+    ],
+    solution:
+      "Eliminate software and output-routing causes first. If the speaker remains silent across multiple tests, professional audio hardware inspection may be necessary.",
+    image: IMAGES.audio,
+  },
+  {
+    id: "microphone",
+    problem: "Microphone is not working",
+    causes: [
+      "Microphone opening obstruction",
+      "Application permission problem",
+      "Software malfunction",
+      "Microphone hardware damage",
+      "Liquid or impact damage",
+    ],
+    steps: [
+      "Test voice recording.",
+      "Test a phone call or speakerphone call.",
+      "Test video recording with different cameras.",
+      "Check microphone permissions for affected applications.",
+      "Compare results across several applications.",
+    ],
+    solution:
+      "If only one application fails, investigate permissions or application software. If microphone failure occurs across multiple functions, inspect the relevant microphone hardware.",
+    image: IMAGES.audio,
+  },
+  {
+    id: "restart",
+    problem: "iPhone restarts unexpectedly",
+    causes: [
+      "Software crash",
+      "Unstable application",
+      "Low available storage",
+      "Battery or power problem",
+      "Hardware fault",
+    ],
+    steps: [
+      "Record when the restart occurs and what the device was doing.",
+      "Update iOS and applications when updates are available.",
+      "Check available storage.",
+      "Look for repeated crash or restart patterns.",
+      "If restarts continue, back up important information and seek diagnostic support.",
+    ],
+    solution:
+      "Start with software and storage checks. Repeated unexpected restarts that continue after software troubleshooting may indicate a power, battery or board-level problem.",
+    image: IMAGES.processor,
+  },
+];
+
+const faqs = [
+  {
+    question: "Is an iPhone just a collection of separate components?",
+    answer:
+      "No. The iPhone is a connected system. The battery supplies energy, the processor executes instructions, sensors provide information, software coordinates operations and output systems present the result to the user.",
+  },
+  {
+    question: "Why is the logic board important?",
+    answer:
+      "The logic board provides electrical and communication pathways between major systems. Without those connections, processors, memory, storage, power and peripherals could not operate as an integrated device.",
+  },
+  {
+    question: "Why does the battery affect performance?",
+    answer:
+      "The battery is the primary energy source. Battery condition, temperature and power-management requirements can influence how the system manages energy and performance.",
+  },
+  {
+    question: "Why can a camera problem be caused by software?",
+    answer:
+      "The camera requires both hardware and software. The application communicates with camera services, which communicate with hardware. A failure at any layer can affect the final camera experience.",
+  },
+  {
+    question: "Does water resistance mean the iPhone is waterproof?",
+    answer:
+      "No. Water and dust resistance is a design characteristic of supported models under specified test conditions. It is not a permanent guarantee against liquid damage.",
+  },
+  {
+    question: "Why are sensors important?",
+    answer:
+      "Sensors allow the device to understand its environment and movement. They provide information used by the operating system and applications for orientation, brightness, motion, proximity, navigation and other functions.",
   },
 ];
 
@@ -844,7 +1105,7 @@ function ImageCard({ src, alt, className = "" }) {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(to top, rgba(23,50,77,.42), transparent 65%)",
+            "linear-gradient(to top, rgba(23,50,77,.48), transparent 65%)",
         }}
       />
 
@@ -910,11 +1171,28 @@ function SectionTitle({ eyebrow, title, text, center = false }) {
   );
 }
 
+function InfoPill({ children }) {
+  return (
+    <span
+      className="inline-flex px-3 py-1.5 rounded-full text-xs font-bold"
+      style={{
+        background: `${COLORS.cyan}55`,
+        color: COLORS.text,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
 function Iphone() {
-  const [selectedPart, setSelectedPart] = useState(hardware[0]);
+  const [selectedPart, setSelectedPart] = useState(internalAnatomy[0]);
   const [activeGroup, setActiveGroup] = useState("All");
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
+  const [activeExternal, setActiveExternal] = useState(null);
+  const [openTroubleshooting, setOpenTroubleshooting] = useState(null);
+  const [openFaq, setOpenFaq] = useState(null);
 
   const reduceMotion = useReducedMotion();
 
@@ -960,16 +1238,23 @@ function Iphone() {
   );
 
   const allItems = useMemo(
-    () =>
-      [...software, ...hardware, ...detailedComponents].map((item) => ({
+    () => [
+      ...software,
+      ...internalAnatomy.map((item) => ({
         ...item,
-        group: item.group || "Hardware",
-        image: getSmartImage(item.title, item.category),
+        group: "Hardware",
       })),
+      ...externalAnatomy.map((item) => ({
+        ...item,
+        group: "External",
+        definition: item.function,
+        explanation: item.interaction,
+      })),
+    ],
     [],
   );
 
-  const groups = ["All", "Software", "Hardware"];
+  const groups = ["All", "External", "Hardware", "Software"];
 
   const categories = useMemo(() => {
     const source =
@@ -989,12 +1274,21 @@ function Iphone() {
       const categoryMatch =
         activeCategory === "All" || item.category === activeCategory;
 
-      const searchMatch =
-        !query ||
-        item.title.toLowerCase().includes(query) ||
-        item.category.toLowerCase().includes(query) ||
-        item.definition.toLowerCase().includes(query) ||
-        item.explanation.toLowerCase().includes(query);
+      const searchable = [
+        item.title,
+        item.category,
+        item.definition,
+        item.explanation,
+        item.location,
+        item.function,
+        item.where,
+        item.interaction,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      const searchMatch = !query || searchable.includes(query);
 
       return groupMatch && categoryMatch && searchMatch;
     });
@@ -1144,23 +1438,13 @@ function Iphone() {
           </motion.div>
 
           <motion.p
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.8,
-            }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             className="uppercase tracking-[0.4em] text-xs md:text-sm font-semibold"
-            style={{
-              color: COLORS.blue,
-            }}
+            style={{ color: COLORS.blue }}
           >
-            iPhone Architecture
+            Complete Technical Anatomy
           </motion.p>
 
           <motion.h1
@@ -1208,55 +1492,38 @@ function Iphone() {
           </motion.h1>
 
           <motion.p
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{
               delay: 0.5,
               duration: 0.8,
             }}
             className="max-w-2xl mx-auto mt-8 text-base md:text-lg leading-relaxed"
-            style={{
-              color: COLORS.textLight,
-            }}
+            style={{ color: COLORS.textLight }}
           >
-            Explore the history, software, hardware and internal architecture
-            that transformed the iPhone into a powerful computing platform.
+            Study the iPhone as a complete technical system — from external
+            anatomy and internal components to sensors, security, functional
+            architecture, durability and technician-oriented troubleshooting.
           </motion.p>
 
           <motion.a
-            href="#history"
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              delay: 0.9,
-            }}
+            href="#external"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
             whileHover={{
               scale: 1.08,
               y: -5,
               boxShadow: `0 20px 60px ${COLORS.blue}55`,
             }}
-            whileTap={{
-              scale: 0.94,
-            }}
+            whileTap={{ scale: 0.94 }}
             className="inline-flex mt-10 px-7 py-4 rounded-full font-semibold"
             style={{
               background: `linear-gradient(135deg, ${COLORS.blue}, #159BE8)`,
               color: COLORS.white,
             }}
           >
-            Explore History ↓
+            Explore Anatomy ↓
           </motion.a>
         </div>
       </section>
@@ -1264,15 +1531,13 @@ function Iphone() {
       <section
         id="history"
         className="relative py-32 md:py-40 px-6 overflow-hidden"
-        style={{
-          background: COLORS.softBlue,
-        }}
+        style={{ background: COLORS.softBlue }}
       >
         <div className="max-w-7xl mx-auto">
           <SectionTitle
             eyebrow="01 · Evolution"
             title="The iPhone Story"
-            text="Before learning what is inside an iPhone, understand how the architecture evolved from the original device into today's sophisticated mobile computer."
+            text="Before studying the architecture, understand how the iPhone evolved from the original device into a sophisticated mobile computer."
           />
 
           <div className="mt-24 relative">
@@ -1331,31 +1596,19 @@ function Iphone() {
                     <div className="flex items-center justify-between">
                       <span
                         className="text-4xl md:text-5xl font-black"
-                        style={{
-                          color: COLORS.blue,
-                        }}
+                        style={{ color: COLORS.blue }}
                       >
                         {item.year}
                       </span>
 
-                      <span
-                        className="px-3 py-1 rounded-full text-xs font-bold"
-                        style={{
-                          background: COLORS.softBlue,
-                          color: COLORS.blue,
-                        }}
-                      >
-                        {item.category}
-                      </span>
+                      <InfoPill>{item.category}</InfoPill>
                     </div>
 
                     <h3 className="text-2xl font-bold mt-5">{item.title}</h3>
 
                     <p
                       className="mt-3 leading-relaxed"
-                      style={{
-                        color: COLORS.textLight,
-                      }}
+                      style={{ color: COLORS.textLight }}
                     >
                       {item.text}
                     </p>
@@ -1386,27 +1639,185 @@ function Iphone() {
         </div>
       </section>
 
-      <section id="classification" className="relative py-32 md:py-40 px-6">
+      <section id="external" className="relative py-32 md:py-40 px-6">
         <div className="max-w-7xl mx-auto">
           <SectionTitle
-            eyebrow="02 · Smart Classification"
-            title="How an iPhone is organized"
-            text="The easiest way to understand an iPhone is to divide its architecture into software and hardware, then classify every system by its job."
+            eyebrow="02 · External Anatomy"
+            title="The visible iPhone"
+            text="Every external component has a physical location, a purpose and a relationship with the internal architecture."
           />
 
-          <div className="grid md:grid-cols-2 gap-6 mt-20">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-20">
+            {externalAnatomy.map((item, index) => (
+              <motion.article
+                key={item.id}
+                initial={{
+                  opacity: 0,
+                  y: 60,
+                  rotateX: 12,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  rotateX: 0,
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.1,
+                }}
+                transition={{
+                  delay: (index % 3) * 0.08,
+                  duration: 0.7,
+                }}
+                whileHover={{
+                  y: -14,
+                  scale: 1.02,
+                }}
+                onClick={() =>
+                  setActiveExternal(activeExternal === item.id ? null : item.id)
+                }
+                className="cursor-pointer rounded-[32px] overflow-hidden border"
+                style={{
+                  borderColor:
+                    activeExternal === item.id
+                      ? `${COLORS.blue}90`
+                      : COLORS.border,
+                  background: COLORS.white,
+                  boxShadow:
+                    activeExternal === item.id
+                      ? `0 30px 80px ${COLORS.blue}20`
+                      : `0 20px 55px ${COLORS.blue}0C`,
+                }}
+              >
+                <ImageCard
+                  src={item.image}
+                  alt={item.title}
+                  className="rounded-none"
+                />
+
+                <div className="p-7">
+                  <div className="flex justify-between">
+                    <span className="text-3xl" style={{ color: COLORS.blue }}>
+                      {item.icon}
+                    </span>
+
+                    <InfoPill>{item.category}</InfoPill>
+                  </div>
+
+                  <h3 className="text-2xl font-bold mt-5">{item.title}</h3>
+
+                  <div className="mt-6">
+                    <p className="text-xs uppercase tracking-widest font-bold">
+                      Location
+                    </p>
+
+                    <p
+                      className="mt-2 text-sm leading-relaxed"
+                      style={{ color: COLORS.textLight }}
+                    >
+                      {item.location}
+                    </p>
+                  </div>
+
+                  <div className="mt-5">
+                    <p className="text-xs uppercase tracking-widest font-bold">
+                      Function
+                    </p>
+
+                    <p
+                      className="mt-2 text-sm leading-relaxed"
+                      style={{ color: COLORS.textLight }}
+                    >
+                      {item.function}
+                    </p>
+                  </div>
+
+                  <AnimatePresence>
+                    {activeExternal === item.id && (
+                      <motion.div
+                        initial={{
+                          opacity: 0,
+                          height: 0,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          height: "auto",
+                        }}
+                        exit={{
+                          opacity: 0,
+                          height: 0,
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div
+                          className="mt-5 pt-5 border-t"
+                          style={{
+                            borderColor: COLORS.border,
+                          }}
+                        >
+                          <p className="text-xs uppercase tracking-widest font-bold">
+                            Interaction
+                          </p>
+
+                          <p
+                            className="mt-2 text-sm leading-relaxed"
+                            style={{
+                              color: COLORS.textLight,
+                            }}
+                          >
+                            {item.interaction}
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <p
+                    className="text-xs font-bold mt-6"
+                    style={{ color: COLORS.blue }}
+                  >
+                    {activeExternal === item.id
+                      ? "Close details ↑"
+                      : "Click for interaction →"}
+                  </p>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="classification"
+        className="relative py-32 md:py-40 px-6"
+        style={{ background: COLORS.softBlue }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <SectionTitle
+            eyebrow="03 · Classification"
+            title="How the iPhone is organized"
+            text="The complete system can be studied through external components, internal hardware and software."
+          />
+
+          <div className="grid md:grid-cols-3 gap-6 mt-20">
             {[
               {
-                title: "Software",
-                image: IMAGES.technology,
                 number: "01",
-                text: "Instructions, operating systems, applications, APIs, frameworks, drivers and security software.",
+                title: "External",
+                image: IMAGES.iphoneBack,
+                text: "Visible components such as display, glass, frame, buttons, cameras, ports, speakers and microphones.",
               },
               {
-                title: "Hardware",
-                image: IMAGES.iphoneBack,
                 number: "02",
-                text: "Physical components including processors, memory, cameras, display, battery, sensors, audio and wireless systems.",
+                title: "Internal",
+                image: IMAGES.motherboard,
+                text: "Logic board, SoC, memory, storage, battery, cameras, antennas, haptic hardware, connectors and security systems.",
+              },
+              {
+                number: "03",
+                title: "Software",
+                image: IMAGES.technology,
+                text: "iOS, applications, APIs, frameworks, drivers, firmware and security software coordinate the physical hardware.",
               },
             ].map((item, index) => (
               <motion.div
@@ -1421,9 +1832,7 @@ function Iphone() {
                   y: 0,
                   rotateX: 0,
                 }}
-                viewport={{
-                  once: true,
-                }}
+                viewport={{ once: true }}
                 transition={{
                   duration: 0.8,
                   delay: index * 0.12,
@@ -1449,9 +1858,7 @@ function Iphone() {
                 <div className="p-8">
                   <span
                     className="text-sm font-black"
-                    style={{
-                      color: COLORS.blue,
-                    }}
+                    style={{ color: COLORS.blue }}
                   >
                     {item.number}
                   </span>
@@ -1460,9 +1867,7 @@ function Iphone() {
 
                   <p
                     className="mt-4 leading-relaxed"
-                    style={{
-                      color: COLORS.textLight,
-                    }}
+                    style={{ color: COLORS.textLight }}
                   >
                     {item.text}
                   </p>
@@ -1476,15 +1881,13 @@ function Iphone() {
       <section
         id="software"
         className="relative py-32 md:py-40 px-6 overflow-hidden"
-        style={{
-          background: COLORS.softBlue,
-        }}
+        style={{ background: COLORS.softBlue }}
       >
         <div className="max-w-7xl mx-auto">
           <SectionTitle
-            eyebrow="03 · Software"
+            eyebrow="04 · Software Anatomy"
             title="Software = instructions"
-            text="Software is the collection of programs, instructions and data that tells the iPhone's physical hardware what to do."
+            text="Software tells the physical architecture what operation to perform and coordinates the user's interaction with hardware."
           />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mt-20">
@@ -1529,20 +1932,13 @@ function Iphone() {
 
                 <div className="p-7">
                   <div className="flex justify-between">
-                    <span
-                      className="text-3xl"
-                      style={{
-                        color: COLORS.blue,
-                      }}
-                    >
+                    <span className="text-3xl" style={{ color: COLORS.blue }}>
                       {item.icon}
                     </span>
 
                     <span
                       className="text-xs font-bold"
-                      style={{
-                        color: COLORS.textLight,
-                      }}
+                      style={{ color: COLORS.textLight }}
                     >
                       {String(index + 1).padStart(2, "0")}
                     </span>
@@ -1550,9 +1946,7 @@ function Iphone() {
 
                   <p
                     className="text-xs uppercase tracking-widest mt-7 font-semibold"
-                    style={{
-                      color: COLORS.blue,
-                    }}
+                    style={{ color: COLORS.blue }}
                   >
                     {item.category}
                   </p>
@@ -1563,9 +1957,7 @@ function Iphone() {
 
                   <p
                     className="mt-2 text-sm leading-relaxed"
-                    style={{
-                      color: COLORS.textLight,
-                    }}
+                    style={{ color: COLORS.textLight }}
                   >
                     {item.definition}
                   </p>
@@ -1574,9 +1966,7 @@ function Iphone() {
 
                   <p
                     className="mt-2 text-sm leading-relaxed"
-                    style={{
-                      color: COLORS.textLight,
-                    }}
+                    style={{ color: COLORS.textLight }}
                   >
                     {item.explanation}
                   </p>
@@ -1595,13 +1985,7 @@ function Iphone() {
                         </span>
 
                         {stepIndex !== item.flow.length - 1 && (
-                          <span
-                            style={{
-                              color: COLORS.blue,
-                            }}
-                          >
-                            →
-                          </span>
+                          <span style={{ color: COLORS.blue }}>→</span>
                         )}
                       </div>
                     ))}
@@ -1613,232 +1997,449 @@ function Iphone() {
         </div>
       </section>
 
-      <section className="relative py-32 md:py-40 px-6">
-        <div className="max-w-6xl mx-auto">
-          <SectionTitle
-            center
-            eyebrow="04 · Architecture"
-            title="Software → Hardware"
-            text="Every interaction travels through multiple layers before the physical hardware produces a result."
-          />
-
-          <div className="relative mt-20">
-            <div
-              className="hidden md:block absolute left-0 right-0 top-1/2 h-px"
-              style={{
-                background: `${COLORS.blue}40`,
-              }}
-            />
-
-            <div className="grid md:grid-cols-5 gap-4 relative">
-              {architectureFlow.map((item, index) => (
-                <motion.div
-                  key={item.number}
-                  initial={{
-                    opacity: 0,
-                    y: 50,
-                    scale: 0.9,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                  }}
-                  viewport={{
-                    once: true,
-                  }}
-                  transition={{
-                    delay: index * 0.1,
-                  }}
-                  whileHover={{
-                    y: -12,
-                    scale: 1.04,
-                  }}
-                  className="relative rounded-3xl overflow-hidden border text-center"
-                  style={{
-                    borderColor: COLORS.border,
-                    background: COLORS.white,
-                    boxShadow: `0 20px 50px ${COLORS.blue}10`,
-                  }}
-                >
-                  <ImageCard
-                    src={item.image}
-                    alt={item.title}
-                    className="rounded-none aspect-[16/10]"
-                  />
-
-                  <div className="p-6">
-                    <span
-                      className="text-xs font-bold"
-                      style={{
-                        color: COLORS.blue,
-                      }}
-                    >
-                      {item.number}
-                    </span>
-
-                    <h3 className="text-xl font-bold mt-4">{item.title}</h3>
-
-                    <p
-                      className="mt-3 text-sm leading-relaxed"
-                      style={{
-                        color: COLORS.textLight,
-                      }}
-                    >
-                      {item.text}
-                    </p>
-                  </div>
-
-                  {index !== architectureFlow.length - 1 && (
-                    <motion.div
-                      animate={
-                        reduceMotion
-                          ? {}
-                          : {
-                              x: [0, 10, 0],
-                              opacity: [0.4, 1, 0.4],
-                            }
-                      }
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                      }}
-                      className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 text-xl font-bold"
-                      style={{
-                        color: COLORS.blue,
-                      }}
-                    >
-                      →
-                    </motion.div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="hardware"
-        className="relative py-32 md:py-40 px-6"
-        style={{
-          background: COLORS.softBlue,
-        }}
-      >
+      <section id="internal" className="relative py-32 md:py-40 px-6">
         <div className="max-w-7xl mx-auto">
           <SectionTitle
-            eyebrow="05 · Hardware"
-            title="Hardware = physical components"
-            text="Hardware is everything physical inside and outside the iPhone. It performs the operations instructed by software."
+            eyebrow="05 · Internal Anatomy"
+            title="Inside the machine"
+            text="Internal anatomy is not simply a list of parts. Each component has a location, a function and a relationship with other systems."
           />
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-20">
-            {hardware.map((item, index) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-20">
+            {internalAnatomy.map((item, index) => (
               <motion.article
                 key={item.id}
                 initial={{
                   opacity: 0,
                   y: 60,
-                  rotateX: 10,
+                  scale: 0.95,
                 }}
                 whileInView={{
                   opacity: 1,
                   y: 0,
-                  rotateX: 0,
+                  scale: 1,
                 }}
                 viewport={{
                   once: true,
                   amount: 0.1,
                 }}
                 transition={{
-                  delay: (index % 3) * 0.08,
                   duration: 0.7,
+                  delay: (index % 3) * 0.07,
                 }}
                 whileHover={{
-                  y: -14,
+                  y: -12,
                   scale: 1.02,
                 }}
-                onClick={() => setSelectedPart(item)}
-                className="cursor-pointer rounded-[32px] overflow-hidden border"
+                className="rounded-[32px] overflow-hidden border"
                 style={{
-                  borderColor:
-                    selectedPart.id === item.id
-                      ? `${COLORS.blue}90`
-                      : COLORS.border,
+                  borderColor: COLORS.border,
                   background: COLORS.white,
-                  boxShadow:
-                    selectedPart.id === item.id
-                      ? `0 30px 80px ${COLORS.blue}20`
-                      : `0 20px 55px ${COLORS.blue}0C`,
+                  boxShadow: `0 25px 70px ${COLORS.blue}0C`,
                 }}
               >
                 <ImageCard
-                  src={getSmartImage(item.title, item.category)}
+                  src={item.image}
                   alt={item.title}
                   className="rounded-none"
                 />
 
                 <div className="p-7">
-                  <div className="flex justify-between">
-                    <span
-                      className="text-3xl"
-                      style={{
-                        color: COLORS.blue,
-                      }}
-                    >
-                      {item.icon}
-                    </span>
+                  <InfoPill>{item.category}</InfoPill>
 
-                    <span
-                      className="text-xs"
-                      style={{
-                        color: COLORS.textLight,
-                      }}
+                  <h3 className="text-2xl font-bold mt-4">{item.title}</h3>
+
+                  <div className="mt-6">
+                    <p className="text-xs uppercase tracking-widest font-bold">
+                      What is it?
+                    </p>
+
+                    <p
+                      className="mt-2 text-sm leading-relaxed"
+                      style={{ color: COLORS.textLight }}
                     >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
+                      {item.definition}
+                    </p>
                   </div>
 
-                  <p
-                    className="text-xs uppercase tracking-widest mt-8 font-semibold"
+                  <div className="mt-5">
+                    <p className="text-xs uppercase tracking-widest font-bold">
+                      Where is it?
+                    </p>
+
+                    <p
+                      className="mt-2 text-sm leading-relaxed"
+                      style={{ color: COLORS.textLight }}
+                    >
+                      {item.where}
+                    </p>
+                  </div>
+
+                  <div className="mt-5">
+                    <p className="text-xs uppercase tracking-widest font-bold">
+                      What does it do?
+                    </p>
+
+                    <p
+                      className="mt-2 text-sm leading-relaxed"
+                      style={{ color: COLORS.textLight }}
+                    >
+                      {item.function}
+                    </p>
+                  </div>
+
+                  <div
+                    className="mt-6 p-4 rounded-2xl"
                     style={{
-                      color: COLORS.blue,
+                      background: `${COLORS.cyan}30`,
                     }}
                   >
-                    {item.category}
-                  </p>
+                    <p className="text-xs uppercase tracking-widest font-bold">
+                      Interaction
+                    </p>
 
-                  <h3 className="text-2xl font-bold mt-2">{item.title}</h3>
-
-                  <p className="font-semibold text-sm mt-5">Definition</p>
-
-                  <p
-                    className="mt-2 text-sm leading-relaxed"
-                    style={{
-                      color: COLORS.textLight,
-                    }}
-                  >
-                    {item.definition}
-                  </p>
-
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {item.components.map((component) => (
-                      <span
-                        key={component}
-                        className="text-xs px-3 py-1.5 rounded-full"
-                        style={{
-                          background: COLORS.softBlue,
-                          color: COLORS.textLight,
-                        }}
-                      >
-                        {component}
-                      </span>
-                    ))}
+                    <p
+                      className="mt-2 text-sm leading-relaxed"
+                      style={{ color: COLORS.textLight }}
+                    >
+                      {item.interaction}
+                    </p>
                   </div>
                 </div>
               </motion.article>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section
+        id="functional"
+        className="relative py-32 md:py-40 px-6 overflow-hidden"
+        style={{ background: COLORS.softBlue }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <SectionTitle
+            center
+            eyebrow="06 · Functional Anatomy"
+            title="The iPhone works as one system"
+            text="The following flows demonstrate how multiple components cooperate to produce a single user-visible result."
+          />
+
+          <div className="space-y-8 mt-20">
+            {functionalFlows.map((flow, index) => (
+              <motion.article
+                key={flow.title}
+                initial={{
+                  opacity: 0,
+                  y: 70,
+                  scale: 0.96,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.15,
+                }}
+                transition={{
+                  duration: 0.8,
+                  delay: index * 0.05,
+                }}
+                whileHover={{
+                  y: -8,
+                }}
+                className="rounded-[36px] border p-7 md:p-10"
+                style={{
+                  borderColor: COLORS.border,
+                  background: COLORS.white,
+                  boxShadow: `0 30px 80px ${COLORS.blue}10`,
+                }}
+              >
+                <div className="flex flex-col lg:flex-row lg:items-center gap-8">
+                  <div className="lg:w-1/4">
+                    <span
+                      className="text-sm font-black"
+                      style={{ color: COLORS.blue }}
+                    >
+                      {flow.icon}
+                    </span>
+
+                    <h3 className="text-3xl font-black mt-3">{flow.title}</h3>
+                  </div>
+
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      {flow.steps.map((step, stepIndex) => (
+                        <div key={step} className="flex items-center gap-3">
+                          <motion.div
+                            whileHover={{
+                              scale: 1.08,
+                              y: -4,
+                            }}
+                            className="px-4 py-3 rounded-2xl border font-bold text-sm"
+                            style={{
+                              borderColor: `${COLORS.blue}35`,
+                              background: `${COLORS.cyan}35`,
+                            }}
+                          >
+                            {step}
+                          </motion.div>
+
+                          {stepIndex !== flow.steps.length - 1 && (
+                            <motion.span
+                              animate={
+                                reduceMotion
+                                  ? {}
+                                  : {
+                                      x: [0, 6, 0],
+                                    }
+                              }
+                              transition={{
+                                duration: 1.2,
+                                repeat: Infinity,
+                              }}
+                              className="text-xl font-black"
+                              style={{
+                                color: COLORS.blue,
+                              }}
+                            >
+                              →
+                            </motion.span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    <p
+                      className="mt-7 leading-relaxed"
+                      style={{
+                        color: COLORS.textLight,
+                      }}
+                    >
+                      {flow.explanation}
+                    </p>
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="sensors" className="relative py-32 md:py-40 px-6">
+        <div className="max-w-7xl mx-auto">
+          <SectionTitle
+            eyebrow="07 · Sensors & Security"
+            title="How the iPhone senses and protects"
+            text="Sensors give the device information about movement and its environment, while dedicated security systems protect authentication and sensitive information."
+          />
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-20">
+            {sensors.map((sensor, index) => (
+              <motion.article
+                key={sensor.title}
+                initial={{
+                  opacity: 0,
+                  y: 60,
+                  rotateY: index % 2 === 0 ? -8 : 8,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  rotateY: 0,
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.1,
+                }}
+                transition={{
+                  duration: 0.7,
+                  delay: (index % 3) * 0.07,
+                }}
+                whileHover={{
+                  y: -12,
+                  scale: 1.02,
+                }}
+                className="rounded-[32px] overflow-hidden border"
+                style={{
+                  borderColor: COLORS.border,
+                  background: COLORS.white,
+                  boxShadow: `0 25px 70px ${COLORS.blue}0C`,
+                }}
+              >
+                <ImageCard
+                  src={sensor.image}
+                  alt={sensor.title}
+                  className="rounded-none"
+                />
+
+                <div className="p-7">
+                  <p
+                    className="text-xs uppercase tracking-widest font-bold"
+                    style={{ color: COLORS.blue }}
+                  >
+                    Sensor / Security
+                  </p>
+
+                  <h3 className="text-2xl font-bold mt-3">{sensor.title}</h3>
+
+                  <p className="font-semibold text-sm mt-6">Purpose</p>
+
+                  <p
+                    className="mt-2 text-sm leading-relaxed"
+                    style={{ color: COLORS.textLight }}
+                  >
+                    {sensor.purpose}
+                  </p>
+
+                  <p className="font-semibold text-sm mt-5">Location</p>
+
+                  <p
+                    className="mt-2 text-sm leading-relaxed"
+                    style={{ color: COLORS.textLight }}
+                  >
+                    {sensor.location}
+                  </p>
+
+                  <p className="font-semibold text-sm mt-5">Function</p>
+
+                  <p
+                    className="mt-2 text-sm leading-relaxed"
+                    style={{ color: COLORS.textLight }}
+                  >
+                    {sensor.function}
+                  </p>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="durability"
+        className="relative py-32 md:py-40 px-6"
+        style={{ background: COLORS.softBlue }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <SectionTitle
+            eyebrow="08 · Quality & Durability"
+            title="Built for real-world use"
+            text="Durability depends on materials, structural design, thermal behavior, battery aging and the conditions in which the device is used."
+          />
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-20">
+            {durability.map((item, index) => (
+              <motion.article
+                key={item.title}
+                initial={{
+                  opacity: 0,
+                  y: 60,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                }}
+                transition={{
+                  duration: 0.7,
+                  delay: (index % 3) * 0.08,
+                }}
+                whileHover={{
+                  y: -12,
+                  scale: 1.02,
+                }}
+                className="rounded-[32px] overflow-hidden border"
+                style={{
+                  borderColor: COLORS.border,
+                  background: COLORS.white,
+                  boxShadow: `0 25px 70px ${COLORS.blue}0C`,
+                }}
+              >
+                <ImageCard
+                  src={item.image}
+                  alt={item.title}
+                  className="rounded-none"
+                />
+
+                <div className="p-7">
+                  <InfoPill>{item.category}</InfoPill>
+
+                  <h3 className="text-2xl font-bold mt-4">{item.title}</h3>
+
+                  <p
+                    className="mt-4 leading-relaxed"
+                    style={{ color: COLORS.textLight }}
+                  >
+                    {item.text}
+                  </p>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              scale: 0.95,
+            }}
+            whileInView={{
+              opacity: 1,
+              scale: 1,
+            }}
+            viewport={{
+              once: true,
+            }}
+            className="mt-10 p-8 md:p-12 rounded-[40px] border"
+            style={{
+              borderColor: `${COLORS.blue}40`,
+              background: `linear-gradient(135deg, ${COLORS.cyan}40, ${COLORS.white}, ${COLORS.mint}40)`,
+            }}
+          >
+            <div className="grid md:grid-cols-3 gap-8">
+              <div>
+                <p
+                  className="text-xs uppercase tracking-widest font-bold"
+                  style={{ color: COLORS.blue }}
+                >
+                  Common Damage
+                </p>
+                <p className="mt-3 font-bold">
+                  Cracked glass, bent frame, damaged ports, camera damage and
+                  liquid exposure.
+                </p>
+              </div>
+
+              <div>
+                <p
+                  className="text-xs uppercase tracking-widest font-bold"
+                  style={{ color: COLORS.blue }}
+                >
+                  Long-Term Factors
+                </p>
+                <p className="mt-3 font-bold">
+                  Heat, battery aging, repeated impacts, moisture and
+                  environmental conditions.
+                </p>
+              </div>
+
+              <div>
+                <p
+                  className="text-xs uppercase tracking-widest font-bold"
+                  style={{ color: COLORS.blue }}
+                >
+                  Technician Principle
+                </p>
+                <p className="mt-3 font-bold">
+                  Diagnose the system before replacing a component.
+                </p>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1849,16 +2450,16 @@ function Iphone() {
         <div className="max-w-7xl mx-auto">
           <SectionTitle
             center
-            eyebrow="06 · Interactive Anatomy"
+            eyebrow="09 · Interactive Anatomy"
             title="What's inside?"
-            text="Select a hardware system and inspect its role inside the iPhone."
+            text="Select a major internal system and inspect its role inside the iPhone."
           />
 
           <div className="grid lg:grid-cols-[1fr_320px_1fr] gap-10 items-center mt-20">
             <div className="space-y-4">
-              {hardware
+              {internalAnatomy
                 .filter((_, index) => index % 2 === 0)
-                .slice(0, 6)
+                .slice(0, 8)
                 .map((part, index) => (
                   <motion.button
                     key={part.id}
@@ -1895,7 +2496,7 @@ function Iphone() {
                   >
                     <div className="flex items-center">
                       <img
-                        src={getSmartImage(part.title, part.category)}
+                        src={part.image}
                         alt={part.title}
                         className="w-24 h-20 object-cover"
                       />
@@ -1986,10 +2587,7 @@ function Iphone() {
                     transition={{
                       duration: 0.7,
                     }}
-                    src={getSmartImage(
-                      selectedPart.title,
-                      selectedPart.category,
-                    )}
+                    src={selectedPart.image}
                     alt={selectedPart.title}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
@@ -2049,9 +2647,9 @@ function Iphone() {
             </motion.div>
 
             <div className="space-y-4">
-              {hardware
+              {internalAnatomy
                 .filter((_, index) => index % 2 !== 0)
-                .slice(0, 6)
+                .slice(0, 8)
                 .map((part, index) => (
                   <motion.button
                     key={part.id}
@@ -2088,7 +2686,7 @@ function Iphone() {
                   >
                     <div className="flex items-center">
                       <img
-                        src={getSmartImage(part.title, part.category)}
+                        src={part.image}
                         alt={part.title}
                         className="w-24 h-20 object-cover"
                       />
@@ -2129,26 +2727,24 @@ function Iphone() {
                 y: -20,
                 scale: 0.96,
               }}
-              className="max-w-4xl mx-auto mt-16 rounded-[36px] overflow-hidden border"
+              className="max-w-5xl mx-auto mt-16 rounded-[36px] overflow-hidden border"
               style={{
                 borderColor: `${COLORS.blue}35`,
                 background: COLORS.white,
                 boxShadow: `0 30px 80px ${COLORS.blue}12`,
               }}
             >
-              <div className="grid md:grid-cols-[280px_1fr]">
+              <div className="grid md:grid-cols-[300px_1fr]">
                 <img
-                  src={getSmartImage(selectedPart.title, selectedPart.category)}
+                  src={selectedPart.image}
                   alt={selectedPart.title}
-                  className="w-full h-full min-h-[250px] object-cover"
+                  className="w-full h-full min-h-[300px] object-cover"
                 />
 
                 <div className="p-8">
                   <p
                     className="text-xs uppercase tracking-widest font-semibold"
-                    style={{
-                      color: COLORS.blue,
-                    }}
+                    style={{ color: COLORS.blue }}
                   >
                     Selected Component
                   </p>
@@ -2157,26 +2753,40 @@ function Iphone() {
                     {selectedPart.title}
                   </h3>
 
-                  <p className="font-semibold mt-6">Definition</p>
+                  <p className="font-semibold mt-6">What is it?</p>
 
                   <p
                     className="mt-2 leading-relaxed"
-                    style={{
-                      color: COLORS.textLight,
-                    }}
+                    style={{ color: COLORS.textLight }}
                   >
                     {selectedPart.definition}
                   </p>
 
-                  <p className="font-semibold mt-6">Explanation</p>
+                  <p className="font-semibold mt-6">Where is it?</p>
 
                   <p
                     className="mt-2 leading-relaxed"
-                    style={{
-                      color: COLORS.textLight,
-                    }}
+                    style={{ color: COLORS.textLight }}
                   >
-                    {selectedPart.explanation}
+                    {selectedPart.where}
+                  </p>
+
+                  <p className="font-semibold mt-6">What does it do?</p>
+
+                  <p
+                    className="mt-2 leading-relaxed"
+                    style={{ color: COLORS.textLight }}
+                  >
+                    {selectedPart.function}
+                  </p>
+
+                  <p className="font-semibold mt-6">How does it interact?</p>
+
+                  <p
+                    className="mt-2 leading-relaxed"
+                    style={{ color: COLORS.textLight }}
+                  >
+                    {selectedPart.interaction}
                   </p>
                 </div>
               </div>
@@ -2188,15 +2798,13 @@ function Iphone() {
       <section
         id="components"
         className="relative py-32 md:py-40 px-6"
-        style={{
-          background: COLORS.softBlue,
-        }}
+        style={{ background: COLORS.softBlue }}
       >
         <div className="max-w-7xl mx-auto">
           <SectionTitle
-            eyebrow="07 · Deep Anatomy"
+            eyebrow="10 · Deep Anatomy"
             title="Explore every layer"
-            text="Search the architecture and move between software, hardware and individual technical categories."
+            text="Search the external, internal and software architecture and move between technical categories."
           />
 
           <motion.div
@@ -2217,7 +2825,7 @@ function Iphone() {
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search storage, camera, CPU, battery..."
+                placeholder="Search CPU, camera, battery, display, sensor..."
                 className="w-full rounded-2xl border px-6 py-5 outline-none text-sm md:text-base transition-all"
                 style={{
                   borderColor: COLORS.border,
@@ -2279,12 +2887,8 @@ function Iphone() {
               <motion.button
                 key={category}
                 onClick={() => setActiveCategory(category)}
-                whileHover={{
-                  y: -2,
-                }}
-                whileTap={{
-                  scale: 0.96,
-                }}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
                 className="px-4 py-2 rounded-full text-xs font-semibold border"
                 style={{
                   borderColor:
@@ -2302,12 +2906,7 @@ function Iphone() {
           </div>
 
           <div className="flex items-center justify-between mt-8">
-            <p
-              className="text-sm"
-              style={{
-                color: COLORS.textLight,
-              }}
-            >
+            <p className="text-sm" style={{ color: COLORS.textLight }}>
               {filteredComponents.length} systems found
             </p>
 
@@ -2315,9 +2914,7 @@ function Iphone() {
               <button
                 onClick={() => setSearch("")}
                 className="text-sm font-bold"
-                style={{
-                  color: COLORS.blue,
-                }}
+                style={{ color: COLORS.blue }}
               >
                 Clear search
               </button>
@@ -2373,9 +2970,7 @@ function Iphone() {
                     <div className="flex items-center justify-between gap-3">
                       <span
                         className="text-xs uppercase tracking-widest font-semibold"
-                        style={{
-                          color: COLORS.blue,
-                        }}
+                        style={{ color: COLORS.blue }}
                       >
                         {item.category}
                       </span>
@@ -2386,7 +2981,9 @@ function Iphone() {
                           background:
                             item.group === "Software"
                               ? `${COLORS.cyan}55`
-                              : `${COLORS.mint}70`,
+                              : item.group === "External"
+                                ? `${COLORS.blue}25`
+                                : `${COLORS.mint}70`,
                           color: COLORS.text,
                         }}
                       >
@@ -2401,22 +2998,48 @@ function Iphone() {
 
                       <p
                         className="mt-2 text-sm leading-relaxed"
-                        style={{
-                          color: COLORS.textLight,
-                        }}
+                        style={{ color: COLORS.textLight }}
                       >
                         {item.definition}
                       </p>
                     </div>
 
-                    <div className="mt-6">
+                    {item.location && (
+                      <div className="mt-5">
+                        <p className="font-semibold text-sm">Location</p>
+
+                        <p
+                          className="mt-2 text-sm leading-relaxed"
+                          style={{
+                            color: COLORS.textLight,
+                          }}
+                        >
+                          {item.location}
+                        </p>
+                      </div>
+                    )}
+
+                    {item.where && (
+                      <div className="mt-5">
+                        <p className="font-semibold text-sm">Where</p>
+
+                        <p
+                          className="mt-2 text-sm leading-relaxed"
+                          style={{
+                            color: COLORS.textLight,
+                          }}
+                        >
+                          {item.where}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="mt-5">
                       <p className="font-semibold text-sm">Explanation</p>
 
                       <p
                         className="mt-2 text-sm leading-relaxed"
-                        style={{
-                          color: COLORS.textLight,
-                        }}
+                        style={{ color: COLORS.textLight }}
                       >
                         {item.explanation}
                       </p>
@@ -2451,17 +3074,308 @@ function Iphone() {
 
               <h3 className="text-2xl font-black mt-6">No component found</h3>
 
-              <p
-                className="mt-3"
-                style={{
-                  color: COLORS.textLight,
-                }}
-              >
-                Try searching for CPU, camera, storage, battery, display or
-                another system.
+              <p className="mt-3" style={{ color: COLORS.textLight }}>
+                Try CPU, camera, battery, display, sensor, storage or another
+                system.
               </p>
             </motion.div>
           )}
+        </div>
+      </section>
+
+      <section id="troubleshooting" className="relative py-32 md:py-40 px-6">
+        <div className="max-w-7xl mx-auto">
+          <SectionTitle
+            eyebrow="11 · Technician Lab"
+            title="Troubleshooting"
+            text="A technician should not immediately replace a component. The correct approach is to identify the problem, consider possible causes, perform diagnostic steps and then choose an appropriate solution."
+          />
+
+          <div className="space-y-5 mt-20">
+            {troubleshooting.map((item, index) => {
+              const open = openTroubleshooting === item.id;
+
+              return (
+                <motion.article
+                  key={item.id}
+                  initial={{
+                    opacity: 0,
+                    y: 50,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  viewport={{
+                    once: true,
+                    amount: 0.1,
+                  }}
+                  transition={{
+                    delay: index * 0.04,
+                  }}
+                  className="rounded-[32px] overflow-hidden border"
+                  style={{
+                    borderColor: open ? `${COLORS.blue}70` : COLORS.border,
+                    background: COLORS.white,
+                    boxShadow: `0 20px 60px ${COLORS.blue}0C`,
+                  }}
+                >
+                  <button
+                    onClick={() =>
+                      setOpenTroubleshooting(open ? null : item.id)
+                    }
+                    className="w-full text-left p-7 md:p-8"
+                  >
+                    <div className="flex items-center justify-between gap-6">
+                      <div>
+                        <p
+                          className="text-xs uppercase tracking-widest font-bold"
+                          style={{ color: COLORS.blue }}
+                        >
+                          Diagnostic Case {String(index + 1).padStart(2, "0")}
+                        </p>
+
+                        <h3 className="text-2xl md:text-3xl font-black mt-3">
+                          {item.problem}
+                        </h3>
+                      </div>
+
+                      <motion.div
+                        animate={{
+                          rotate: open ? 45 : 0,
+                        }}
+                        className="w-11 h-11 rounded-full flex items-center justify-center text-2xl font-light shrink-0"
+                        style={{
+                          background: `${COLORS.cyan}45`,
+                          color: COLORS.blue,
+                        }}
+                      >
+                        +
+                      </motion.div>
+                    </div>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {open && (
+                      <motion.div
+                        initial={{
+                          height: 0,
+                          opacity: 0,
+                        }}
+                        animate={{
+                          height: "auto",
+                          opacity: 1,
+                        }}
+                        exit={{
+                          height: 0,
+                          opacity: 0,
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-7 pb-8 md:px-8 md:pb-10">
+                          <div className="grid lg:grid-cols-[280px_1fr] gap-8">
+                            <ImageCard
+                              src={item.image}
+                              alt={item.problem}
+                              className="rounded-[28px] aspect-square"
+                            />
+
+                            <div>
+                              <div>
+                                <p className="text-xs uppercase tracking-widest font-bold">
+                                  Possible Causes
+                                </p>
+
+                                <div className="grid md:grid-cols-2 gap-3 mt-4">
+                                  {item.causes.map((cause, causeIndex) => (
+                                    <div
+                                      key={cause}
+                                      className="p-4 rounded-2xl"
+                                      style={{
+                                        background: COLORS.softBlue,
+                                      }}
+                                    >
+                                      <span
+                                        className="text-xs font-black"
+                                        style={{
+                                          color: COLORS.blue,
+                                        }}
+                                      >
+                                        0{causeIndex + 1}
+                                      </span>
+
+                                      <p className="text-sm font-semibold mt-2">
+                                        {cause}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div className="mt-8">
+                                <p className="text-xs uppercase tracking-widest font-bold">
+                                  Diagnostic Steps
+                                </p>
+
+                                <div className="mt-4 space-y-3">
+                                  {item.steps.map((step, stepIndex) => (
+                                    <motion.div
+                                      key={step}
+                                      initial={{
+                                        opacity: 0,
+                                        x: 20,
+                                      }}
+                                      animate={{
+                                        opacity: 1,
+                                        x: 0,
+                                      }}
+                                      transition={{
+                                        delay: stepIndex * 0.06,
+                                      }}
+                                      className="flex gap-4 p-4 rounded-2xl border"
+                                      style={{
+                                        borderColor: COLORS.border,
+                                      }}
+                                    >
+                                      <span
+                                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0"
+                                        style={{
+                                          background: `${COLORS.blue}18`,
+                                          color: COLORS.blue,
+                                        }}
+                                      >
+                                        {stepIndex + 1}
+                                      </span>
+
+                                      <p className="text-sm leading-relaxed">
+                                        {step}
+                                      </p>
+                                    </motion.div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div
+                                className="mt-8 p-6 rounded-3xl"
+                                style={{
+                                  background: `linear-gradient(135deg, ${COLORS.cyan}35, ${COLORS.mint}45)`,
+                                }}
+                              >
+                                <p
+                                  className="text-xs uppercase tracking-widest font-bold"
+                                  style={{
+                                    color: COLORS.blue,
+                                  }}
+                                >
+                                  Recommended Solution
+                                </p>
+
+                                <p className="mt-3 leading-relaxed font-medium">
+                                  {item.solution}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="faq"
+        className="relative py-32 md:py-40 px-6"
+        style={{ background: COLORS.softBlue }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <SectionTitle
+            center
+            eyebrow="12 · FAQ"
+            title="Questions technicians ask"
+            text="Use these questions to connect the theory of iPhone anatomy with practical diagnosis."
+          />
+
+          <div className="space-y-4 mt-20">
+            {faqs.map((faq, index) => {
+              const open = openFaq === index;
+
+              return (
+                <motion.div
+                  key={faq.question}
+                  initial={{
+                    opacity: 0,
+                    y: 30,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  viewport={{
+                    once: true,
+                  }}
+                  transition={{
+                    delay: index * 0.06,
+                  }}
+                  className="rounded-[28px] overflow-hidden border"
+                  style={{
+                    borderColor: open ? `${COLORS.blue}70` : COLORS.border,
+                    background: COLORS.white,
+                  }}
+                >
+                  <button
+                    onClick={() => setOpenFaq(open ? null : index)}
+                    className="w-full p-6 md:p-7 text-left flex items-center justify-between gap-6"
+                  >
+                    <span className="font-bold text-lg">{faq.question}</span>
+
+                    <motion.span
+                      animate={{
+                        rotate: open ? 180 : 0,
+                      }}
+                      className="text-xl"
+                      style={{ color: COLORS.blue }}
+                    >
+                      ↓
+                    </motion.span>
+                  </button>
+
+                  <AnimatePresence>
+                    {open && (
+                      <motion.div
+                        initial={{
+                          height: 0,
+                          opacity: 0,
+                        }}
+                        animate={{
+                          height: "auto",
+                          opacity: 1,
+                        }}
+                        exit={{
+                          height: 0,
+                          opacity: 0,
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <p
+                          className="px-6 pb-7 md:px-7 leading-relaxed"
+                          style={{
+                            color: COLORS.textLight,
+                          }}
+                        >
+                          {faq.answer}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -2469,7 +3383,7 @@ function Iphone() {
         <div className="max-w-7xl mx-auto">
           <SectionTitle
             center
-            eyebrow="08 · Real Example"
+            eyebrow="13 · Real Example"
             title="Take a photo"
             text="One simple action demonstrates how many different iPhone systems cooperate."
           />
@@ -2515,9 +3429,7 @@ function Iphone() {
                 <div className="p-7">
                   <span
                     className="text-sm font-black"
-                    style={{
-                      color: COLORS.blue,
-                    }}
+                    style={{ color: COLORS.blue }}
                   >
                     {item.number}
                   </span>
@@ -2526,9 +3438,7 @@ function Iphone() {
 
                   <p
                     className="mt-3 leading-relaxed text-sm"
-                    style={{
-                      color: COLORS.textLight,
-                    }}
+                    style={{ color: COLORS.textLight }}
                   >
                     {item.text}
                   </p>
@@ -2559,17 +3469,12 @@ function Iphone() {
             }}
           >
             <p className="text-lg md:text-2xl font-bold">
-              Software tells the hardware what to do.
+              User → Software → Processor → Hardware → Result
             </p>
 
-            <p
-              className="mt-3"
-              style={{
-                color: COLORS.textLight,
-              }}
-            >
-              Hardware performs the operation and returns the result to
-              software.
+            <p className="mt-4" style={{ color: COLORS.textLight }}>
+              The iPhone is a connected technical system, not a collection of
+              isolated parts.
             </p>
           </motion.div>
         </div>
@@ -2577,9 +3482,7 @@ function Iphone() {
 
       <section
         className="relative min-h-[70vh] flex items-center justify-center px-6 overflow-hidden"
-        style={{
-          background: COLORS.softBlue,
-        }}
+        style={{ background: COLORS.softBlue }}
       >
         <motion.div
           animate={
@@ -2648,9 +3551,7 @@ function Iphone() {
 
           <p
             className="uppercase tracking-[0.35em] text-xs font-semibold"
-            style={{
-              color: COLORS.blue,
-            }}
+            style={{ color: COLORS.blue }}
           >
             Continue Exploring
           </p>
@@ -2683,12 +3584,11 @@ function Iphone() {
 
           <p
             className="max-w-xl mx-auto mt-7"
-            style={{
-              color: COLORS.textLight,
-            }}
+            style={{ color: COLORS.textLight }}
           >
-            You now understand how iPhone history, software and hardware connect
-            together to create a modern mobile computer.
+            You now understand the iPhone as an integrated architecture of
+            external components, internal hardware, sensors, security, software
+            and functional systems.
           </p>
 
           <motion.div
