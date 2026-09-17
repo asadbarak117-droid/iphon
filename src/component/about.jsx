@@ -1,10 +1,9 @@
-import { useRef } from "react";
-
+import { memo, useRef } from "react";
 import {
   motion,
+  useMotionTemplate,
   useMotionValue,
   useSpring,
-  useMotionTemplate,
 } from "motion/react";
 
 const COLORS = {
@@ -143,350 +142,230 @@ const teamMembers = [
   },
 ];
 
-function FloatingShape({ index }) {
-  const size = 16 + (index % 4) * 10;
+const avatarColors = [
+  ["#30AFFF", "#92EEFF"],
+  ["#72D6FF", "#D8FFC5"],
+  ["#92EEFF", "#C4F7CA"],
+  ["#30AFFF", "#C4F7CA"],
+  ["#7BD9BE", "#92EEFF"],
+  ["#55BFFF", "#D8FFC5"],
+  ["#A2EFFF", "#65C7A5"],
+  ["#30AFFF", "#B8F7FF"],
+];
+
+const avatarHair = [
+  "#34251F",
+  "#4B3025",
+  "#241B19",
+  "#5A392B",
+  "#38251F",
+  "#211A18",
+  "#6A432F",
+  "#30221E",
+];
+
+const getInitials = (name) => {
+  const words = name.replace("BiBi ", "").split(" ").filter(Boolean);
+
+  return words.length === 1
+    ? words[0].slice(0, 2).toUpperCase()
+    : `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();
+};
+
+const PersonAvatar = memo(function PersonAvatar({ index, name }) {
+  const [c1, c2] = avatarColors[index % avatarColors.length];
+  const hair = avatarHair[index % avatarHair.length];
 
   return (
     <motion.div
-      className="absolute pointer-events-none"
-      style={{
-        width: size,
-        height: size,
-        left: `${(index * 19) % 100}%`,
-        top: `${(index * 29) % 100}%`,
-        borderRadius: index % 2 === 0 ? "35%" : "50%",
-        background:
-          index % 3 === 0
-            ? COLORS.cyan
-            : index % 3 === 1
-              ? COLORS.green
-              : COLORS.blue,
-        opacity: 0.12,
-        filter: "blur(1px)",
-      }}
-      animate={{
-        x: [0, 35, -20, 0],
-        y: [0, -30, 20, 0],
-        rotate: [0, 90, 180, 360],
-        scale: [1, 1.2, 0.85, 1],
+      className="relative h-24 w-24 shrink-0 overflow-visible"
+      whileHover={{
+        scale: 1.08,
+        rotate: index % 2 === 0 ? 3 : -3,
       }}
       transition={{
-        duration: 10 + index * 0.7,
+        type: "spring",
+        stiffness: 300,
+        damping: 18,
+      }}
+    >
+      <motion.div
+        className="absolute -inset-3 rounded-[2rem] blur-xl"
+        style={{
+          background: `linear-gradient(135deg, ${c1}, ${c2})`,
+        }}
+        animate={{
+          scale: [0.9, 1.12, 0.9],
+          opacity: [0.18, 0.35, 0.18],
+        }}
+        transition={{
+          duration: 3.5 + index * 0.08,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+
+      <motion.div
+        className="relative h-24 w-24 overflow-hidden rounded-[2rem] border-2 bg-white shadow-lg"
+        style={{
+          borderColor: "rgba(255,255,255,.9)",
+          background: `linear-gradient(145deg, ${c1}, ${c2})`,
+        }}
+        animate={{
+          y: [0, -4, 0],
+        }}
+        transition={{
+          duration: 4 + (index % 4) * 0.3,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
+        <div
+          className="absolute left-1/2 top-3 h-12 w-12 -translate-x-1/2 rounded-full"
+          style={{
+            background: "#F2C7A5",
+          }}
+        />
+
+        <div
+          className="absolute left-1/2 top-1 h-12 w-14 -translate-x-1/2 rounded-[50%] border-b-4"
+          style={{
+            background: hair,
+            borderColor: hair,
+          }}
+        />
+
+        <div
+          className="absolute left-1/2 top-11 h-10 w-16 -translate-x-1/2 rounded-t-[3rem]"
+          style={{
+            background: "#FFFFFF",
+          }}
+        />
+
+        <div className="absolute left-[40%] top-[24px] h-1.5 w-1.5 rounded-full bg-[#17324D]" />
+        <div className="absolute left-[59%] top-[24px] h-1.5 w-1.5 rounded-full bg-[#17324D]" />
+
+        <div
+          className="absolute left-1/2 top-[31px] h-1 w-3 -translate-x-1/2 rounded-full"
+          style={{
+            background: "#C47C75",
+          }}
+        />
+
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] font-black tracking-wide text-[#17324D]">
+          {getInitials(name)}
+        </div>
+      </motion.div>
+
+      <motion.div
+        className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full border-[3px] border-white"
+        style={{
+          background: COLORS.green,
+          boxShadow: `0 0 16px ${COLORS.green}`,
+        }}
+        animate={{
+          scale: [1, 1.25, 1],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+        }}
+      />
+    </motion.div>
+  );
+});
+
+const FloatingShape = memo(function FloatingShape({ index }) {
+  const colors = [COLORS.cyan, COLORS.green, COLORS.blue, COLORS.mint];
+
+  return (
+    <motion.div
+      className="pointer-events-none absolute rounded-full"
+      style={{
+        width: 18 + (index % 5) * 10,
+        height: 18 + (index % 5) * 10,
+        left: `${(index * 17) % 100}%`,
+        top: `${(index * 31) % 100}%`,
+        background: colors[index % colors.length],
+        opacity: 0.16,
+        filter: "blur(1px)",
+        willChange: "transform",
+      }}
+      animate={{
+        x: [0, 45, -25, 0],
+        y: [0, -40, 25, 0],
+        rotate: [0, 120, 240, 360],
+        scale: [1, 1.25, 0.8, 1],
+      }}
+      transition={{
+        duration: 9 + index * 0.55,
         repeat: Infinity,
         ease: "easeInOut",
-        delay: index * 0.25,
+        delay: index * 0.15,
       }}
     />
   );
-}
+});
 
-function FloatingShapes() {
+const FloatingShapes = memo(function FloatingShapes() {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {Array.from({ length: 18 }).map((_, index) => (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {Array.from({ length: 20 }).map((_, index) => (
         <FloatingShape key={index} index={index} />
       ))}
     </div>
   );
-}
+});
 
-function NameMarquee() {
-  const names = teamMembers.map((member) => member.name);
-
-  return (
-    <section className="relative overflow-hidden py-8">
-      <motion.div
-        className="flex w-max gap-4"
-        animate={{
-          x: ["0%", "-50%"],
-        }}
-        transition={{
-          duration: 35,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      >
-        {[...names, ...names].map((name, index) => (
-          <motion.div
-            key={`${name}-${index}`}
-            whileHover={{
-              y: -6,
-              scale: 1.05,
-            }}
-            className="rounded-full border px-6 py-3 text-sm font-semibold whitespace-nowrap shadow-sm"
-            style={{
-              background: "rgba(255,255,255,0.75)",
-              borderColor: COLORS.border,
-              color: COLORS.text,
-              backdropFilter: "blur(12px)",
-            }}
-          >
-            {name}
-          </motion.div>
-        ))}
-      </motion.div>
-
-      <motion.div
-        className="mt-4 flex w-max gap-4"
-        animate={{
-          x: ["-50%", "0%"],
-        }}
-        transition={{
-          duration: 38,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      >
-        {[...names, ...names].map((name, index) => (
-          <motion.div
-            key={`reverse-${name}-${index}`}
-            whileHover={{
-              y: -6,
-              scale: 1.05,
-            }}
-            className="rounded-full border px-6 py-3 text-sm font-semibold whitespace-nowrap shadow-sm"
-            style={{
-              background: "rgba(255,255,255,0.75)",
-              borderColor: COLORS.border,
-              color: COLORS.textLight,
-              backdropFilter: "blur(12px)",
-            }}
-          >
-            {name}
-          </motion.div>
-        ))}
-      </motion.div>
-    </section>
-  );
-}
-
-function Stat({ number, label, index }) {
-  return (
-    <motion.div
-      initial={{
-        opacity: 0,
-        y: 30,
-      }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-      }}
-      viewport={{
-        once: true,
-        amount: 0.3,
-      }}
-      transition={{
-        duration: 0.7,
-        delay: index * 0.1,
-      }}
-      whileHover={{
-        y: -8,
-        scale: 1.03,
-      }}
-      className="relative overflow-hidden rounded-[28px] border p-7"
-      style={{
-        background: "rgba(255,255,255,0.78)",
-        borderColor: COLORS.border,
-        boxShadow: "0 20px 50px rgba(23,50,77,0.06)",
-      }}
-    >
-      <motion.div
-        className="absolute -right-8 -top-8 h-24 w-24 rounded-full"
-        style={{
-          background: index % 2 === 0 ? COLORS.cyan : COLORS.green,
-          opacity: 0.35,
-          filter: "blur(15px)",
-        }}
-        animate={{
-          scale: [1, 1.2, 1],
-          x: [0, 8, 0],
-          y: [0, -8, 0],
-        }}
-        transition={{
-          duration: 4 + index,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-
-      <div className="relative z-10">
-        <div
-          className="text-4xl font-black tracking-tight"
-          style={{
-            color: COLORS.text,
-          }}
-        >
-          {number}
-        </div>
-
-        <div
-          className="mt-2 text-sm font-semibold"
-          style={{
-            color: COLORS.textLight,
-          }}
-        >
-          {label}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function ModernAvatar({ name, index }) {
-  const initials = name
-    .split(" ")
-    .slice(0, 2)
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase();
-
-  return (
-    <motion.div
-      className="relative flex h-16 w-16 items-center justify-center rounded-[22px] border text-lg font-black"
-      style={{
-        background:
-          index % 2 === 0
-            ? `linear-gradient(135deg, ${COLORS.softBlue}, ${COLORS.cyan}55)`
-            : `linear-gradient(135deg, ${COLORS.green}80, ${COLORS.mint})`,
-        borderColor: COLORS.border,
-        color: COLORS.text,
-        boxShadow: "0 15px 30px rgba(48,175,255,0.12)",
-      }}
-      animate={{
-        y: [0, -4, 0],
-        rotate: [0, 1.5, 0],
-      }}
-      transition={{
-        duration: 4 + (index % 3),
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: index * 0.08,
-      }}
-    >
-      {initials}
-
-      <motion.span
-        className="absolute -right-1 -top-1 h-4 w-4 rounded-full border-2"
-        style={{
-          background: COLORS.green,
-          borderColor: COLORS.white,
-          boxShadow: `0 0 0 4px ${COLORS.green}30`,
-        }}
-        animate={{
-          scale: [1, 1.25, 1],
-          opacity: [0.7, 1, 0.7],
-        }}
-        transition={{
-          duration: 1.8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-    </motion.div>
-  );
-}
-
-function TeamCard({ member, index }) {
+const TeamCard = memo(function TeamCard({ member, index }) {
   const cardRef = useRef(null);
 
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
+  const mouseX = useMotionValue(50);
+  const mouseY = useMotionValue(50);
 
-  const spotlightX = useMotionValue(50);
-  const spotlightY = useMotionValue(50);
-
-  const shineX = useMotionValue(50);
-  const shineY = useMotionValue(50);
-
-  const springRotateX = useSpring(rotateX, {
-    stiffness: 240,
-    damping: 18,
-    mass: 0.55,
+  const springX = useSpring(rotateX, {
+    stiffness: 180,
+    damping: 20,
   });
 
-  const springRotateY = useSpring(rotateY, {
-    stiffness: 240,
-    damping: 18,
-    mass: 0.55,
+  const springY = useSpring(rotateY, {
+    stiffness: 180,
+    damping: 20,
   });
-
-  const springSpotlightX = useSpring(spotlightX, {
-    stiffness: 350,
-    damping: 28,
-  });
-
-  const springSpotlightY = useSpring(spotlightY, {
-    stiffness: 350,
-    damping: 28,
-  });
-
-  const springShineX = useSpring(shineX, {
-    stiffness: 400,
-    damping: 30,
-  });
-
-  const springShineY = useSpring(shineY, {
-    stiffness: 400,
-    damping: 30,
-  });
-
-  const cardTransform = useMotionTemplate`
-    perspective(1400px)
-    rotateX(${springRotateX}deg)
-    rotateY(${springRotateY}deg)
-    translateZ(0px)
-  `;
 
   const spotlight = useMotionTemplate`
     radial-gradient(
-      circle 230px at ${springSpotlightX}% ${springSpotlightY}%,
-      rgba(48,175,255,0.26),
-      rgba(146,238,255,0.12) 32%,
-      rgba(216,255,197,0.08) 48%,
-      transparent 72%
-    )
-  `;
-
-  const shine = useMotionTemplate`
-    radial-gradient(
-      circle 140px at ${springShineX}% ${springShineY}%,
-      rgba(255,255,255,0.55),
-      transparent 70%
+      420px circle at ${mouseX}% ${mouseY}%,
+      rgba(146,238,255,.24),
+      transparent 45%
     )
   `;
 
   const handleMouseMove = (event) => {
-    const card = cardRef.current;
+    if (!cardRef.current) return;
 
-    if (!card) return;
-
-    const rect = card.getBoundingClientRect();
+    const rect = cardRef.current.getBoundingClientRect();
 
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    const percentX = (x / rect.width) * 100;
-    const percentY = (y / rect.height) * 100;
+    const px = (x / rect.width) * 100;
+    const py = (y / rect.height) * 100;
 
-    rotateY.set((percentX - 50) * 0.38);
-    rotateX.set((percentY - 50) * -0.38);
+    mouseX.set(px);
+    mouseY.set(py);
 
-    spotlightX.set(percentX);
-    spotlightY.set(percentY);
-
-    shineX.set(percentX);
-    shineY.set(percentY);
+    rotateY.set((px - 50) / 7);
+    rotateX.set((50 - py) / 7);
   };
 
   const handleMouseLeave = () => {
+    mouseX.set(50);
+    mouseY.set(50);
     rotateX.set(0);
     rotateY.set(0);
-
-    spotlightX.set(50);
-    spotlightY.set(50);
-
-    shineX.set(50);
-    shineY.set(50);
   };
 
   return (
@@ -494,59 +373,117 @@ function TeamCard({ member, index }) {
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      className="group relative overflow-hidden rounded-[2rem] border bg-white p-6"
+      style={{
+        borderColor: COLORS.border,
+        rotateX: springX,
+        rotateY: springY,
+        transformPerspective: 1200,
+        transformStyle: "preserve-3d",
+        willChange: "transform",
+      }}
       initial={{
         opacity: 0,
-        y: 50,
-        scale: 0.94,
+        y: 35,
       }}
       whileInView={{
         opacity: 1,
         y: 0,
-        scale: 1,
       }}
       viewport={{
         once: true,
-        amount: 0.15,
+        amount: 0.1,
       }}
       transition={{
-        duration: 0.75,
-        delay: index * 0.035,
-        ease: [0.22, 1, 0.36, 1],
+        duration: 0.6,
+        delay: Math.min(index * 0.04, 0.45),
       }}
-      style={{
-        transform: cardTransform,
-        transformStyle: "preserve-3d",
-        perspective: 1400,
-        willChange: "transform",
-        background: COLORS.white,
-        borderColor: COLORS.border,
+      whileHover={{
+        y: -8,
+        boxShadow: "0 30px 70px rgba(48,175,255,.14)",
       }}
-      className="group relative overflow-hidden rounded-[32px] border shadow-[0_20px_60px_rgba(23,50,77,0.08)]"
     >
       <motion.div
-        className="pointer-events-none absolute inset-0 z-0"
+        className="pointer-events-none absolute inset-0"
         style={{
           background: spotlight,
         }}
       />
 
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+      <div className="relative z-10 flex items-center gap-5">
+        <PersonAvatar index={index} name={member.name} />
+
+        <div className="min-w-0">
+          <motion.div
+            className="mb-2 inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider"
+            style={{
+              color: COLORS.textLight,
+              borderColor: COLORS.border,
+              background: COLORS.soft,
+            }}
+            whileHover={{
+              scale: 1.05,
+            }}
+          >
+            Group {member.group}
+          </motion.div>
+
+          <motion.h3
+            className="text-lg font-black leading-tight"
+            style={{
+              color: COLORS.text,
+            }}
+            whileHover={{
+              x: 3,
+            }}
+          >
+            {member.name}
+          </motion.h3>
+
+          <p
+            className="mt-2 text-sm font-bold"
+            style={{
+              color: COLORS.blue,
+            }}
+          >
+            {member.role}
+          </p>
+        </div>
+      </div>
+
+      <div
+        className="relative z-10 mt-6 rounded-2xl border p-4"
         style={{
-          background: shine,
-          mixBlendMode: "screen",
+          borderColor: COLORS.border,
+          background: COLORS.soft,
         }}
-      />
+      >
+        <div
+          className="mb-2 text-[10px] font-bold uppercase tracking-[.16em]"
+          style={{
+            color: COLORS.textLight,
+          }}
+        >
+          Contribution
+        </div>
+
+        <p
+          className="text-sm leading-7"
+          style={{
+            color: COLORS.textLight,
+          }}
+        >
+          {member.work}
+        </p>
+      </div>
 
       <motion.div
-        className="absolute left-0 right-0 top-0 z-30 h-[3px]"
+        className="absolute left-6 right-6 top-0 h-[2px] origin-left rounded-full"
         style={{
           background: `linear-gradient(90deg, ${COLORS.blue}, ${COLORS.cyan}, ${COLORS.green})`,
-          transform: "translateZ(85px)",
         }}
         initial={{
           scaleX: 0,
-          transformOrigin: "left",
         }}
         whileInView={{
           scaleX: 1,
@@ -555,448 +492,29 @@ function TeamCard({ member, index }) {
           once: true,
         }}
         transition={{
-          duration: 0.9,
-          delay: index * 0.035 + 0.2,
+          duration: 0.8,
+          delay: Math.min(index * 0.04, 0.4),
         }}
       />
 
-      <motion.div
-        className="relative z-10 p-7"
-        style={{
-          transformStyle: "preserve-3d",
-        }}
-      >
-        <motion.div
-          className="flex items-start justify-between gap-4"
-          style={{
-            transform: "translateZ(65px)",
-            transformStyle: "preserve-3d",
-          }}
-        >
-          <motion.div
-            style={{
-              transform: "translateZ(75px)",
-              transformStyle: "preserve-3d",
-            }}
-            whileHover={{
-              scale: 1.12,
-              rotateZ: 5,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 260,
-              damping: 14,
-            }}
-          >
-            <ModernAvatar name={member.name} index={index} />
-          </motion.div>
+      <div className="pointer-events-none absolute -bottom-12 -right-12 h-32 w-32 rounded-full bg-cyan-100/50 blur-3xl transition-transform duration-500 group-hover:scale-150" />
 
-          <motion.div
-            className="rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em]"
-            style={{
-              borderColor: `${COLORS.blue}30`,
-              background: COLORS.softBlue,
-              color: COLORS.blue,
-              transform: "translateZ(90px)",
-              transformStyle: "preserve-3d",
-            }}
-            whileHover={{
-              scale: 1.12,
-              y: -5,
-              rotateZ: 3,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 260,
-              damping: 15,
-            }}
-          >
-            {member.group}
-          </motion.div>
-        </motion.div>
-
-        <motion.div
-          className="mt-8"
-          style={{
-            transform: "translateZ(58px)",
-            transformStyle: "preserve-3d",
-          }}
-        >
-          <motion.h3
-            className="text-xl font-black tracking-tight"
-            style={{
-              color: COLORS.text,
-              transform: "translateZ(35px)",
-              transformStyle: "preserve-3d",
-            }}
-            whileHover={{
-              x: 4,
-            }}
-          >
-            {member.name}
-          </motion.h3>
-
-          <motion.p
-            className="mt-2 text-sm font-bold"
-            style={{
-              color: COLORS.blue,
-              transform: "translateZ(28px)",
-            }}
-          >
-            {member.role}
-          </motion.p>
-
-          <motion.p
-            className="mt-4 text-sm leading-6"
-            style={{
-              color: COLORS.textLight,
-              transform: "translateZ(20px)",
-            }}
-          >
-            {member.work}
-          </motion.p>
-        </motion.div>
-
-        <motion.div
-          className="mt-8 flex items-center gap-3"
-          style={{
-            transform: "translateZ(48px)",
-            transformStyle: "preserve-3d",
-          }}
-        >
-          <motion.span
-            className="h-2.5 w-2.5 rounded-full"
-            style={{
-              background: COLORS.green,
-              boxShadow: `0 0 0 5px ${COLORS.green}40`,
-              transform: "translateZ(15px)",
-            }}
-            animate={{
-              scale: [1, 1.3, 1],
-              opacity: [0.65, 1, 0.65],
-            }}
-            transition={{
-              duration: 1.8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-
-          <span
-            className="text-[10px] font-bold uppercase tracking-[0.16em]"
-            style={{
-              color: COLORS.textLight,
-              transform: "translateZ(10px)",
-            }}
-          >
-            AppleHub Team
-          </span>
-        </motion.div>
-
-        <motion.div
-          className="mt-7 h-px w-full"
-          style={{
-            background: `linear-gradient(90deg, transparent, ${COLORS.cyan}, transparent)`,
-            transform: "translateZ(30px)",
-          }}
-        />
-      </motion.div>
-
-      <motion.div
-        className="pointer-events-none absolute -right-20 -top-20 h-44 w-44 rounded-full"
-        style={{
-          background: `${COLORS.cyan}20`,
-          filter: "blur(35px)",
-          transform: "translateZ(35px)",
-        }}
-        animate={{
-          x: [0, 18, 0],
-          y: [0, -12, 0],
-          scale: [1, 1.15, 1],
-        }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: index * 0.12,
-        }}
-      />
-
-      <motion.div
-        className="pointer-events-none absolute -bottom-20 -left-20 h-44 w-44 rounded-full"
-        style={{
-          background: `${COLORS.green}25`,
-          filter: "blur(35px)",
-          transform: "translateZ(25px)",
-        }}
-        animate={{
-          x: [0, -15, 0],
-          y: [0, 15, 0],
-          scale: [1, 1.18, 1],
-        }}
-        transition={{
-          duration: 6,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: index * 0.1,
-        }}
-      />
-
-      <motion.div
-        className="pointer-events-none absolute inset-0 rounded-[32px]"
-        style={{
-          border: `1px solid ${COLORS.cyan}00`,
-          transform: "translateZ(100px)",
-        }}
-        whileHover={{
-          borderColor: `${COLORS.cyan}70`,
-          boxShadow: `0 0 35px ${COLORS.cyan}20`,
-        }}
-      />
+      <div className="pointer-events-none absolute -left-12 -top-12 h-28 w-28 rounded-full bg-green-100/40 blur-3xl transition-transform duration-500 group-hover:scale-150" />
     </motion.article>
   );
-}
+});
 
-function AcademicInformation() {
-  const information = [
-    {
-      label: "University",
-      value: "Zen University",
-      icon: "01",
-    },
-    {
-      label: "Faculty / Department",
-      value: "Computer Science",
-      icon: "02",
-    },
-    {
-      label: "Supervisor",
-      value: "Professor Reza Khavari",
-      icon: "03",
-    },
-    {
-      label: "Project Manager",
-      value: "Fariba Mohammadi",
-      icon: "04",
-    },
-  ];
-
+const InfoCard = memo(function InfoCard({ title, value, icon, index }) {
   return (
-    <section className="relative z-10 mx-auto max-w-7xl px-6 py-28 md:px-10 lg:px-12">
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: 40,
-        }}
-        whileInView={{
-          opacity: 1,
-          y: 0,
-        }}
-        viewport={{
-          once: true,
-          amount: 0.25,
-        }}
-        transition={{
-          duration: 0.8,
-        }}
-        className="mb-14"
-      >
-        <div
-          className="text-xs font-black uppercase tracking-[0.22em]"
-          style={{
-            color: COLORS.blue,
-          }}
-        >
-          Academic Information
-        </div>
-
-        <h2
-          className="mt-4 text-4xl font-black tracking-tight md:text-6xl"
-          style={{
-            color: COLORS.text,
-          }}
-        >
-          The project behind
-          <br />
-          <span style={{ color: COLORS.blue }}>the experience.</span>
-        </h2>
-
-        <p
-          className="mt-5 max-w-2xl text-base leading-8 md:text-lg"
-          style={{
-            color: COLORS.textLight,
-          }}
-        >
-          AppleHub was developed as a collaborative academic project in which
-          students contributed through research, development, media, and project
-          coordination.
-        </p>
-      </motion.div>
-
-      <div className="grid gap-5 md:grid-cols-2">
-        {information.map((item, index) => (
-          <motion.div
-            key={item.label}
-            initial={{
-              opacity: 0,
-              x: index % 2 === 0 ? -40 : 40,
-            }}
-            whileInView={{
-              opacity: 1,
-              x: 0,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.2,
-            }}
-            transition={{
-              duration: 0.75,
-              delay: index * 0.1,
-            }}
-            whileHover={{
-              y: -8,
-              scale: 1.015,
-            }}
-            className="group relative overflow-hidden rounded-[30px] border p-7"
-            style={{
-              background: "rgba(255,255,255,0.8)",
-              borderColor: COLORS.border,
-              boxShadow: "0 20px 55px rgba(23,50,77,0.06)",
-              backdropFilter: "blur(18px)",
-            }}
-          >
-            <motion.div
-              className="absolute -right-10 -top-10 h-32 w-32 rounded-full"
-              style={{
-                background: index % 2 === 0 ? COLORS.cyan : COLORS.green,
-                opacity: 0.2,
-                filter: "blur(20px)",
-              }}
-              animate={{
-                scale: [1, 1.2, 1],
-                x: [0, 8, 0],
-                y: [0, -8, 0],
-              }}
-              transition={{
-                duration: 5 + index,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-
-            <div className="relative z-10 flex items-center gap-6">
-              <motion.div
-                whileHover={{
-                  rotate: 8,
-                  scale: 1.1,
-                }}
-                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[22px] border text-sm font-black"
-                style={{
-                  background: COLORS.softBlue,
-                  borderColor: COLORS.border,
-                  color: COLORS.blue,
-                }}
-              >
-                {item.icon}
-              </motion.div>
-
-              <div>
-                <div
-                  className="text-xs font-black uppercase tracking-[0.18em]"
-                  style={{
-                    color: COLORS.textLight,
-                  }}
-                >
-                  {item.label}
-                </div>
-
-                <div
-                  className="mt-2 text-lg font-black"
-                  style={{
-                    color: COLORS.text,
-                  }}
-                >
-                  {item.value}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: 30,
-        }}
-        whileInView={{
-          opacity: 1,
-          y: 0,
-        }}
-        viewport={{
-          once: true,
-        }}
-        transition={{
-          duration: 0.8,
-          delay: 0.2,
-        }}
-        className="mt-5 rounded-[30px] border p-7"
-        style={{
-          background: `linear-gradient(135deg, ${COLORS.white}, ${COLORS.softBlue})`,
-          borderColor: COLORS.border,
-          boxShadow: "0 20px 55px rgba(23,50,77,0.06)",
-        }}
-      >
-        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-          <div>
-            <div
-              className="text-xs font-black uppercase tracking-[0.18em]"
-              style={{
-                color: COLORS.blue,
-              }}
-            >
-              Project Type
-            </div>
-
-            <div
-              className="mt-2 text-2xl font-black"
-              style={{
-                color: COLORS.text,
-              }}
-            >
-              Collaborative Academic Project
-            </div>
-          </div>
-
-          <motion.div
-            animate={{
-              x: [0, 8, 0],
-            }}
-            transition={{
-              duration: 2.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="text-4xl font-black"
-            style={{
-              color: COLORS.blue,
-            }}
-          >
-            →
-          </motion.div>
-        </div>
-      </motion.div>
-    </section>
-  );
-}
-
-function ResourceCard({ icon, title, description, items, index }) {
-  return (
-    <motion.article
+    <motion.div
+      className="group relative overflow-hidden rounded-[1.8rem] border bg-white p-7"
+      style={{
+        borderColor: COLORS.border,
+      }}
       initial={{
         opacity: 0,
-        y: 60,
-        scale: 0.94,
+        y: 30,
+        scale: 0.97,
       }}
       whileInView={{
         opacity: 1,
@@ -1008,601 +526,436 @@ function ResourceCard({ icon, title, description, items, index }) {
         amount: 0.2,
       }}
       transition={{
-        duration: 0.8,
-        delay: index * 0.15,
-        ease: [0.22, 1, 0.36, 1],
+        duration: 0.65,
+        delay: index * 0.08,
       }}
       whileHover={{
-        y: -14,
-      }}
-      className="group relative overflow-hidden rounded-[36px] border p-8"
-      style={{
-        background: "rgba(255,255,255,0.82)",
-        borderColor: COLORS.border,
-        boxShadow: "0 25px 70px rgba(23,50,77,0.08)",
-        backdropFilter: "blur(20px)",
+        y: -8,
+        scale: 1.02,
+        boxShadow: "0 25px 60px rgba(48,175,255,.12)",
       }}
     >
       <motion.div
-        className="absolute -right-20 -top-20 h-52 w-52 rounded-full"
+        className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl text-xl"
         style={{
           background:
-            index === 0
-              ? COLORS.cyan
-              : index === 1
-                ? COLORS.green
-                : COLORS.blue,
-          opacity: 0.18,
-          filter: "blur(35px)",
+            index % 2 === 0
+              ? `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.white})`
+              : `linear-gradient(135deg, ${COLORS.green}, ${COLORS.white})`,
         }}
-        animate={{
-          scale: [1, 1.25, 1],
-          x: [0, 15, 0],
-          y: [0, -15, 0],
+        whileHover={{
+          rotate: 8,
+          scale: 1.1,
         }}
-        transition={{
-          duration: 5 + index,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
+      >
+        {icon}
+      </motion.div>
 
-      <motion.div
-        className="absolute -left-16 -bottom-16 h-40 w-40 rounded-full"
+      <div
+        className="text-[10px] font-black uppercase tracking-[.18em]"
         style={{
-          background: index % 2 === 0 ? COLORS.green : COLORS.cyan,
-          opacity: 0.14,
-          filter: "blur(30px)",
+          color: COLORS.textLight,
         }}
-        animate={{
-          x: [0, -15, 0],
-          y: [0, 12, 0],
-          scale: [1, 1.15, 1],
-        }}
-        transition={{
-          duration: 6 + index,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-
-      <div className="relative z-10">
-        <motion.div
-          whileHover={{
-            scale: 1.12,
-            rotate: 6,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 280,
-            damping: 14,
-          }}
-          className="flex h-20 w-20 items-center justify-center rounded-[26px] border text-3xl"
-          style={{
-            background:
-              index === 0
-                ? `linear-gradient(135deg, ${COLORS.softBlue}, ${COLORS.cyan}55)`
-                : index === 1
-                  ? `linear-gradient(135deg, ${COLORS.green}70, ${COLORS.mint})`
-                  : `linear-gradient(135deg, ${COLORS.cyan}45, ${COLORS.softBlue})`,
-            borderColor: COLORS.border,
-            boxShadow: "0 20px 40px rgba(48,175,255,0.12)",
-          }}
-        >
-          {icon}
-        </motion.div>
-
-        <div className="mt-8">
-          <div
-            className="text-xs font-black uppercase tracking-[0.22em]"
-            style={{
-              color: COLORS.blue,
-            }}
-          >
-            {items.length} Resources
-          </div>
-
-          <h3
-            className="mt-3 text-3xl font-black tracking-tight"
-            style={{
-              color: COLORS.text,
-            }}
-          >
-            {title}
-          </h3>
-
-          <p
-            className="mt-4 text-sm leading-7"
-            style={{
-              color: COLORS.textLight,
-            }}
-          >
-            {description}
-          </p>
-        </div>
-
-        <div className="mt-8 space-y-3">
-          {items.map((item, itemIndex) => (
-            <motion.div
-              key={item}
-              initial={{
-                opacity: 0,
-                x: -20,
-              }}
-              whileInView={{
-                opacity: 1,
-                x: 0,
-              }}
-              viewport={{
-                once: true,
-              }}
-              transition={{
-                delay: 0.2 + itemIndex * 0.08,
-              }}
-              whileHover={{
-                x: 8,
-              }}
-              className="flex items-center justify-between rounded-2xl border px-4 py-4"
-              style={{
-                background: "rgba(247,251,255,0.8)",
-                borderColor: COLORS.border,
-              }}
-            >
-              <div className="flex items-center gap-3">
-                <motion.span
-                  className="h-2.5 w-2.5 rounded-full"
-                  style={{
-                    background:
-                      itemIndex % 2 === 0 ? COLORS.blue : COLORS.green,
-                    boxShadow:
-                      itemIndex % 2 === 0
-                        ? `0 0 0 5px ${COLORS.blue}20`
-                        : `0 0 0 5px ${COLORS.green}25`,
-                  }}
-                  animate={{
-                    scale: [1, 1.3, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    delay: itemIndex * 0.2,
-                  }}
-                />
-
-                <span
-                  className="text-sm font-bold"
-                  style={{
-                    color: COLORS.text,
-                  }}
-                >
-                  {item}
-                </span>
-              </div>
-
-              <motion.span
-                whileHover={{
-                  x: 4,
-                }}
-                style={{
-                  color: COLORS.blue,
-                }}
-              >
-                →
-              </motion.span>
-            </motion.div>
-          ))}
-        </div>
+      >
+        {title}
       </div>
-    </motion.article>
-  );
-}
 
-function ProjectResources() {
-  const resources = [
-    {
-      icon: "▶",
-      title: "Videos",
-      description:
-        "Watch our project presentations, educational explanations, demonstrations, and media content.",
-      items: [
-        "Project Presentation",
-        "iPhone Anatomy Video",
-        "MacBook Anatomy Video",
-      ],
-    },
-    {
-      icon: "▤",
-      title: "Articles",
-      description:
-        "Explore the research and written material prepared by our team about Apple technology and device anatomy.",
-      items: ["Research Article", "iPhone Research", "MacBook Research"],
-    },
-    {
-      icon: "◎",
-      title: "Profiles",
-      description:
-        "Learn more about the people behind AppleHub, their responsibilities, skills, and contribution to the project.",
-      items: ["Team Profiles", "Developer Profiles", "Researcher Profiles"],
-    },
-  ];
+      <div
+        className="mt-3 text-lg font-black"
+        style={{
+          color: COLORS.text,
+        }}
+      >
+        {value}
+      </div>
 
-  return (
-    <section className="relative z-10 mx-auto max-w-7xl px-6 py-28 md:px-10 lg:px-12">
       <motion.div
+        className="absolute bottom-0 left-0 h-1 w-full origin-left"
+        style={{
+          background: `linear-gradient(90deg, ${COLORS.blue}, ${COLORS.green})`,
+        }}
         initial={{
-          opacity: 0,
-          y: 40,
+          scaleX: 0,
         }}
         whileInView={{
-          opacity: 1,
-          y: 0,
+          scaleX: 1,
         }}
         viewport={{
           once: true,
-          amount: 0.25,
         }}
         transition={{
           duration: 0.8,
+          delay: index * 0.08,
         }}
-        className="mb-14"
-      >
-        <div
-          className="text-xs font-black uppercase tracking-[0.22em]"
-          style={{
-            color: COLORS.blue,
-          }}
-        >
-          Project Resources
-        </div>
-
-        <h2
-          className="mt-4 text-4xl font-black tracking-tight md:text-6xl"
-          style={{
-            color: COLORS.text,
-          }}
-        >
-          Explore the work.
-        </h2>
-
-        <p
-          className="mt-5 max-w-2xl text-base leading-8 md:text-lg"
-          style={{
-            color: COLORS.textLight,
-          }}
-        >
-          Discover the videos, research articles, and personal profiles that
-          complete the AppleHub experience.
-        </p>
-      </motion.div>
-
-      <div className="grid gap-6 lg:grid-cols-3">
-        {resources.map((resource, index) => (
-          <ResourceCard key={resource.title} {...resource} index={index} />
-        ))}
-      </div>
-    </section>
+      />
+    </motion.div>
   );
-}
+});
 
-function About() {
+const Stat = memo(function Stat({ number, label, index }) {
   return (
-    <main
-      className="relative min-h-screen overflow-hidden"
+    <motion.div
+      className="relative overflow-hidden rounded-[1.8rem] border bg-white p-7 text-center"
       style={{
-        background: `
-          radial-gradient(circle at 10% 10%, ${COLORS.cyan}25, transparent 28%),
-          radial-gradient(circle at 90% 20%, ${COLORS.green}35, transparent 28%),
-          radial-gradient(circle at 50% 100%, ${COLORS.softBlue}, transparent 35%),
-          ${COLORS.soft}
-        `,
-        color: COLORS.text,
+        borderColor: COLORS.border,
+      }}
+      initial={{
+        opacity: 0,
+        y: 25,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+      }}
+      transition={{
+        duration: 0.6,
+        delay: index * 0.1,
+      }}
+      whileHover={{
+        y: -7,
+        scale: 1.03,
       }}
     >
-      <FloatingShapes />
+      <div
+        className="text-4xl font-black"
+        style={{
+          color: COLORS.text,
+        }}
+      >
+        {number}
+      </div>
 
-      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-28 md:px-10 lg:px-12">
-        <div className="grid items-center gap-16 lg:grid-cols-[1.15fr_0.85fr]">
+      <div
+        className="mt-2 text-sm font-semibold"
+        style={{
+          color: COLORS.textLight,
+        }}
+      >
+        {label}
+      </div>
+    </motion.div>
+  );
+});
+
+const ResourceCard = memo(function ResourceCard({
+  category,
+  title,
+  description,
+  index,
+}) {
+  return (
+    <motion.div
+      className="rounded-[1.8rem] border bg-white p-6"
+      style={{
+        borderColor: COLORS.border,
+      }}
+      initial={{
+        opacity: 0,
+        y: 25,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+        amount: 0.1,
+      }}
+      transition={{
+        duration: 0.55,
+        delay: Math.min(index * 0.06, 0.4),
+      }}
+      whileHover={{
+        y: -7,
+        boxShadow: "0 25px 55px rgba(48,175,255,.1)",
+      }}
+    >
+      <span
+        className="inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider"
+        style={{
+          background: COLORS.softBlue,
+          color: COLORS.text,
+        }}
+      >
+        {category}
+      </span>
+
+      <h3
+        className="mt-4 text-lg font-black"
+        style={{
+          color: COLORS.text,
+        }}
+      >
+        {title}
+      </h3>
+
+      <p
+        className="mt-3 text-sm leading-7"
+        style={{
+          color: COLORS.textLight,
+        }}
+      >
+        {description}
+      </p>
+    </motion.div>
+  );
+});
+
+export default function About() {
+  const resources = [
+    [
+      "Videos",
+      "Project Presentation",
+      "A multimedia presentation introducing the AppleHub project and its academic objectives.",
+    ],
+    [
+      "Videos",
+      "iPhone Anatomy Video",
+      "Visual exploration of iPhone components, internal architecture, sensors, cameras, and technologies.",
+    ],
+    [
+      "Videos",
+      "MacBook Anatomy Video",
+      "Visual analysis of MacBook hardware, components, design, ports, processors, and internal structure.",
+    ],
+    [
+      "Articles",
+      "Research Article",
+      "The main research work developed by the AppleHub team.",
+    ],
+    [
+      "Articles",
+      "iPhone Research",
+      "Research covering iPhone design evolution, hardware, processors, cameras, sensors, and security.",
+    ],
+    [
+      "Articles",
+      "MacBook Research",
+      "Research covering MacBook design, materials, processors, ports, architecture, and evolution.",
+    ],
+  ];
+
+  return (
+    <main
+      className="min-h-screen overflow-hidden"
+      style={{
+        background: COLORS.soft,
+      }}
+    >
+      {/* HERO */}
+
+      <section className="relative flex min-h-[90vh] items-center justify-center overflow-hidden px-6 py-24">
+        <FloatingShapes />
+
+        <motion.div
+          className="pointer-events-none absolute -left-40 top-20 h-96 w-96 rounded-full blur-3xl"
+          style={{
+            background: COLORS.cyan,
+            opacity: 0.22,
+          }}
+          animate={{
+            x: [0, 120, 0],
+            y: [0, 70, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        <motion.div
+          className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full blur-3xl"
+          style={{
+            background: COLORS.green,
+            opacity: 0.25,
+          }}
+          animate={{
+            x: [0, -100, 0],
+            y: [0, -80, 0],
+            scale: [1, 1.25, 1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+
+        <div className="relative z-10 mx-auto max-w-6xl text-center">
           <motion.div
+            className="mx-auto flex h-28 w-28 items-center justify-center rounded-[2.2rem] border bg-white text-3xl font-black"
+            style={{
+              color: COLORS.text,
+              borderColor: COLORS.border,
+              boxShadow: "0 30px 80px rgba(48,175,255,.18)",
+            }}
             initial={{
               opacity: 0,
-              x: -50,
+              scale: 0.4,
+              rotate: -25,
             }}
             animate={{
               opacity: 1,
-              x: 0,
+              scale: [1, 1.05, 1],
+              rotate: 0,
             }}
             transition={{
-              duration: 0.9,
-              ease: [0.22, 1, 0.36, 1],
+              opacity: {
+                duration: 0.6,
+              },
+              scale: {
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+              rotate: {
+                duration: 0.8,
+              },
+            }}
+            whileHover={{
+              scale: 1.12,
+              rotate: 6,
             }}
           >
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.15,
-                duration: 0.7,
-              }}
-              className="mb-7 inline-flex items-center gap-3 rounded-full border px-5 py-2.5 text-xs font-bold uppercase tracking-[0.2em]"
-              style={{
-                background: "rgba(255,255,255,0.75)",
-                borderColor: COLORS.border,
-                color: COLORS.blue,
-                backdropFilter: "blur(14px)",
-                boxShadow: "0 10px 30px rgba(23,50,77,0.05)",
-              }}
-            >
-              <motion.span
-                className="h-2 w-2 rounded-full"
-                style={{
-                  background: COLORS.blue,
-                }}
-                animate={{
-                  scale: [1, 1.4, 1],
-                  opacity: [0.6, 1, 0.6],
-                }}
-                transition={{
-                  duration: 1.6,
-                  repeat: Infinity,
-                }}
-              />
-              About AppleHub
-            </motion.div>
+            AH
+          </motion.div>
 
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 50,
+            }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            transition={{
+              duration: 1,
+              delay: 0.2,
+              ease: "easeOut",
+            }}
+          >
             <motion.h1
-              className="text-[clamp(4rem,12vw,9rem)] font-black leading-[0.78] tracking-[-0.07em]"
-              initial={{
-                opacity: 0,
-                y: 40,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.25,
-                duration: 1,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              <span style={{ color: COLORS.text }}>APPLE</span>
-
-              <br />
-
-              <motion.span
-                style={{
-                  color: COLORS.blue,
-                }}
-                animate={{
-                  letterSpacing: ["-0.07em", "-0.045em", "-0.07em"],
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                HUB
-              </motion.span>
-            </motion.h1>
-
-            <motion.h2
-              className="mt-8 text-2xl font-bold md:text-3xl"
+              className="mt-8 text-6xl font-black tracking-[-.06em] sm:text-7xl md:text-8xl lg:text-[9rem]"
               style={{
                 color: COLORS.text,
               }}
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
               animate={{
-                opacity: 1,
-                y: 0,
+                letterSpacing: ["-0.06em", "-0.035em", "-0.06em"],
+                y: [0, -4, 0],
               }}
               transition={{
-                delay: 0.45,
-                duration: 0.7,
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
               }}
             >
-              The people behind AppleHub.
-            </motion.h2>
+              APPLEHUB
+            </motion.h1>
+
+            <motion.div
+              className="mx-auto mt-4 h-1 max-w-md overflow-hidden rounded-full"
+              style={{
+                background: COLORS.border,
+              }}
+            >
+              <motion.div
+                className="h-full rounded-full"
+                style={{
+                  background: `linear-gradient(90deg, ${COLORS.blue}, ${COLORS.cyan}, ${COLORS.green})`,
+                }}
+                animate={{
+                  x: ["-100%", "100%"],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            </motion.div>
 
             <motion.p
-              className="mt-6 max-w-2xl text-base leading-8 md:text-lg"
+              className="mx-auto mt-8 max-w-2xl text-base leading-8 md:text-lg"
               style={{
                 color: COLORS.textLight,
               }}
               initial={{
                 opacity: 0,
-                y: 20,
               }}
               animate={{
                 opacity: 1,
-                y: 0,
               }}
               transition={{
-                delay: 0.55,
-                duration: 0.7,
+                duration: 1,
+                delay: 0.7,
               }}
             >
-              AppleHub is a collaborative project created by researchers,
-              developers, media creators, and project managers working together
-              to make Apple technology easier to understand.
+              An academic exploration of Apple technology, device anatomy,
+              research, web development, design, and multimedia.
             </motion.p>
 
-            <motion.div
-              className="mt-9 flex flex-wrap gap-3"
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.65,
-                duration: 0.7,
-              }}
-            >
+            <div className="mt-9 flex flex-wrap justify-center gap-3">
               {["Research", "Development", "Media", "Design"].map(
-                (item, index) => (
+                (tag, index) => (
                   <motion.span
-                    key={item}
-                    whileHover={{
-                      y: -5,
-                      scale: 1.05,
-                    }}
-                    className="rounded-full border px-5 py-2.5 text-xs font-bold uppercase tracking-[0.12em]"
+                    key={tag}
+                    className="rounded-full border bg-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider"
                     style={{
-                      background:
-                        index % 2 === 0 ? COLORS.white : COLORS.softBlue,
                       borderColor: COLORS.border,
                       color: COLORS.text,
                     }}
+                    initial={{
+                      opacity: 0,
+                      y: 20,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.8 + index * 0.1,
+                    }}
+                    whileHover={{
+                      y: -5,
+                      scale: 1.07,
+                    }}
                   >
-                    {item}
+                    {tag}
                   </motion.span>
                 ),
               )}
-            </motion.div>
-          </motion.div>
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              scale: 0.8,
-              rotate: -8,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              rotate: 0,
-            }}
-            transition={{
-              duration: 1.1,
-              delay: 0.25,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="relative mx-auto w-full max-w-md"
-          >
-            <motion.div
-              className="relative aspect-square rounded-[42px] border p-8"
-              style={{
-                background: "rgba(255,255,255,0.68)",
-                borderColor: COLORS.border,
-                backdropFilter: "blur(20px)",
-                boxShadow: "0 35px 100px rgba(23,50,77,0.1)",
-              }}
-              animate={{
-                y: [0, -12, 0],
-                rotate: [0, 1, 0, -1, 0],
-              }}
-              transition={{
-                duration: 7,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              <motion.div
-                className="absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                style={{
-                  background: `radial-gradient(circle, ${COLORS.cyan}65, ${COLORS.green}30, transparent 70%)`,
-                  filter: "blur(12px)",
-                }}
-                animate={{
-                  scale: [1, 1.2, 1],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-
-              <div className="relative flex h-full items-center justify-center">
-                <motion.div
-                  className="relative flex h-48 w-48 items-center justify-center rounded-[48px] border"
-                  style={{
-                    background: `linear-gradient(145deg, ${COLORS.white}, ${COLORS.softBlue})`,
-                    borderColor: COLORS.border,
-                    boxShadow:
-                      "0 30px 60px rgba(48,175,255,0.16), inset 0 1px 0 rgba(255,255,255,0.9)",
-                  }}
-                  animate={{
-                    rotateY: [0, 8, 0, -8, 0],
-                    rotateX: [0, -5, 0, 5, 0],
-                  }}
-                  transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <div
-                    className="text-5xl font-black tracking-[-0.08em]"
-                    style={{
-                      color: COLORS.text,
-                    }}
-                  >
-                    A<span style={{ color: COLORS.blue }}>H</span>
-                  </div>
-
-                  <motion.div
-                    className="absolute -right-5 -top-5 h-12 w-12 rounded-2xl"
-                    style={{
-                      background: COLORS.green,
-                      boxShadow: `0 15px 30px ${COLORS.green}70`,
-                    }}
-                    animate={{
-                      y: [0, -10, 0],
-                      rotate: [0, 10, 0],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  />
-
-                  <motion.div
-                    className="absolute -bottom-4 -left-4 h-9 w-9 rounded-full"
-                    style={{
-                      background: COLORS.blue,
-                      boxShadow: `0 12px 25px ${COLORS.blue}55`,
-                    }}
-                    animate={{
-                      x: [0, 8, 0],
-                      y: [0, -6, 0],
-                    }}
-                    transition={{
-                      duration: 3.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  />
-                </motion.div>
-              </div>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
-      </section>
 
-      <section className="relative z-10">
-        <NameMarquee />
-      </section>
-
-      <AcademicInformation />
-
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-24 md:px-10 lg:px-12">
         <motion.div
-          className="mb-12"
+          className="absolute bottom-10 left-1/2 h-14 w-px -translate-x-1/2"
+          style={{
+            background: `linear-gradient(to bottom, ${COLORS.blue}, transparent)`,
+          }}
+          animate={{
+            height: [35, 65, 35],
+            opacity: [0.3, 1, 0.3],
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      </section>
+
+      {/* UNIVERSITY */}
+
+      <section className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:px-10 lg:px-12">
+        <motion.div
           initial={{
             opacity: 0,
             y: 30,
@@ -1615,61 +968,76 @@ function About() {
             once: true,
           }}
           transition={{
-            duration: 0.8,
+            duration: 0.7,
           }}
         >
           <div
-            className="text-xs font-black uppercase tracking-[0.22em]"
+            className="text-xs font-black uppercase tracking-[.2em]"
             style={{
               color: COLORS.blue,
             }}
           >
-            The team
+            Academic Information
           </div>
 
           <h2
-            className="mt-4 text-4xl font-black tracking-tight md:text-6xl"
+            className="mt-3 text-4xl font-black md:text-6xl"
             style={{
               color: COLORS.text,
             }}
           >
-            Meet everyone.
+            University Project
           </h2>
 
           <p
-            className="mt-5 max-w-2xl text-base leading-7"
+            className="mt-5 max-w-3xl leading-8"
             style={{
               color: COLORS.textLight,
             }}
           >
-            Every person brings a different skill, but together we create one
-            growing idea.
+            AppleHub is a collaborative academic project developed through
+            research, technology, design, development, and multimedia.
           </p>
         </motion.div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {teamMembers.map((member, index) => (
-            <TeamCard key={member.name} member={member} index={index} />
-          ))}
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <InfoCard
+            title="University"
+            value="Zen University"
+            icon="🎓"
+            index={0}
+          />
+
+          <InfoCard
+            title="Faculty"
+            value="Computer Science"
+            icon="💻"
+            index={1}
+          />
+
+          <InfoCard
+            title="Department"
+            value="Computer Science"
+            icon="⚡"
+            index={2}
+          />
+
+          <InfoCard
+            title="Supervisor"
+            value="Professor Reza Khavari"
+            icon="👨‍🏫"
+            index={3}
+          />
         </div>
-      </section>
 
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-10 md:px-10 lg:px-12">
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          <Stat number="20" label="Team Members" index={0} />
-          <Stat number="3" label="Groups" index={1} />
-          <Stat number="4" label="Main Roles" index={2} />
-          <Stat number="1" label="Project" index={3} />
-        </div>
-      </section>
-
-      <ProjectResources />
-
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-32 md:px-10 lg:px-12">
         <motion.div
+          className="mt-5 rounded-[1.8rem] border bg-white p-7"
+          style={{
+            borderColor: COLORS.border,
+          }}
           initial={{
             opacity: 0,
-            y: 40,
+            y: 25,
           }}
           whileInView={{
             opacity: 1,
@@ -1677,135 +1045,158 @@ function About() {
           }}
           viewport={{
             once: true,
-            amount: 0.25,
           }}
           transition={{
-            duration: 0.9,
+            duration: 0.6,
+            delay: 0.2,
           }}
-          className="relative overflow-hidden rounded-[42px] border p-8 md:p-14 lg:p-20"
-          style={{
-            background: `
-              radial-gradient(circle at 80% 20%, ${COLORS.cyan}35, transparent 30%),
-              radial-gradient(circle at 20% 90%, ${COLORS.green}35, transparent 30%),
-              rgba(255,255,255,0.82)
-            `,
-            borderColor: COLORS.border,
-            boxShadow: "0 35px 100px rgba(23,50,77,0.08)",
-            backdropFilter: "blur(20px)",
+          whileHover={{
+            y: -6,
+            boxShadow: "0 25px 60px rgba(48,175,255,.1)",
           }}
         >
-          <motion.div
-            className="absolute -right-20 -top-20 h-64 w-64 rounded-full"
+          <div
+            className="text-xs font-black uppercase tracking-[.18em]"
             style={{
-              background: COLORS.cyan,
-              opacity: 0.16,
-              filter: "blur(40px)",
+              color: COLORS.textLight,
             }}
-            animate={{
-              scale: [1, 1.2, 1],
-              x: [0, 20, 0],
-              y: [0, -20, 0],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
+          >
+            Project Type
+          </div>
 
-          <motion.div
-            className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full"
+          <div
+            className="mt-3 text-xl font-black"
             style={{
-              background: COLORS.green,
-              opacity: 0.2,
-              filter: "blur(45px)",
+              color: COLORS.text,
             }}
-            animate={{
-              scale: [1, 1.15, 1],
-              x: [0, -20, 0],
-              y: [0, 15, 0],
-            }}
-            transition={{
-              duration: 7,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-
-          <div className="relative z-10 max-w-4xl">
-            <div
-              className="text-xs font-black uppercase tracking-[0.22em]"
-              style={{
-                color: COLORS.blue,
-              }}
-            >
-              Our Mission
-            </div>
-
-            <h2
-              className="mt-5 text-4xl font-black tracking-tight md:text-6xl"
-              style={{
-                color: COLORS.text,
-              }}
-            >
-              Different skills.
-              <br />
-              <span style={{ color: COLORS.blue }}>One vision.</span>
-            </h2>
-
-            <p
-              className="mt-7 max-w-3xl text-base leading-8 md:text-lg"
-              style={{
-                color: COLORS.textLight,
-              }}
-            >
-              By combining research, web development, media, presentation, and
-              project management, our team created AppleHub to provide a clear
-              and engaging way to explore Apple technology.
-            </p>
-
-            <div className="mt-9 flex flex-wrap gap-3">
-              {[
-                "Research",
-                "Web Development",
-                "Media",
-                "Presentation",
-                "Management",
-                "Coordination",
-              ].map((item, index) => (
-                <motion.div
-                  key={item}
-                  whileHover={{
-                    y: -6,
-                    scale: 1.06,
-                    rotate: index % 2 === 0 ? 1 : -1,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 15,
-                  }}
-                  className="rounded-full border px-5 py-3 text-xs font-bold"
-                  style={{
-                    background: COLORS.white,
-                    borderColor: COLORS.border,
-                    color: COLORS.text,
-                    boxShadow: "0 10px 25px rgba(23,50,77,0.05)",
-                  }}
-                >
-                  {item}
-                </motion.div>
-              ))}
-            </div>
+          >
+            Collaborative Academic Project
           </div>
         </motion.div>
       </section>
 
-      <section className="relative z-10 overflow-hidden px-6 pb-10 pt-10">
+      {/* TEAM */}
+
+      <section className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:px-10 lg:px-12">
         <motion.div
           initial={{
             opacity: 0,
-            scale: 0.9,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+        >
+          <div
+            className="text-xs font-black uppercase tracking-[.2em]"
+            style={{
+              color: COLORS.blue,
+            }}
+          >
+            The People Behind AppleHub
+          </div>
+
+          <h2
+            className="mt-3 text-4xl font-black md:text-6xl"
+            style={{
+              color: COLORS.text,
+            }}
+          >
+            Our Team
+          </h2>
+
+          <p
+            className="mt-5 max-w-3xl leading-8"
+            style={{
+              color: COLORS.textLight,
+            }}
+          >
+            Meet the team members who contributed to the research, development,
+            media, presentation, and coordination of AppleHub.
+          </p>
+        </motion.div>
+
+        <div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {teamMembers.map((member, index) => (
+            <TeamCard key={member.name} member={member} index={index} />
+          ))}
+        </div>
+      </section>
+
+      {/* STATS */}
+
+      <section className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:px-10 lg:px-12">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <Stat number="20" label="Team Members" index={0} />
+          <Stat number="3" label="Project Groups" index={1} />
+          <Stat number="6" label="Main Sections" index={2} />
+          <Stat number="100%" label="Collaborative" index={3} />
+        </div>
+      </section>
+
+      {/* RESOURCES */}
+
+      <section className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:px-10 lg:px-12">
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 25,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+        >
+          <div
+            className="text-xs font-black uppercase tracking-[.2em]"
+            style={{
+              color: COLORS.blue,
+            }}
+          >
+            Project Resources
+          </div>
+
+          <h2
+            className="mt-3 text-4xl font-black md:text-6xl"
+            style={{
+              color: COLORS.text,
+            }}
+          >
+            Research & Media
+          </h2>
+        </motion.div>
+
+        <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {resources.map(([category, title, description], index) => (
+            <ResourceCard
+              key={title}
+              category={category}
+              title={title}
+              description={description}
+              index={index}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* MISSION */}
+
+      <section className="relative z-10 mx-auto max-w-7xl px-6 py-20 md:px-10 lg:px-12">
+        <motion.div
+          className="rounded-[2.5rem] border bg-white p-8 md:p-12"
+          style={{
+            borderColor: COLORS.border,
+          }}
+          initial={{
+            opacity: 0,
+            scale: 0.97,
           }}
           whileInView={{
             opacity: 1,
@@ -1815,12 +1206,128 @@ function About() {
             once: true,
           }}
           transition={{
-            duration: 1,
+            duration: 0.8,
           }}
-          className="text-center text-[clamp(5rem,20vw,18rem)] font-black leading-none tracking-[-0.09em]"
+        >
+          <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr]">
+            <div>
+              <div
+                className="text-xs font-black uppercase tracking-[.2em]"
+                style={{
+                  color: COLORS.blue,
+                }}
+              >
+                Our Mission
+              </div>
+
+              <h2
+                className="mt-4 text-5xl font-black"
+                style={{
+                  color: COLORS.text,
+                }}
+              >
+                Learn.
+                <br />
+                Research.
+                <br />
+                Create.
+              </h2>
+
+              <p
+                className="mt-6 max-w-md leading-8"
+                style={{
+                  color: COLORS.textLight,
+                }}
+              >
+                AppleHub combines academic research with technology, creativity,
+                design, and teamwork.
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                [
+                  "01",
+                  "Research",
+                  "Analyze Apple technologies, device architecture, history, and engineering.",
+                ],
+                [
+                  "02",
+                  "Development",
+                  "Build an interactive academic website using modern web technologies.",
+                ],
+                [
+                  "03",
+                  "Media",
+                  "Present research through videos, presentations, and visual content.",
+                ],
+                [
+                  "04",
+                  "Learning",
+                  "Develop practical collaboration, research, design, and technical skills.",
+                ],
+              ].map(([number, title, text], index) => (
+                <motion.div
+                  key={title}
+                  className="rounded-[1.7rem] border p-6"
+                  style={{
+                    borderColor: COLORS.border,
+                    background: index % 2 === 0 ? COLORS.softBlue : COLORS.soft,
+                  }}
+                  whileHover={{
+                    y: -6,
+                  }}
+                >
+                  <div
+                    className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl text-xs font-black"
+                    style={{
+                      background: index % 2 === 0 ? COLORS.cyan : COLORS.green,
+                      color: COLORS.text,
+                    }}
+                  >
+                    {number}
+                  </div>
+
+                  <h3
+                    className="text-xl font-black"
+                    style={{
+                      color: COLORS.text,
+                    }}
+                  >
+                    {title}
+                  </h3>
+
+                  <p
+                    className="mt-3 text-sm leading-7"
+                    style={{
+                      color: COLORS.textLight,
+                    }}
+                  >
+                    {text}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* FOOTER ANIMATION */}
+
+      <section className="overflow-hidden px-6 py-24">
+        <motion.div
+          className="text-center text-[17vw] font-black leading-none tracking-[-.08em] text-transparent"
           style={{
-            color: "transparent",
             WebkitTextStroke: `1px ${COLORS.border}`,
+          }}
+          animate={{
+            letterSpacing: ["-0.08em", "-0.045em", "-0.08em"],
+            x: [-10, 10, -10],
+          }}
+          transition={{
+            duration: 7,
+            repeat: Infinity,
+            ease: "easeInOut",
           }}
         >
           APPLEHUB
@@ -1829,5 +1336,3 @@ function About() {
     </main>
   );
 }
-
-export default About;
