@@ -1,50 +1,6 @@
 import { useMemo, useState } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
-  useMotionValue,
-  useSpring,
-  useReducedMotion,
-} from "motion/react";
-
-import {
-  Activity,
-  Aperture,
-  Battery,
-  BatteryCharging,
-  Box,
-  Camera,
-  CheckCircle2,
-  ChevronDown,
-  CircuitBoard,
-  Cpu,
-  Database,
-  Fan,
-  Fingerprint,
-  HardDrive,
-  Headphones,
-  Keyboard,
-  Layers3,
-  Lightbulb,
-  Lock,
-  MemoryStick,
-  Mic,
-  Monitor,
-  MousePointer2,
-  Network,
-  Power,
-  Search,
-  ShieldCheck,
-  SlidersHorizontal,
-  Speaker,
-  Thermometer,
-  Usb,
-  Wifi,
-  Wrench,
-  X,
-} from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { Link } from "react-router-dom";
 
 const COLORS = {
   blue: "#30AFFF",
@@ -52,1006 +8,748 @@ const COLORS = {
   green: "#D8FFC5",
   mint: "#C4F7CA",
   white: "#FFFFFF",
-  soft: "#F4FBFF",
-  softBlue: "#EAF8FF",
-  text: "#10202B",
-  textLight: "#5B7180",
-  border: "#DCECF3",
+  soft: "#F7FBFF",
+  softBlue: "#EEF9FF",
+  text: "#17324D",
+  textLight: "#62809A",
+  border: "#DDECF5",
 };
-
-const EASE = [0.16, 1, 0.3, 1];
 
 const IMAGES = {
-  mac: "https://cdn.mos.cms.futurecdn.net/3mFehHkNmRcDhYCmKYYnP9.jpg",
-  macBottom: "https://cdn.mos.cms.futurecdn.net/2EJkBcAYiAF58AXxoqhjo8.jpg",
-  ports: "https://cdn.mos.cms.futurecdn.net/KgG6zXvvPPJPjA3k6ihEW9.jpg",
-  camera: "https://cdn.mos.cms.futurecdn.net/eciLsSMv5ChxYPEmEe7My9.jpg",
-  keyboard:
-    "https://mattersnext.com/wp-content/uploads/2018/07/third-generation-butterfly-keyboard-2018-macbook-pro.jpg?h=577&w=850",
-  internals:
-    "https://images.macrumors.com/article-new/2021/10/macbook-pro-teardown-1.jpg",
+  mac: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1400&q=85",
+  laptop:
+    "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1400&q=85",
+  technology:
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=85",
+  motherboard:
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=85",
+  storage:
+    "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=1400&q=85",
+  camera:
+    "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1400&q=85",
+  battery:
+    "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1400&q=85",
+  wireless:
+    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1400&q=85",
+  audio:
+    "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=1400&q=85",
+  memory:
+    "https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=1400&q=85",
+  connector:
+    "https://images.unsplash.com/photo-1587033411391-5d9e51cce126?auto=format&fit=crop&w=1400&q=85",
+  durability:
+    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1400&q=85",
 };
 
-const history = [
-  {
-    year: "1984",
-    title: "The Macintosh Era",
-    description:
-      "Apple's original Macintosh introduced a graphical personal computer built around an integrated relationship between processor, memory, storage, display, keyboard, pointing device and software.",
-    details:
-      "Although the original Macintosh was not a notebook, it established important Apple design principles that later influenced portable Macs: integrated hardware and software, compact construction, graphical interaction and human-centered industrial design.",
-    icon: Monitor,
-  },
-  {
-    year: "1991",
-    title: "PowerBook Generation",
-    description:
-      "The PowerBook generation established a much more recognizable portable-computer architecture with a display, keyboard and pointing device arranged into a notebook form.",
-    details:
-      "Apple continued improving portable computing through better displays, processors, batteries, input devices and increasingly compact internal layouts.",
-    icon: Monitor,
-  },
-  {
-    year: "2006",
-    title: "Intel Transition",
-    description:
-      "Apple transitioned the Mac platform from PowerPC processors to Intel processors, beginning a major new phase in Mac hardware architecture.",
-    details:
-      "The Intel transition provided higher performance and broad software compatibility while Apple continued developing its own operating system, industrial design and system integration.",
-    icon: Cpu,
-  },
-  {
-    year: "2012",
-    title: "Retina MacBook Pro",
-    description:
-      "Retina displays introduced much higher pixel density and transformed expectations for laptop display quality.",
-    details:
-      "This generation also accelerated thinner construction, solid-state storage, integrated batteries and increasingly dense internal engineering.",
-    icon: Monitor,
-  },
-  {
-    year: "2020",
-    title: "Apple Silicon",
-    description:
-      "Apple introduced its own Mac processors beginning with M1, moving the Mac platform away from Intel-based processors.",
-    details:
-      "Apple Silicon integrates CPU cores, GPU cores, Neural Engine, media engines, memory controllers and other functions into a highly integrated system-on-chip architecture.",
-    icon: CircuitBoard,
-  },
-];
+const getSmartImage = (title = "", category = "") => {
+  const value = `${title} ${category}`.toLowerCase();
 
-const software = [
-  {
-    title: "macOS",
-    category: "Operating System",
-    icon: Layers3,
-    description:
-      "macOS is the operating system that manages MacBook hardware and provides the environment where applications operate.",
-    details:
-      "It manages processes, memory, files, networking, security, permissions, user accounts, drivers and communication with hardware.",
-  },
-  {
-    title: "Graphical User Interface",
-    category: "User Interface",
-    icon: Monitor,
-    description:
-      "The graphical interface allows users to interact with applications, windows, files, menus and system controls.",
-    details:
-      "Human actions such as clicking, typing and gestures are translated into software operations handled by macOS.",
-  },
-  {
-    title: "Applications",
-    category: "Software",
-    icon: Database,
-    description:
-      "Applications perform user tasks such as programming, browsing, communication, document editing and media creation.",
-    details:
-      "Applications normally request system resources through macOS and its frameworks instead of directly controlling hardware.",
-  },
-  {
-    title: "Frameworks",
-    category: "Software Platform",
-    icon: Box,
-    description:
-      "Frameworks provide reusable services and APIs that developers use to build Mac applications.",
-    details:
-      "They provide capabilities for graphics, networking, multimedia, machine learning, interfaces and system services.",
-  },
-  {
-    title: "APIs",
-    category: "Communication Layer",
-    icon: Network,
-    description:
-      "Application Programming Interfaces provide structured ways for software components to communicate.",
-    details:
-      "APIs allow applications to request operating-system services without needing to understand low-level hardware implementation.",
-  },
-  {
-    title: "Drivers",
-    category: "Hardware Interface",
-    icon: SlidersHorizontal,
-    description:
-      "Drivers and system-level components allow macOS to communicate with hardware.",
-    details:
-      "They help the operating system work with displays, storage, audio, networking, input devices and external peripherals.",
-  },
-  {
-    title: "Firmware",
-    category: "Low-Level Software",
-    icon: CircuitBoard,
-    description:
-      "Firmware provides low-level instructions required for hardware initialization and operation.",
-    details:
-      "Firmware operates close to the hardware and is important during startup, device initialization and security processes.",
-  },
-  {
-    title: "Security",
-    category: "Protection",
-    icon: ShieldCheck,
-    description:
-      "Mac security combines operating-system protections with hardware-backed security mechanisms.",
-    details:
-      "Security layers can include secure boot, encryption, permissions, application signing, sandboxing and dedicated security hardware.",
-  },
-];
+  if (
+    value.includes("storage") ||
+    value.includes("ssd") ||
+    value.includes("flash")
+  ) {
+    return IMAGES.storage;
+  }
 
-const externalAnatomy = [
+  if (value.includes("camera") || value.includes("image sensor")) {
+    return IMAGES.camera;
+  }
+
+  if (
+    value.includes("processor") ||
+    value.includes("cpu") ||
+    value.includes("gpu") ||
+    value.includes("neural") ||
+    value.includes("processing") ||
+    value.includes("silicon") ||
+    value.includes("metal")
+  ) {
+    return IMAGES.technology;
+  }
+
+  if (
+    value.includes("battery") ||
+    value.includes("power") ||
+    value.includes("thermal") ||
+    value.includes("cooling")
+  ) {
+    return IMAGES.battery;
+  }
+
+  if (
+    value.includes("display") ||
+    value.includes("retina") ||
+    value.includes("trackpad") ||
+    value.includes("keyboard") ||
+    value.includes("interface") ||
+    value.includes("screen")
+  ) {
+    return IMAGES.laptop;
+  }
+
+  if (
+    value.includes("wifi") ||
+    value.includes("bluetooth") ||
+    value.includes("connectivity") ||
+    value.includes("wireless") ||
+    value.includes("antenna")
+  ) {
+    return IMAGES.wireless;
+  }
+
+  if (
+    value.includes("speaker") ||
+    value.includes("audio") ||
+    value.includes("microphone")
+  ) {
+    return IMAGES.audio;
+  }
+
+  if (
+    value.includes("memory") ||
+    value.includes("ram") ||
+    value.includes("unified")
+  ) {
+    return IMAGES.memory;
+  }
+
+  if (
+    value.includes("usb") ||
+    value.includes("thunderbolt") ||
+    value.includes("magsafe") ||
+    value.includes("connector") ||
+    value.includes("port") ||
+    value.includes("interconnect")
+  ) {
+    return IMAGES.connector;
+  }
+
+  if (
+    value.includes("aluminum") ||
+    value.includes("enclosure") ||
+    value.includes("frame") ||
+    value.includes("structure") ||
+    value.includes("durability")
+  ) {
+    return IMAGES.durability;
+  }
+
+  if (value.includes("logic board") || value.includes("motherboard")) {
+    return IMAGES.motherboard;
+  }
+
+  return IMAGES.mac;
+};
+
+const systems = [
   {
-    title: "Display",
+    id: "display",
+    title: "Mac Display",
+    group: "External",
+    category: "Interface",
+    definition:
+      "The display provides the primary visual workspace for macOS, applications, media and system information.",
+    location: "Upper display assembly",
+    interaction:
+      "Works with the display controller, graphics processor and macOS rendering system.",
+  },
+  {
+    id: "retina-display",
+    title: "Retina Display",
+    group: "External",
     category: "Display",
-    icon: Monitor,
-    image: IMAGES.mac,
-    location: "Upper section of the MacBook lid",
-    function:
-      "The display presents text, images, applications, video, graphics and the macOS interface to the user.",
-    relationship:
-      "Graphics and display-processing systems generate image information that is transmitted to the display panel.",
-    technical:
-      "MacBook generations use different display technologies. Depending on model, Apple has used Retina LCD and Liquid Retina XDR displays with different backlighting systems.",
+    definition:
+      "High-density display technology provides detailed text, graphics and images.",
+    location: "Display panel",
+    interaction:
+      "Receives rendered frames from the graphics system and display pipeline.",
   },
   {
-    title: "Display Frame",
+    id: "aluminum-enclosure",
+    title: "Aluminum Enclosure",
+    group: "External",
     category: "Structure",
-    icon: Box,
-    image: IMAGES.mac,
-    location: "Around the display panel",
-    function: "The display frame supports and protects the screen assembly.",
-    relationship:
-      "It works with the lid, hinges, camera system and display panel to form the upper structure.",
-    technical:
-      "Bezel dimensions and camera placement vary between MacBook generations.",
+    definition:
+      "The rigid enclosure protects internal components while providing the Mac's physical structure.",
+    location: "Outer chassis",
+    interaction:
+      "Supports the display, keyboard, trackpad, logic board, battery and cooling system.",
   },
   {
-    title: "Aluminum Chassis",
-    category: "Structure",
-    icon: Box,
-    image: IMAGES.mac,
-    location: "Main body and display enclosure",
-    function:
-      "The chassis protects internal electronics and provides the structural body of the notebook.",
-    relationship:
-      "It houses the logic board, battery, keyboard, trackpad, speakers and other components.",
-    technical:
-      "Precision-machined aluminum provides rigidity, relatively low weight and useful thermal conductivity.",
-  },
-  {
+    id: "keyboard",
     title: "Keyboard",
-    category: "Input",
-    icon: Keyboard,
-    image: IMAGES.keyboard,
-    location: "Lower section of the top case",
-    function:
-      "The keyboard converts key presses into electrical input signals.",
-    relationship:
-      "The input controller and macOS interpret those signals as characters, shortcuts and commands.",
-    technical:
-      "Modern MacBooks generally use scissor-switch keyboards. Some older generations used butterfly mechanisms.",
+    group: "External",
+    category: "Controls",
+    definition: "The keyboard provides physical text and command input.",
+    location: "Lower chassis",
+    interaction: "Converts key presses into input events interpreted by macOS.",
   },
   {
-    title: "Trackpad",
-    category: "Input",
-    icon: MousePointer2,
-    image: IMAGES.macBottom,
-    location: "Below the keyboard",
-    function:
-      "The trackpad provides pointer control, clicking, scrolling and multi-touch gestures.",
-    relationship:
-      "Trackpad input is processed by the input system and interpreted by macOS.",
-    technical:
-      "Many MacBooks use Force Touch and haptic feedback instead of a conventional mechanical click.",
+    id: "trackpad",
+    title: "Force Touch Trackpad",
+    group: "External",
+    category: "Controls",
+    definition:
+      "A precision pointing surface provides cursor control, gestures and pressure-sensitive interaction.",
+    location: "Palm-rest area",
+    interaction:
+      "Communicates touch and gesture information to macOS input systems.",
   },
   {
-    title: "Camera",
-    category: "Camera",
-    icon: Camera,
-    image: IMAGES.camera,
-    location: "Top section of the display",
-    function:
-      "The camera captures light and converts it into digital images and video.",
-    relationship:
-      "Camera data is processed by imaging hardware and software before applications receive the resulting frames.",
-    technical:
-      "Camera resolution and image-processing capabilities differ between MacBook generations.",
-  },
-  {
-    title: "Speakers",
-    category: "Audio",
-    icon: Speaker,
-    image: IMAGES.mac,
-    location: "Along the keyboard and chassis area",
-    function:
-      "Speakers convert electrical audio signals into physical sound waves.",
-    relationship:
-      "macOS and the audio subsystem process digital audio before it reaches the speaker amplifiers and drivers.",
-    technical:
-      "Higher-end MacBook Pro models use more advanced multi-speaker systems and support spatial-audio features.",
-  },
-  {
-    title: "Microphones",
-    category: "Audio",
-    icon: Mic,
-    image: IMAGES.mac,
-    location: "Integrated into the chassis and display area",
-    function:
-      "Microphones capture surrounding sound and convert acoustic energy into electrical signals.",
-    relationship:
-      "Audio processing combines microphone signals for voice capture, noise reduction and communication applications.",
-    technical:
-      "Multiple microphones can improve directional voice capture and audio processing.",
-  },
-  {
-    title: "MagSafe Charging",
-    category: "Power",
-    icon: BatteryCharging,
-    image: IMAGES.ports,
-    location: "Side edge of compatible MacBook models",
-    function:
-      "MagSafe provides a magnetic charging connection on supported MacBook models.",
-    relationship:
-      "Incoming electrical power is delivered to charging and power-management circuitry before being distributed to the battery and system.",
-    technical:
-      "MagSafe availability and connector generation vary by MacBook model.",
-  },
-  {
-    title: "USB-C / Thunderbolt",
-    category: "Ports",
-    icon: Usb,
-    image: IMAGES.ports,
-    location: "Side edges of the chassis",
-    function:
-      "USB-C and Thunderbolt ports support data, displays, charging and external peripherals depending on the model.",
-    relationship:
-      "Ports connect external devices to high-speed controllers and communication pathways on the logic board.",
-    technical:
-      "Thunderbolt can provide high-bandwidth connections for displays, storage, docks and other peripherals.",
-  },
-  {
-    title: "Headphone Jack",
-    category: "Audio",
-    icon: Headphones,
-    image: IMAGES.ports,
-    location: "Side edge on supported models",
-    function:
-      "Provides a wired audio connection for compatible headphones and audio equipment.",
-    relationship:
-      "The audio subsystem converts and routes digital audio to the physical connector.",
-    technical: "Availability and capabilities vary by model.",
-  },
-];
-
-const internalAnatomy = [
-  {
-    title: "Logic Board",
-    category: "Core System",
-    icon: CircuitBoard,
-    image: IMAGES.internals,
-    location: "Inside the main chassis",
-    function:
-      "The logic board is the primary electronic platform connecting major MacBook systems.",
-    relationship:
-      "It connects processing, memory architecture, storage, power management, ports, wireless systems, sensors and other controllers.",
-    technical:
-      "Apple Silicon integrates many traditionally separate functions into the system-on-chip, allowing a compact architecture.",
-  },
-  {
-    title: "Apple Silicon",
-    category: "Processing",
-    icon: Cpu,
-    image: IMAGES.internals,
-    location: "Mounted on the logic board",
-    function:
-      "Apple Silicon performs general computing, graphics, media processing and machine-learning workloads.",
-    relationship:
-      "It works closely with unified memory, storage, display engines, media engines and security systems.",
-    technical:
-      "Apple Silicon combines multiple specialized processing units inside one highly integrated system-on-chip.",
-  },
-  {
-    title: "CPU",
-    category: "Processing",
-    icon: Cpu,
-    image: IMAGES.internals,
-    location: "Inside the Apple Silicon SoC on supported models",
-    function: "The CPU executes general-purpose program instructions.",
-    relationship:
-      "It coordinates software operations and communicates with memory and specialized accelerators.",
-    technical:
-      "Apple Silicon combines high-performance and efficiency CPU cores to balance speed and energy consumption.",
-  },
-  {
-    title: "GPU",
-    category: "Processing",
-    icon: Aperture,
-    image: IMAGES.internals,
-    location: "Integrated into Apple Silicon on supported models",
-    function:
-      "The GPU accelerates graphics rendering, visual effects and parallel workloads.",
-    relationship:
-      "The GPU accesses unified memory and communicates with display and media-processing systems.",
-    technical:
-      "Apple Silicon GPUs are integrated into the SoC instead of being separate desktop-style graphics cards.",
-  },
-  {
-    title: "Neural Engine",
-    category: "Processing",
-    icon: Activity,
-    image: IMAGES.internals,
-    location: "Integrated into Apple Silicon",
-    function:
-      "The Neural Engine accelerates compatible machine-learning workloads.",
-    relationship:
-      "Supported applications and system services can use specialized neural hardware through Apple's software frameworks.",
-    technical:
-      "Dedicated machine-learning hardware can perform certain AI workloads more efficiently than general-purpose CPU execution.",
-  },
-  {
-    title: "Unified Memory",
-    category: "Memory",
-    icon: MemoryStick,
-    image: IMAGES.internals,
-    location: "Integrated into the Apple Silicon memory architecture",
-    function:
-      "Unified memory stores data and instructions used by processing units.",
-    relationship:
-      "CPU and GPU can access a shared memory architecture instead of maintaining completely separate memory pools.",
-    technical:
-      "Shared memory can reduce unnecessary data copying between CPU and GPU workloads.",
-  },
-  {
-    title: "SSD Storage",
-    category: "Storage",
-    icon: HardDrive,
-    image: IMAGES.macBottom,
-    location: "Internal storage subsystem",
-    function: "The SSD permanently stores macOS, applications and user data.",
-    relationship:
-      "macOS reads information from storage into memory when applications need it and writes modified data back to storage.",
-    technical:
-      "Modern MacBooks use flash-based storage. Exact storage architecture varies by model and generation.",
-  },
-  {
-    title: "Battery Cells",
-    category: "Power",
-    icon: Battery,
-    image: IMAGES.macBottom,
-    location: "Large portion of the lower chassis",
-    function: "Battery cells store electrical energy for portable operation.",
-    relationship:
-      "The battery works with charging circuits and power-management hardware to provide regulated electrical energy.",
-    technical:
-      "MacBooks use rechargeable lithium-based battery technology with capacity and cell layouts varying by model.",
-  },
-  {
-    title: "Power Management",
-    category: "Power",
-    icon: Power,
-    image: IMAGES.internals,
-    location: "Power-management circuitry on the logic board",
-    function:
-      "Power-management circuitry regulates electrical energy entering and moving through the computer.",
-    relationship:
-      "It coordinates charger input, battery charging and power delivery to different system domains.",
-    technical:
-      "Stable power regulation is essential for safe charging, efficient operation and reliable performance.",
-  },
-  {
-    title: "Cooling System",
-    category: "Thermal",
-    icon: Fan,
-    image: IMAGES.internals,
-    location: "Inside the chassis around heat-producing components",
-    function:
-      "The cooling system removes heat generated by the processor and other electronics.",
-    relationship:
-      "Heat travels through thermal interfaces and heat-spreading structures toward active or passive cooling components.",
-    technical:
-      "Some MacBook models use fans while fanless models rely primarily on passive thermal dissipation.",
-  },
-  {
-    title: "Heat Spreader",
-    category: "Thermal",
-    icon: Thermometer,
-    image: IMAGES.internals,
-    location: "Near major heat-producing components",
-    function:
-      "Heat-spreading components transfer and distribute thermal energy away from processors.",
-    relationship:
-      "They work with thermal interface materials, heat pipes and fans where applicable.",
-    technical:
-      "Effective thermal transfer helps maintain performance and reduce thermal throttling.",
-  },
-  {
-    title: "Wireless Antennas",
-    category: "Connectivity",
-    icon: Wifi,
-    image: IMAGES.internals,
-    location: "Integrated into the display and chassis structure",
-    function: "Antennas transmit and receive wireless radio signals.",
-    relationship:
-      "They work with Wi-Fi and Bluetooth radio hardware to provide wireless communication.",
-    technical:
-      "Antenna placement is designed around the enclosure and radio-frequency requirements.",
-  },
-  {
-    title: "Sensors",
-    category: "Sensors",
-    icon: Activity,
-    image: IMAGES.internals,
-    location: "Distributed throughout the system",
-    function: "Sensors detect environmental and device conditions.",
-    relationship:
-      "Sensor data can be used by firmware, macOS and hardware-management systems.",
-    technical:
-      "Depending on model, sensors can support lid detection, ambient-light management and thermal monitoring.",
-  },
-  {
-    title: "Security Hardware",
+    id: "touch-id",
+    title: "Touch ID",
+    group: "External",
     category: "Security",
-    icon: Fingerprint,
-    image: IMAGES.internals,
-    location: "Integrated into the security architecture",
-    function:
-      "Hardware-backed security protects authentication and sensitive cryptographic operations.",
-    relationship:
-      "Touch ID and secure hardware communicate with macOS security services while isolating sensitive operations.",
-    technical:
-      "Modern Apple Silicon Macs include dedicated security functionality integrated into the platform.",
+    definition:
+      "A biometric authentication system verifies a user's fingerprint.",
+    location: "Power button area on supported models",
+    interaction:
+      "Works with the Secure Enclave and macOS authentication services.",
+  },
+  {
+    id: "magsafe",
+    title: "MagSafe Connector",
+    group: "External",
+    category: "Power",
+    definition:
+      "A magnetic charging connector provides a convenient power connection.",
+    location: "Side of supported Mac notebooks",
+    interaction:
+      "Connects external power to charging and power-management hardware.",
+  },
+  {
+    id: "thunderbolt",
+    title: "Thunderbolt / USB-C Ports",
+    group: "External",
+    category: "Connectivity",
+    definition:
+      "High-speed ports support charging, displays, storage and external accessories.",
+    location: "Side edges",
+    interaction:
+      "Connect external devices with the system's I/O and communication controllers.",
+  },
+  {
+    id: "headphone",
+    title: "Headphone Jack",
+    group: "External",
+    category: "Audio",
+    definition:
+      "An analog audio connector supports compatible headphones and audio equipment.",
+    location: "Side edge on supported models",
+    interaction: "Connects external audio equipment to the Mac audio system.",
+  },
+  {
+    id: "camera",
+    title: "FaceTime Camera",
+    group: "External",
+    category: "Camera",
+    definition:
+      "The integrated camera captures video for calls, recording and supported applications.",
+    location: "Top display bezel",
+    interaction:
+      "Works with image processing, macOS and communication applications.",
+  },
+  {
+    id: "microphones",
+    title: "Microphone Array",
+    group: "External",
+    category: "Audio",
+    definition: "Multiple microphones capture voice and environmental audio.",
+    location: "Display and chassis areas",
+    interaction:
+      "Feeds audio data into macOS recording and communication systems.",
+  },
+  {
+    id: "logic-board",
+    title: "Logic Board",
+    group: "Hardware",
+    category: "Electronics",
+    definition:
+      "The main circuit board connects processing, memory, storage, power and peripheral systems.",
+    location: "Inside the chassis",
+    interaction:
+      "Provides electrical and data pathways between major Mac subsystems.",
+  },
+  {
+    id: "apple-silicon",
+    title: "Apple Silicon SoC",
+    group: "Hardware",
+    category: "Processing",
+    definition:
+      "Apple silicon integrates multiple computing engines and controllers into a unified system.",
+    location: "Logic board",
+    interaction:
+      "Coordinates processing, graphics, machine learning, memory and I/O operations.",
+  },
+  {
+    id: "cpu",
+    title: "CPU",
+    group: "Hardware",
+    category: "Processing",
+    definition:
+      "The CPU executes general-purpose instructions for macOS and applications.",
+    location: "Inside the Apple silicon SoC",
+    interaction:
+      "Works with unified memory, operating system services and specialized processors.",
+  },
+  {
+    id: "gpu",
+    title: "GPU",
+    group: "Hardware",
+    category: "Graphics",
+    definition:
+      "The graphics processor handles visual rendering, video workloads and graphics computation.",
+    location: "Inside the Apple silicon SoC",
+    interaction:
+      "Works with macOS graphics frameworks and the display pipeline.",
+  },
+  {
+    id: "neural-engine",
+    title: "Neural Engine",
+    group: "Hardware",
+    category: "Machine Learning",
+    definition:
+      "A specialized processor accelerates supported machine-learning operations.",
+    location: "Inside the Apple silicon SoC",
+    interaction:
+      "Works with system frameworks and applications using machine-learning capabilities.",
+  },
+  {
+    id: "unified-memory",
+    title: "Unified Memory",
+    group: "Hardware",
+    category: "RAM",
+    definition:
+      "A shared high-speed memory architecture allows different processing engines to access data efficiently.",
+    location: "Integrated memory architecture",
+    interaction:
+      "Provides data access to CPU, GPU, Neural Engine and other system components.",
+  },
+  {
+    id: "ssd",
+    title: "SSD Storage",
+    group: "Hardware",
+    category: "Storage",
+    definition:
+      "Solid-state storage retains macOS, applications, documents, media and user data.",
+    location: "Inside the Mac",
+    interaction:
+      "Communicates with the storage controller and macOS file system.",
+  },
+  {
+    id: "battery",
+    title: "Lithium-Polymer Battery",
+    group: "Hardware",
+    category: "Power",
+    definition:
+      "The rechargeable battery stores electrical energy for portable operation.",
+    location: "Lower internal chassis",
+    interaction: "Works with charging and power-management systems.",
+  },
+  {
+    id: "power-management",
+    title: "Power Management",
+    group: "Hardware",
+    category: "Power",
+    definition:
+      "Power-management circuitry regulates energy distribution throughout the Mac.",
+    location: "Logic board and power circuitry",
+    interaction:
+      "Coordinates battery, charging, processor and peripheral power requirements.",
+  },
+  {
+    id: "cooling",
+    title: "Thermal Management",
+    group: "Hardware",
+    category: "Cooling",
+    definition:
+      "Thermal architecture manages heat generated by processing and power systems.",
+    location: "Internal chassis",
+    interaction:
+      "Works with heat spreaders, heat pipes, fans on supported models and system controls.",
+  },
+  {
+    id: "speakers",
+    title: "Speaker System",
+    group: "Hardware",
+    category: "Audio",
+    definition:
+      "Integrated speakers reproduce system audio, music, video and communication sounds.",
+    location: "Chassis speaker assemblies",
+    interaction: "Receives processed audio from macOS and audio hardware.",
+  },
+  {
+    id: "audio-controller",
+    title: "Audio Controller",
+    group: "Hardware",
+    category: "Audio",
+    definition:
+      "Audio hardware processes input and output signals for microphones and speakers.",
+    location: "Logic board and audio system",
+    interaction:
+      "Connects applications and macOS audio services with physical audio hardware.",
+  },
+  {
+    id: "wifi",
+    title: "Wi-Fi System",
+    group: "Hardware",
+    category: "Connectivity",
+    definition:
+      "Wireless networking hardware enables communication with Wi-Fi networks.",
+    location: "Logic board and antenna system",
+    interaction: "Works with macOS networking services and wireless antennas.",
+  },
+  {
+    id: "bluetooth",
+    title: "Bluetooth System",
+    group: "Hardware",
+    category: "Connectivity",
+    definition:
+      "Bluetooth hardware enables communication with compatible wireless peripherals.",
+    location: "Wireless subsystem",
+    interaction:
+      "Connects keyboards, mice, headphones and other supported accessories.",
+  },
+  {
+    id: "antenna",
+    title: "Wireless Antennas",
+    group: "Hardware",
+    category: "Connectivity",
+    definition: "Antennas transmit and receive wireless signals.",
+    location: "Integrated within the chassis",
+    interaction:
+      "Works with Wi-Fi, Bluetooth and other wireless radio systems.",
+  },
+  {
+    id: "sensors",
+    title: "Sensor System",
+    group: "Hardware",
+    category: "Sensors",
+    definition:
+      "Sensors provide information about device conditions, motion, light and other environmental factors.",
+    location: "Distributed throughout the system",
+    interaction:
+      "Feeds measurements to hardware controllers and macOS services.",
+  },
+  {
+    id: "secure-enclave",
+    title: "Secure Enclave",
+    group: "Hardware",
+    category: "Security",
+    definition:
+      "A dedicated security subsystem protects sensitive authentication and cryptographic operations.",
+    location: "Apple silicon platform",
+    interaction: "Works with Touch ID, encryption and macOS security services.",
+  },
+  {
+    id: "firmware",
+    title: "Firmware",
+    group: "Software",
+    category: "Low Level",
+    definition:
+      "Firmware provides persistent low-level instructions for hardware initialization and control.",
+    location: "Hardware-associated software",
+    interaction:
+      "Works between hardware controllers and higher-level system software.",
+  },
+  {
+    id: "macos",
+    title: "macOS",
+    group: "Software",
+    category: "Operating System",
+    definition:
+      "macOS manages hardware resources and provides the primary software environment.",
+    location: "Software layer",
+    interaction:
+      "Coordinates applications, drivers, hardware and system services.",
+  },
+  {
+    id: "finder",
+    title: "Finder",
+    group: "Software",
+    category: "Interface",
+    definition:
+      "Finder provides file management and navigation across the Mac environment.",
+    location: "macOS",
+    interaction:
+      "Uses file-system services and macOS APIs to manage user data.",
+  },
+  {
+    id: "metal",
+    title: "Metal",
+    group: "Software",
+    category: "Graphics",
+    definition:
+      "Metal provides low-overhead access to graphics and GPU capabilities.",
+    location: "macOS graphics stack",
+    interaction: "Connects applications and graphics frameworks with the GPU.",
+  },
+  {
+    id: "applications",
+    title: "Applications",
+    group: "Software",
+    category: "Applications",
+    definition:
+      "Applications provide productivity, development, creative and communication functions.",
+    location: "macOS software layer",
+    interaction: "Use macOS frameworks and APIs to access system capabilities.",
+  },
+  {
+    id: "developer-tools",
+    title: "Developer Tools",
+    group: "Software",
+    category: "Developer Tools",
+    definition:
+      "Development tools support application creation, debugging, testing and deployment.",
+    location: "macOS development environment",
+    interaction:
+      "Communicate with compilers, frameworks, simulators and debugging systems.",
+  },
+  {
+    id: "drivers",
+    title: "Hardware Drivers",
+    group: "Software",
+    category: "Low Level",
+    definition:
+      "Drivers provide software interfaces between macOS and hardware components.",
+    location: "System software",
+    interaction: "Bridge system services with physical hardware controllers.",
+  },
+  {
+    id: "file-system",
+    title: "File System",
+    group: "Software",
+    category: "Storage",
+    definition:
+      "The file-system layer organizes persistent data and provides controlled access to storage.",
+    location: "macOS storage stack",
+    interaction: "Works with SSD storage, applications and system services.",
   },
 ];
 
 const functionalFlows = [
   {
-    title: "Power Flow",
-    icon: BatteryCharging,
-    steps: [
-      "Battery / Charger",
-      "Power Management",
-      "Voltage Regulation",
-      "Apple Silicon",
-      "Memory + Storage",
-      "Display + Peripherals",
-    ],
+    title: "Power System",
     description:
-      "Electrical energy enters through the battery or charger and is regulated before being delivered to system components.",
+      "Electrical energy moves from the battery or external adapter through power management to the processor and peripheral systems.",
+    steps: ["Battery", "Power Management", "SoC", "Memory", "Display"],
   },
   {
-    title: "Computing Flow",
-    icon: Cpu,
-    steps: [
-      "Application",
-      "macOS",
-      "CPU",
-      "Unified Memory",
-      "GPU / Accelerators",
-      "Output",
-    ],
+    title: "Application Pipeline",
     description:
-      "Software instructions are managed by macOS and executed by appropriate processing units using memory resources.",
+      "An application uses macOS frameworks and system resources before reaching the hardware required for a task.",
+    steps: ["Application", "macOS", "Frameworks", "SoC", "Hardware"],
   },
   {
-    title: "Storage Flow",
-    icon: HardDrive,
-    steps: [
-      "Application",
-      "macOS File System",
-      "Storage Controller",
-      "SSD",
-      "Flash Storage",
-    ],
+    title: "Graphics Pipeline",
     description:
-      "Files are translated into storage operations and written to persistent flash storage.",
+      "Visual content moves from an application through graphics frameworks and the GPU to the display.",
+    steps: ["Application", "macOS", "Metal", "GPU", "Display"],
   },
   {
-    title: "Display Flow",
-    icon: Monitor,
-    steps: [
-      "Application",
-      "Graphics API",
-      "CPU / GPU",
-      "Display Engine",
-      "Display Panel",
-      "Human Vision",
-    ],
+    title: "Storage Pipeline",
     description:
-      "Visual information travels from software through graphics processing and display hardware before becoming visible.",
+      "Files move through macOS storage services before being written to or retrieved from SSD storage.",
+    steps: ["Application", "File System", "Storage Controller", "SSD", "Data"],
   },
   {
-    title: "Thermal Flow",
-    icon: Thermometer,
-    steps: [
-      "CPU / GPU Workload",
-      "Heat Generation",
-      "Thermal Interface",
-      "Heat Spreader",
-      "Fan / Passive Cooling",
-      "Heat Dissipation",
-    ],
+    title: "Wireless Communication",
     description:
-      "Processing creates heat. Thermal components transfer that heat away from critical hardware and release it into the environment.",
+      "Applications request network services while the operating system and wireless hardware manage communication.",
+    steps: ["Application", "macOS", "Network Stack", "Wi-Fi", "Network"],
   },
 ];
 
-const systemExamples = [
-  {
-    title: "Watching a Video",
-    icon: Monitor,
-    flow: "Storage → Memory → Media Engine → GPU → Display + Speakers",
-    text: "Video data is read from storage, loaded into memory and decoded using appropriate media-processing hardware before being displayed and played through the audio system.",
-  },
-  {
-    title: "Opening a Website",
-    icon: Wifi,
-    flow: "Wi-Fi → Network Stack → Browser → CPU/GPU → Display",
-    text: "Wireless hardware receives network data, macOS networking services deliver it to the browser and the browser processes and renders the webpage.",
-  },
-  {
-    title: "Saving a File",
-    icon: HardDrive,
-    flow: "Application → macOS → File System → Storage Controller → SSD",
-    text: "The application requests a write operation. macOS manages the file-system operation and sends storage commands to persistent flash storage.",
-  },
-  {
-    title: "Playing Music",
-    icon: Speaker,
-    flow: "Application → Audio System → Audio Processing → Speakers",
-    text: "Digital audio is processed and converted into electrical signals that the speaker system turns into physical sound waves.",
-  },
-  {
-    title: "Authenticating",
-    icon: Fingerprint,
-    flow: "Touch ID → Secure Hardware → Authentication Service → macOS",
-    text: "A supported biometric authentication workflow uses dedicated security hardware and system services to verify authorization.",
-  },
-  {
-    title: "Running Code",
-    icon: Cpu,
-    flow: "Code → Compiler/Runtime → CPU → Memory → Storage/Output",
-    text: "Programming tools translate or execute instructions while the CPU uses memory and storage resources to complete the task.",
-  },
-];
-
-const sensorsSecurity = [
-  {
-    title: "Touch ID",
-    icon: Fingerprint,
-    description:
-      "Touch ID allows supported MacBook models to authenticate users with a fingerprint sensor integrated into the power button.",
-    function:
-      "It can unlock the Mac and authorize supported purchases and system actions.",
-    relationship:
-      "Touch ID works with secure hardware and macOS authentication services.",
-  },
+const sensors = [
   {
     title: "Ambient Light Sensor",
-    icon: Lightbulb,
     description:
-      "An ambient light sensor measures surrounding environmental light.",
-    function:
-      "The system can use this information to automatically adjust display brightness and related behavior.",
-    relationship:
-      "Sensor information is provided to system software, which can modify display settings.",
+      "Measures surrounding light conditions and can support display and system behavior.",
   },
   {
-    title: "Lid / Hall Sensor",
-    icon: Box,
+    title: "Lid / Display Sensors",
     description:
-      "Magnetic or Hall-effect sensing can determine the position of the display lid.",
-    function:
-      "It helps the system recognize whether the lid is open or closed.",
-    relationship:
-      "Lid-state information can influence sleep, wake and power-management behavior.",
+      "Supported Mac designs use sensors and system controls to detect display and chassis conditions.",
   },
   {
-    title: "Thermal Sensors",
-    icon: Thermometer,
+    title: "Temperature Sensors",
     description:
-      "Temperature sensors monitor thermal conditions inside the computer.",
-    function:
-      "Thermal data can influence performance management, cooling behavior and safety.",
-    relationship:
-      "Thermal information is used by system-management hardware and software.",
+      "Monitor internal thermal conditions and provide information used by power and thermal management.",
   },
   {
-    title: "Secure Enclave",
-    icon: Lock,
+    title: "Trackpad Sensors",
     description:
-      "The Secure Enclave is a dedicated security subsystem used for sensitive authentication and cryptographic operations on supported Apple platforms.",
-    function:
-      "It helps protect cryptographic keys and security-sensitive information.",
-    relationship:
-      "It works with Touch ID, encryption and other security mechanisms.",
+      "Detect touch, movement and pressure-related interaction across the pointing surface.",
   },
   {
-    title: "Secure Boot",
-    icon: ShieldCheck,
+    title: "Touch ID Sensor",
     description:
-      "Secure boot mechanisms help verify trusted software during startup.",
-    function:
-      "They help protect the system from unauthorized or modified startup software.",
-    relationship:
-      "Boot security operates across hardware, firmware and operating-system layers.",
-  },
-];
-
-const durability = [
-  {
-    title: "Chassis Material",
-    icon: Box,
-    description:
-      "The aluminum enclosure provides structural rigidity and contributes to thermal behavior.",
-    analysis:
-      "The metal enclosure gives the MacBook a rigid and premium construction, but dents and scratches can remain visible because the exterior is part of the structural body.",
+      "Captures fingerprint information for biometric authentication on supported Macs.",
   },
   {
-    title: "Display Durability",
-    icon: Monitor,
+    title: "Accelerometer",
     description:
-      "The display balances thin construction, high image quality and mechanical protection.",
-    analysis:
-      "Pressure, impact, debris and improper handling can damage the display. The lid should be opened and closed without excessive force.",
+      "Supported hardware can use motion sensing for system and hardware-related functions.",
   },
   {
-    title: "Keyboard",
-    icon: Keyboard,
+    title: "Camera System",
     description:
-      "The keyboard is designed for repeated daily typing and interaction.",
-    analysis:
-      "Dust, liquid exposure and physical damage can cause key failures. Some older butterfly-keyboard generations had notable reliability problems.",
-  },
-  {
-    title: "Trackpad",
-    icon: MousePointer2,
-    description:
-      "The Force Touch trackpad provides accurate pointer and gesture control.",
-    analysis:
-      "It is generally durable but can be affected by liquid, physical damage or failures in the underlying input system.",
-  },
-  {
-    title: "Battery",
-    icon: Battery,
-    description: "The rechargeable battery provides portable electrical power.",
-    analysis:
-      "Battery capacity naturally decreases with use. Heat, workload, charging behavior and age can influence long-term battery health.",
-  },
-  {
-    title: "Thermal Design",
-    icon: Thermometer,
-    description:
-      "Thermal architecture controls how efficiently the system manages heat.",
-    analysis:
-      "Fan-equipped models can move more air during sustained workloads, while fanless models rely more heavily on passive heat dissipation.",
-  },
-  {
-    title: "Ports",
-    icon: Usb,
-    description:
-      "Ports provide physical connections for chargers, displays, storage and accessories.",
-    analysis:
-      "Repeated insertion can mechanically wear connectors. Dust and debris can also interfere with reliable connections.",
-  },
-  {
-    title: "Structural Design",
-    icon: Layers3,
-    description:
-      "MacBooks use a highly integrated internal architecture to achieve compact designs.",
-    analysis:
-      "Integration can reduce thickness and improve efficiency but can also make repairs more complex and limit user upgradeability.",
+      "The camera captures visual information for communication and supported applications.",
   },
 ];
 
 const troubleshooting = [
   {
-    problem: "MacBook does not turn on",
+    title: "Mac is not charging",
     causes: [
-      "Battery completely discharged",
-      "Charger or cable problem",
-      "Power-management issue",
-      "Display may be inactive while the system is running",
-      "Hardware failure",
+      "Power adapter or cable problem",
+      "Charging connector issue",
+      "Battery or power-management problem",
     ],
-    diagnostics: [
-      "Connect a known-good compatible charger.",
-      "Allow the battery time to charge.",
-      "Disconnect unnecessary accessories.",
-      "Try powering on again.",
-      "Check whether the display is receiving power.",
-    ],
-    solution:
-      "Use a compatible charger and cable, allow sufficient charging time, disconnect unnecessary peripherals and retry. Persistent no-power conditions may require professional hardware diagnostics.",
+    action:
+      "Test a known-good power source, inspect the charging connector and check whether the Mac responds to external power.",
   },
   {
-    problem: "MacBook does not charge",
+    title: "Mac becomes very hot",
     causes: [
-      "Damaged charging cable",
-      "Faulty adapter",
-      "Debris in charging port",
-      "Battery health problem",
-      "Power-management issue",
+      "Heavy CPU or GPU workload",
+      "High background activity",
+      "Restricted airflow or thermal conditions",
     ],
-    diagnostics: [
-      "Try another compatible power adapter.",
-      "Try another compatible cable.",
-      "Try another electrical outlet.",
-      "Inspect the connector and port for visible debris.",
-      "Check battery information in macOS.",
-    ],
-    solution:
-      "Use a compatible charger and cable and check the charging port carefully. Persistent charging problems should be professionally diagnosed.",
+    action:
+      "Check active processes, workload and ventilation conditions before investigating hardware.",
   },
   {
-    problem: "Battery drains quickly",
+    title: "Mac is running slowly",
     causes: [
-      "High CPU or GPU workload",
-      "High display brightness",
-      "Background applications",
-      "Battery aging",
-      "Poor network conditions",
+      "High memory pressure",
+      "Heavy background processes",
+      "Storage or software workload",
     ],
-    diagnostics: [
-      "Open Activity Monitor.",
-      "Check CPU and energy usage.",
-      "Review battery settings.",
-      "Identify applications using unusual resources.",
-      "Check battery health information.",
-    ],
-    solution:
-      "Reduce unnecessary workloads, optimize brightness and power settings, update software and consider battery service if battery health is poor.",
+    action:
+      "Review Activity Monitor, memory pressure, storage capacity and active applications.",
   },
   {
-    problem: "MacBook overheats",
+    title: "Display has a problem",
     causes: [
-      "Sustained processor workload",
-      "Blocked ventilation",
-      "High ambient temperature",
-      "Background process",
-      "Thermal-system problem",
+      "Software rendering issue",
+      "Display connection problem",
+      "Physical display fault",
     ],
-    diagnostics: [
-      "Check Activity Monitor for high CPU usage.",
-      "Close unnecessary applications.",
-      "Check whether ventilation is obstructed.",
-      "Observe whether heat occurs only during heavy workloads.",
-      "Check unusual fan behavior on fan-equipped models.",
-    ],
-    solution:
-      "Reduce unnecessary workloads, keep ventilation clear and use the Mac on a suitable hard surface. Persistent abnormal heating should be inspected.",
+    action:
+      "Restart the Mac, test an external display when possible and inspect for physical symptoms.",
   },
   {
-    problem: "Display problems",
+    title: "Wi-Fi is not working",
     causes: [
-      "Brightness settings",
-      "Software issue",
-      "External display configuration",
-      "Display hardware fault",
-      "Physical damage",
+      "Network configuration",
+      "Router or network problem",
+      "Wireless subsystem issue",
     ],
-    diagnostics: [
-      "Adjust brightness.",
-      "Restart the Mac.",
-      "Check display settings.",
-      "Disconnect external displays.",
-      "Observe whether the problem appears during startup.",
-    ],
-    solution:
-      "Check settings, restart and update macOS. Persistent lines, flickering, artifacts or physical damage may require hardware diagnostics.",
+    action:
+      "Test another network, review network settings and determine whether the issue follows the Mac.",
   },
   {
-    problem: "Keyboard problems",
+    title: "No audio output",
     causes: [
-      "Dust beneath keys",
-      "Liquid exposure",
-      "Software input issue",
-      "Physical key damage",
-      "Keyboard hardware failure",
+      "Incorrect audio output",
+      "Software configuration",
+      "Speaker or audio hardware issue",
     ],
-    diagnostics: [
-      "Test multiple keys.",
-      "Test different applications.",
-      "Restart the system.",
-      "Check keyboard settings.",
-      "Inspect for visible physical or liquid damage.",
-    ],
-    solution:
-      "Verify software settings and avoid forcing damaged keys. Liquid or hardware damage should be professionally inspected.",
-  },
-  {
-    problem: "Trackpad problems",
-    causes: [
-      "Software issue",
-      "Power problem",
-      "Liquid or physical damage",
-      "Input configuration",
-      "Hardware failure",
-    ],
-    diagnostics: [
-      "Restart the Mac.",
-      "Test pointer movement.",
-      "Check trackpad settings.",
-      "Disconnect external input devices.",
-      "Test clicking and gestures separately.",
-    ],
-    solution:
-      "Restart and verify settings. Persistent physical unresponsiveness may require hardware service.",
-  },
-  {
-    problem: "Audio problems",
-    causes: [
-      "Incorrect output device",
-      "Muted volume",
-      "Application-specific setting",
-      "Software issue",
-      "Speaker or audio hardware problem",
-    ],
-    diagnostics: [
-      "Check system sound settings.",
-      "Verify the selected output device.",
-      "Test another application.",
-      "Disconnect Bluetooth audio devices.",
-      "Test headphones if available.",
-    ],
-    solution:
-      "Select the correct output device, adjust volume and restart the application. Persistent speaker or microphone problems may require diagnostics.",
-  },
-  {
-    problem: "Performance slowdown",
-    causes: [
-      "High CPU/GPU workload",
-      "Memory pressure",
-      "Low storage space",
-      "Background processes",
-      "Software problems",
-    ],
-    diagnostics: [
-      "Open Activity Monitor.",
-      "Check CPU usage.",
-      "Check Memory Pressure.",
-      "Check available storage.",
-      "Identify applications consuming unusual resources.",
-    ],
-    solution:
-      "Close unnecessary applications, free storage, update macOS and investigate resource-heavy processes.",
-  },
-  {
-    problem: "Unexpected shutdown",
-    causes: [
-      "Battery or power problem",
-      "Thermal protection",
-      "Software crash",
-      "Hardware fault",
-      "Power-management issue",
-    ],
-    diagnostics: [
-      "Check battery condition.",
-      "Observe whether shutdowns occur during heavy workloads.",
-      "Install available software updates.",
-      "Test without unnecessary peripherals.",
-      "Review system behavior for recurring patterns.",
-    ],
-    solution:
-      "Identify whether shutdowns correlate with workload, battery condition or accessories. Persistent unexpected shutdowns should be professionally diagnosed.",
+    action:
+      "Check Sound settings, output routing and another audio source before diagnosing hardware.",
   },
 ];
 
-const classification = [...externalAnatomy, ...internalAnatomy];
+const faqs = [
+  {
+    question: "What is the most important component in a Mac?",
+    answer:
+      "A Mac is an interconnected system. Apple silicon is central to computation, but the display, unified memory, storage, power, networking and operating system all contribute to the complete computer.",
+  },
+  {
+    question: "What is Apple silicon?",
+    answer:
+      "Apple silicon refers to Apple's system-on-chip architecture used in modern Macs. It combines processing, graphics, machine learning and other system functions into an integrated platform.",
+  },
+  {
+    question: "What is unified memory?",
+    answer:
+      "Unified memory provides a shared memory architecture that allows different processing engines to access data efficiently.",
+  },
+  {
+    question: "What does the GPU do?",
+    answer:
+      "The GPU performs highly parallel graphics and visual computations, supporting interfaces, applications, video and other workloads.",
+  },
+  {
+    question: "What does macOS do?",
+    answer:
+      "macOS manages hardware resources and provides system services, frameworks, security and the user environment for applications.",
+  },
+  {
+    question: "How does a Mac protect user data?",
+    answer:
+      "Security combines hardware and software mechanisms including secure processing, encryption, authentication, system protections and controlled application access.",
+  },
+];
 
 const categories = [
   "All",
-  "Display",
-  "Input",
-  "Power",
-  "Ports",
-  "Processing",
-  "Memory",
-  "Storage",
-  "Thermal",
-  "Audio",
-  "Connectivity",
+  "Operating System",
+  "Interface",
+  "Applications",
+  "Developer Tools",
+  "Graphics",
+  "Low Level",
   "Security",
+  "Electronics",
+  "Processing",
+  "Machine Learning",
+  "RAM",
+  "Storage",
+  "Power",
+  "Display",
+  "Cooling",
+  "Connectivity",
+  "Audio",
+  "Controls",
   "Camera",
-  "Structure",
   "Sensors",
+  "Structure",
 ];
 
-function AmbientBackground({ reduced }) {
-  if (reduced) {
-    return (
-      <div
-        className="pointer-events-none fixed inset-0 -z-10"
-        style={{ background: COLORS.soft }}
-      />
-    );
-  }
+function ImageCard({ src, alt }) {
+  const reduceMotion = useReducedMotion();
 
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      <motion.div
-        animate={{
-          x: [0, 80, -40, 0],
-          y: [0, -50, 30, 0],
-          scale: [1, 1.15, 0.9, 1],
-        }}
-        transition={{
-          duration: 18,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full blur-3xl"
-        style={{ background: `${COLORS.cyan}55` }}
-      />
+    <motion.div
+      className="relative h-full w-full overflow-hidden"
+      initial={reduceMotion ? false : { opacity: 0, scale: 1.04 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
+    >
+      <img src={src} alt={alt} className="h-full w-full object-cover" />
 
-      <motion.div
-        animate={{
-          x: [0, -70, 40, 0],
-          y: [0, 60, -30, 0],
-          scale: [1, 0.9, 1.15, 1],
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(180deg, transparent 45%, rgba(23,50,77,.65))",
         }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute -right-40 top-[25%] h-[550px] w-[550px] rounded-full blur-3xl"
-        style={{ background: `${COLORS.green}55` }}
       />
-
-      <motion.div
-        animate={{
-          x: [0, 50, -30, 0],
-          y: [0, -40, 50, 0],
-        }}
-        transition={{
-          duration: 16,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute bottom-[-180px] left-[30%] h-[450px] w-[450px] rounded-full blur-3xl"
-        style={{ background: `${COLORS.blue}35` }}
-      />
-    </div>
+    </motion.div>
   );
 }
 
-function SectionTitle({ eyebrow, title, text, reduced }) {
+function SectionTitle({ eyebrow, title, text, center = false }) {
   return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0, y: 40 }}
-      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.8, ease: EASE }}
-      className="mx-auto mb-16 max-w-4xl text-center"
-    >
+    <div className={`mb-14 max-w-3xl ${center ? "mx-auto text-center" : ""}`}>
       <div
-        className="mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.25em]"
-        style={{
-          borderColor: `${COLORS.blue}35`,
-          color: COLORS.blue,
-          background: `${COLORS.white}CC`,
-        }}
+        className="mb-4 text-sm font-black uppercase tracking-[0.22em]"
+        style={{ color: COLORS.blue }}
       >
-        <span
-          className="h-2 w-2 rounded-full"
-          style={{ background: COLORS.blue }}
-        />
         {eyebrow}
       </div>
 
@@ -1062,176 +760,63 @@ function SectionTitle({ eyebrow, title, text, reduced }) {
         {title}
       </h2>
 
-      <p
-        className="mx-auto mt-5 max-w-3xl text-base leading-8 md:text-lg"
-        style={{ color: COLORS.textLight }}
-      >
+      <p className="mt-5 text-lg leading-8" style={{ color: COLORS.textLight }}>
         {text}
-      </p>
-    </motion.div>
-  );
-}
-
-function SafeIcon({ icon: Icon, size = 24, className = "" }) {
-  if (!Icon) {
-    return <Monitor size={size} className={className} />;
-  }
-
-  return <Icon size={size} className={className} />;
-}
-
-function ImageCard({ item, reduced }) {
-  return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0, y: 30 }}
-      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: 0.7, ease: EASE }}
-      whileHover={reduced ? undefined : { y: -8 }}
-      className="group overflow-hidden rounded-[28px] border bg-white shadow-[0_20px_60px_rgba(16,32,43,0.08)]"
-      style={{ borderColor: COLORS.border }}
-    >
-      <div className="relative h-64 overflow-hidden">
-        <motion.img
-          src={item.image}
-          alt={item.title}
-          className="h-full w-full object-cover"
-          whileHover={reduced ? undefined : { scale: 1.08 }}
-          transition={{ duration: 0.8, ease: EASE }}
-          onError={(event) => {
-            event.currentTarget.src = IMAGES.mac;
-          }}
-        />
-
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
-
-        <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
-          <div>
-            <span className="mb-2 inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-bold text-white backdrop-blur-md">
-              {item.category}
-            </span>
-
-            <h3 className="text-2xl font-black text-white">{item.title}</h3>
-          </div>
-
-          <div className="rounded-2xl bg-white/15 p-3 text-white backdrop-blur-md">
-            <SafeIcon icon={item.icon} size={22} />
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-5 p-6">
-        <InfoRow label="Location" value={item.location} />
-        <InfoRow label="Function" value={item.function} />
-        <InfoRow label="Relationship" value={item.relationship} />
-
-        <div
-          className="rounded-2xl p-4 text-sm leading-7"
-          style={{
-            background: COLORS.soft,
-            color: COLORS.textLight,
-          }}
-        >
-          <strong style={{ color: COLORS.text }}>Technical note:</strong>{" "}
-          {item.technical}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function InfoRow({ label, value }) {
-  return (
-    <div>
-      <div
-        className="mb-1 text-xs font-black uppercase tracking-[0.18em]"
-        style={{ color: COLORS.blue }}
-      >
-        {label}
-      </div>
-
-      <p className="text-sm leading-7" style={{ color: COLORS.textLight }}>
-        {value}
       </p>
     </div>
   );
 }
 
-function FilterButton({ active, children, onClick }) {
-  return (
-    <motion.button
-      whileHover={{ y: -2 }}
-      whileTap={{ scale: 0.96 }}
-      onClick={onClick}
-      className="rounded-full border px-4 py-2 text-sm font-bold transition-all"
-      style={{
-        borderColor: active ? COLORS.blue : COLORS.border,
-        background: active ? COLORS.blue : COLORS.white,
-        color: active ? COLORS.white : COLORS.text,
-        boxShadow: active ? `0 10px 30px ${COLORS.blue}30` : "none",
-      }}
-    >
-      {children}
-    </motion.button>
-  );
-}
+function FlowCard({ flow, index }) {
+  const reduceMotion = useReducedMotion();
 
-function ArchitectureFlow({ flow, reduced }) {
   return (
     <motion.div
-      initial={reduced ? false : { opacity: 0, y: 35 }}
-      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.7, ease: EASE }}
-      className="rounded-[30px] border bg-white p-6 shadow-[0_20px_60px_rgba(16,32,43,0.06)] md:p-8"
-      style={{ borderColor: COLORS.border }}
+      initial={reduceMotion ? false : { opacity: 0, y: 30 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ delay: index * 0.08 }}
+      className="rounded-[2rem] border p-6"
+      style={{
+        background: COLORS.white,
+        borderColor: COLORS.border,
+      }}
     >
-      <div className="mb-7 flex items-center gap-4">
+      <div className="mb-5 flex items-center gap-4">
         <div
-          className="rounded-2xl p-4"
+          className="flex h-12 w-12 items-center justify-center rounded-2xl font-black"
           style={{
             background: COLORS.softBlue,
             color: COLORS.blue,
           }}
         >
-          <SafeIcon icon={flow.icon} size={25} />
+          {String(index + 1).padStart(2, "0")}
         </div>
 
-        <div>
-          <h3 className="text-2xl font-black" style={{ color: COLORS.text }}>
-            {flow.title}
-          </h3>
-
-          <p
-            className="mt-1 text-sm leading-6"
-            style={{ color: COLORS.textLight }}
-          >
-            {flow.description}
-          </p>
-        </div>
+        <h3 className="text-2xl font-black" style={{ color: COLORS.text }}>
+          {flow.title}
+        </h3>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        {flow.steps.map((step, index) => (
-          <div key={step} className="flex items-center gap-3">
-            <motion.div
-              whileHover={reduced ? undefined : { y: -3, scale: 1.03 }}
-              className="rounded-2xl border px-4 py-3 text-sm font-bold"
+      <p className="mb-6 leading-7" style={{ color: COLORS.textLight }}>
+        {flow.description}
+      </p>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {flow.steps.map((step, stepIndex) => (
+          <div key={step} className="flex items-center gap-2">
+            <span
+              className="rounded-xl px-3 py-2 text-sm font-bold"
               style={{
-                borderColor: COLORS.border,
-                background:
-                  index % 2 === 0 ? COLORS.softBlue : `${COLORS.green}55`,
+                background: stepIndex % 2 === 0 ? COLORS.softBlue : "#F2FFF0",
                 color: COLORS.text,
               }}
             >
               {step}
-            </motion.div>
+            </span>
 
-            {index < flow.steps.length - 1 && (
-              <span
-                className="hidden text-xl font-bold md:block"
-                style={{ color: COLORS.blue }}
-              >
+            {stepIndex < flow.steps.length - 1 && (
+              <span className="font-black" style={{ color: COLORS.blue }}>
                 →
               </span>
             )}
@@ -1242,1276 +827,837 @@ function ArchitectureFlow({ flow, reduced }) {
   );
 }
 
-function HistoryCard({ item, index, reduced }) {
-  return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0, x: index % 2 ? 50 : -50 }}
-      whileInView={reduced ? undefined : { opacity: 1, x: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.8, ease: EASE }}
-      className="relative grid gap-6 md:grid-cols-[130px_1fr]"
-    >
-      <div className="flex items-start md:justify-center">
-        <div
-          className="rounded-full border px-5 py-3 text-sm font-black"
-          style={{
-            borderColor: `${COLORS.blue}45`,
-            color: COLORS.blue,
-            background: COLORS.white,
-          }}
-        >
-          {item.year}
-        </div>
-      </div>
-
-      <div
-        className="rounded-[28px] border bg-white p-7 shadow-[0_20px_60px_rgba(16,32,43,0.06)]"
-        style={{ borderColor: COLORS.border }}
-      >
-        <div className="flex items-start gap-4">
-          <div
-            className="rounded-2xl p-4"
-            style={{
-              background: COLORS.softBlue,
-              color: COLORS.blue,
-            }}
-          >
-            <SafeIcon icon={item.icon} size={25} />
-          </div>
-
-          <div className="min-w-0">
-            <h3 className="text-2xl font-black" style={{ color: COLORS.text }}>
-              {item.title}
-            </h3>
-
-            <p
-              className="mt-3 text-base leading-8"
-              style={{ color: COLORS.textLight }}
-            >
-              {item.description}
-            </p>
-
-            <div
-              className="mt-5 rounded-2xl p-5 text-sm leading-7"
-              style={{
-                background: COLORS.soft,
-                color: COLORS.textLight,
-              }}
-            >
-              {item.details}
-            </div>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-function InteractiveDetail({ item, active, setActive, reduced }) {
-  return (
-    <motion.div
-      layout
-      className="overflow-hidden rounded-[26px] border bg-white"
-      style={{
-        borderColor: active ? `${COLORS.blue}60` : COLORS.border,
-        boxShadow: active
-          ? `0 20px 60px ${COLORS.blue}12`
-          : "0 15px 45px rgba(16,32,43,0.05)",
-      }}
-    >
-      <button
-        onClick={() => setActive(active ? null : item.title)}
-        className="flex w-full items-center justify-between gap-5 p-5 text-left"
-      >
-        <div className="flex items-center gap-4">
-          <div
-            className="rounded-2xl p-3"
-            style={{
-              background: COLORS.softBlue,
-              color: COLORS.blue,
-            }}
-          >
-            <SafeIcon icon={item.icon} size={22} />
-          </div>
-
-          <div>
-            <h3 className="font-black" style={{ color: COLORS.text }}>
-              {item.title}
-            </h3>
-
-            <p className="mt-1 text-xs" style={{ color: COLORS.textLight }}>
-              {item.category}
-            </p>
-          </div>
-        </div>
-
-        <motion.div animate={{ rotate: active ? 180 : 0 }}>
-          <ChevronDown size={20} style={{ color: COLORS.blue }} />
-        </motion.div>
-      </button>
-
-      <AnimatePresence initial={false}>
-        {active && (
-          <motion.div
-            initial={reduced ? false : { height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={reduced ? undefined : { height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: EASE }}
-          >
-            <div
-              className="border-t px-5 pb-6 pt-5"
-              style={{ borderColor: COLORS.border }}
-            >
-              <InfoRow label="Location" value={item.location} />
-
-              <div className="mt-5">
-                <InfoRow label="Function" value={item.function} />
-              </div>
-
-              <div className="mt-5">
-                <InfoRow label="Relationship" value={item.relationship} />
-              </div>
-
-              <div
-                className="mt-5 rounded-2xl p-4 text-sm leading-7"
-                style={{
-                  background: COLORS.soft,
-                  color: COLORS.textLight,
-                }}
-              >
-                <strong style={{ color: COLORS.text }}>
-                  Technical information:
-                </strong>{" "}
-                {item.technical}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
-function DiagnosticBlock({ title, items }) {
-  return (
-    <div className="rounded-2xl p-5" style={{ background: COLORS.soft }}>
-      <div
-        className="mb-4 text-xs font-black uppercase tracking-[0.18em]"
-        style={{ color: COLORS.blue }}
-      >
-        {title}
-      </div>
-
-      <div className="space-y-3">
-        {items.map((item) => (
-          <div
-            key={item}
-            className="flex gap-3 text-sm leading-6"
-            style={{ color: COLORS.textLight }}
-          >
-            <CheckCircle2
-              size={17}
-              className="mt-1 shrink-0"
-              style={{ color: COLORS.blue }}
-            />
-
-            <span>{item}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function TroubleshootingCard({ item, index, active, setActive, reduced }) {
-  const isActive = active === index;
-
-  return (
-    <motion.div
-      initial={reduced ? false : { opacity: 0, y: 30 }}
-      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.08 }}
-      transition={{
-        duration: 0.65,
-        delay: Math.min(index * 0.03, 0.25),
-        ease: EASE,
-      }}
-      className="overflow-hidden rounded-[28px] border bg-white"
-      style={{
-        borderColor: isActive ? `${COLORS.blue}65` : COLORS.border,
-        boxShadow: isActive
-          ? `0 20px 70px ${COLORS.blue}12`
-          : "0 15px 45px rgba(16,32,43,0.05)",
-      }}
-    >
-      <button
-        onClick={() => setActive(isActive ? null : index)}
-        className="flex w-full items-center justify-between gap-5 p-6 text-left"
-      >
-        <div className="flex items-center gap-4">
-          <div
-            className="rounded-2xl p-3"
-            style={{
-              background: isActive ? COLORS.blue : COLORS.softBlue,
-              color: isActive ? COLORS.white : COLORS.blue,
-            }}
-          >
-            <Wrench size={21} />
-          </div>
-
-          <div>
-            <div
-              className="mb-1 text-xs font-black uppercase tracking-[0.18em]"
-              style={{ color: COLORS.blue }}
-            >
-              Diagnostic Case
-            </div>
-
-            <h3
-              className="text-lg font-black md:text-xl"
-              style={{ color: COLORS.text }}
-            >
-              {item.problem}
-            </h3>
-          </div>
-        </div>
-
-        <motion.div animate={{ rotate: isActive ? 180 : 0 }}>
-          <ChevronDown style={{ color: COLORS.blue }} />
-        </motion.div>
-      </button>
-
-      <AnimatePresence initial={false}>
-        {isActive && (
-          <motion.div
-            initial={reduced ? false : { height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={reduced ? undefined : { height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: EASE }}
-          >
-            <div
-              className="grid gap-5 border-t p-6 md:grid-cols-2"
-              style={{ borderColor: COLORS.border }}
-            >
-              <DiagnosticBlock title="Possible Causes" items={item.causes} />
-
-              <DiagnosticBlock
-                title="Diagnostic Steps"
-                items={item.diagnostics}
-              />
-
-              <div
-                className="rounded-2xl p-5 md:col-span-2"
-                style={{
-                  background: `${COLORS.green}55`,
-                }}
-              >
-                <div
-                  className="mb-2 text-xs font-black uppercase tracking-[0.18em]"
-                  style={{ color: COLORS.text }}
-                >
-                  Recommended Solution
-                </div>
-
-                <p
-                  className="text-sm leading-7"
-                  style={{ color: COLORS.textLight }}
-                >
-                  {item.solution}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
-function SystemExampleCard({ item, index, reduced }) {
-  return (
-    <motion.div
-      initial={
-        reduced
-          ? false
-          : {
-              opacity: 0,
-              scale: 0.96,
-              y: 20,
-            }
-      }
-      whileInView={
-        reduced
-          ? undefined
-          : {
-              opacity: 1,
-              scale: 1,
-              y: 0,
-            }
-      }
-      viewport={{ once: true, amount: 0.12 }}
-      transition={{
-        duration: 0.7,
-        delay: index * 0.04,
-        ease: EASE,
-      }}
-      whileHover={reduced ? undefined : { y: -6 }}
-      className="rounded-[28px] border bg-white p-7"
-      style={{ borderColor: COLORS.border }}
-    >
-      <div className="flex items-center gap-4">
-        <div
-          className="rounded-2xl p-4"
-          style={{
-            background: COLORS.softBlue,
-            color: COLORS.blue,
-          }}
-        >
-          <SafeIcon icon={item.icon} size={25} />
-        </div>
-
-        <h3 className="text-xl font-black" style={{ color: COLORS.text }}>
-          {item.title}
-        </h3>
-      </div>
-
-      <div
-        className="mt-6 rounded-2xl p-5 text-sm font-bold leading-7"
-        style={{
-          background: `${COLORS.green}60`,
-          color: COLORS.text,
-        }}
-      >
-        {item.flow}
-      </div>
-
-      <p className="mt-5 text-sm leading-7" style={{ color: COLORS.textLight }}>
-        {item.text}
-      </p>
-    </motion.div>
-  );
-}
-
 export default function Mac() {
-  const reduced = useReducedMotion();
+  const reduceMotion = useReducedMotion();
 
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeGroup, setActiveGroup] = useState("exrernal ");
+  const [activeCategory, setActiveCategory] = useState("external");
   const [search, setSearch] = useState("");
-  const [activeAnatomy, setActiveAnatomy] = useState(null);
-  const [activeProblem, setActiveProblem] = useState(null);
+  const [openTroubleshooting, setOpenTroubleshooting] = useState(null);
+  const [openFaq, setOpenFaq] = useState(null);
 
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+  const groups = ["All", "External", "Hardware", "Software"];
 
-  const springX = useSpring(mouseX, {
-    stiffness: 100,
-    damping: 20,
-  });
-
-  const springY = useSpring(mouseY, {
-    stiffness: 100,
-    damping: 20,
-  });
-
-  const { scrollYProgress } = useScroll();
-
-  const heroY = useTransform(
-    scrollYProgress,
-    [0, 0.3],
-    reduced ? [0, 0] : [0, -150],
-  );
-
-  const heroScale = useTransform(
-    scrollYProgress,
-    [0, 0.3],
-    reduced ? [1, 1] : [1, 0.9],
-  );
-
-  const heroOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.25],
-    reduced ? [1, 1] : [1, 0],
-  );
-
-  const heroRotate = useTransform(
-    scrollYProgress,
-    [0, 0.3],
-    reduced ? [0, 0] : [0, -3],
-  );
-
-  const filteredItems = useMemo(() => {
+  const filteredSystems = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return classification.filter((item) => {
+    return systems.filter((item) => {
+      const groupMatch = activeGroup === "All" || item.group === activeGroup;
+
       const categoryMatch =
         activeCategory === "All" || item.category === activeCategory;
 
-      if (!query) {
-        return categoryMatch;
-      }
+      const searchMatch =
+        !query ||
+        [
+          item.title,
+          item.group,
+          item.category,
+          item.definition,
+          item.location,
+          item.interaction,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(query);
 
-      const searchable = [
-        item.title,
-        item.category,
-        item.location,
-        item.function,
-        item.relationship,
-        item.technical,
-      ]
-        .join(" ")
-        .toLowerCase();
-
-      return categoryMatch && searchable.includes(query);
+      return groupMatch && categoryMatch && searchMatch;
     });
-  }, [activeCategory, search]);
+  }, [activeGroup, activeCategory, search]);
 
-  function handleMouseMove(event) {
-    if (reduced) return;
-
-    const rect = event.currentTarget.getBoundingClientRect();
-
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-
-    mouseX.set(x * 14);
-    mouseY.set(y * 14);
-  }
-
-  function handleMouseLeave() {
-    mouseX.set(0);
-    mouseY.set(0);
-  }
+  const handleGroupChange = (group) => {
+    setActiveGroup(group);
+    setActiveCategory("All");
+  };
 
   return (
     <main
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="min-h-screen overflow-hidden"
       style={{
         background: COLORS.soft,
         color: COLORS.text,
       }}
     >
-      <AmbientBackground reduced={reduced} />
-
-      <section className="relative flex min-h-screen items-center px-6 py-24 md:px-10">
-        <motion.div
-          style={{
-            y: heroY,
-            scale: heroScale,
-            opacity: heroOpacity,
-            rotateZ: heroRotate,
-          }}
-          className="mx-auto grid w-full max-w-7xl items-center gap-16 lg:grid-cols-[0.9fr_1.1fr]"
-        >
-          <div>
-            <motion.div
-              initial={reduced ? false : { opacity: 0, y: 25 }}
-              animate={reduced ? undefined : { opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.8,
-                ease: EASE,
-              }}
-              className="mb-6 inline-flex items-center gap-3 rounded-full border bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.2em]"
-              style={{ borderColor: COLORS.border }}
-            >
-              <span
-                className="h-2.5 w-2.5 animate-pulse rounded-full"
-                style={{ background: COLORS.blue }}
-              />
-              MacBook Anatomy
-            </motion.div>
-
-            <motion.h1
-              initial={reduced ? false : { opacity: 0, y: 35 }}
-              animate={reduced ? undefined : { opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.9,
-                delay: 0.1,
-                ease: EASE,
-              }}
-              className="text-6xl font-black tracking-[-0.06em] md:text-8xl"
-            >
-              Inside the
-              <span className="block" style={{ color: COLORS.blue }}>
-                MacBook.
-              </span>
-            </motion.h1>
-
-            <motion.p
-              initial={reduced ? false : { opacity: 0, y: 30 }}
-              animate={reduced ? undefined : { opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.8,
-                delay: 0.25,
-                ease: EASE,
-              }}
-              className="mt-7 max-w-2xl text-lg leading-9"
-              style={{ color: COLORS.textLight }}
-            >
-              A detailed technical anatomy of the MacBook, exploring its
-              history, software, external structure, internal architecture,
-              processing, memory, storage, power, thermal management, sensors,
-              security, durability and troubleshooting.
-            </motion.p>
-
-            <div className="mt-9 flex flex-wrap gap-3">
-              {[
-                "External Anatomy",
-                "Internal Anatomy",
-                "System Architecture",
-                "Sensors & Security",
-                "Troubleshooting",
-              ].map((item, index) => (
-                <motion.div
-                  key={item}
-                  initial={
-                    reduced
-                      ? false
-                      : {
-                          opacity: 0,
-                          scale: 0.9,
-                        }
-                  }
-                  animate={
-                    reduced
-                      ? undefined
-                      : {
-                          opacity: 1,
-                          scale: 1,
-                        }
-                  }
-                  transition={{
-                    delay: 0.4 + index * 0.08,
-                    duration: 0.5,
-                    ease: EASE,
-                  }}
-                  className="rounded-full border bg-white px-4 py-2 text-sm font-bold"
-                  style={{
-                    borderColor: COLORS.border,
-                  }}
-                >
-                  {item}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
+      <section
+        className="relative flex min-h-[92vh] items-center overflow-hidden"
+        style={{
+          background: `
+            radial-gradient(circle at 15% 20%, ${COLORS.cyan}55, transparent 30%),
+            radial-gradient(circle at 85% 30%, ${COLORS.green}55, transparent 28%),
+            linear-gradient(180deg, ${COLORS.white}, ${COLORS.soft})
+          `,
+        }}
+      >
+        <div className="mx-auto grid w-full max-w-7xl items-center gap-16 px-6 py-24 lg:grid-cols-2 lg:px-8">
           <motion.div
-            style={{
-              x: springX,
-              y: springY,
-            }}
-            className="relative"
+            initial={reduceMotion ? false : { opacity: 0, x: -40 }}
+            animate={reduceMotion ? undefined : { opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            <motion.div
-              animate={
-                reduced
-                  ? undefined
-                  : {
-                      y: [0, -14, 0],
-                    }
-              }
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="relative"
-            >
-              <div
-                className="absolute -inset-10 rounded-full blur-3xl"
-                style={{
-                  background: `${COLORS.blue}25`,
-                }}
-              />
-
-              <img
-                src={IMAGES.mac}
-                alt="MacBook"
-                className="relative w-full rounded-[35px] object-cover shadow-[0_40px_100px_rgba(16,32,43,0.18)]"
-                onError={(event) => {
-                  event.currentTarget.style.display = "none";
-                }}
-              />
-
-              <div className="absolute bottom-5 left-5 rounded-2xl border border-white/30 bg-black/35 px-5 py-3 text-sm font-bold text-white backdrop-blur-xl">
-                Hardware × Software × Architecture
-              </div>
-            </motion.div>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      <section className="px-6 py-28 md:px-10">
-        <div className="mx-auto max-w-6xl">
-          <SectionTitle
-            reduced={reduced}
-            eyebrow="01 — Evolution"
-            title="The MacBook is the result of decades of engineering."
-            text="Understanding the modern MacBook becomes easier when its development is viewed as an evolution of portable computing, industrial design, processors, displays, batteries, software and system integration."
-          />
-
-          <div className="space-y-7">
-            {history.map((item, index) => (
-              <HistoryCard
-                key={item.title}
-                item={item}
-                index={index}
-                reduced={reduced}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="software" className="px-6 py-28 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <SectionTitle
-            reduced={reduced}
-            eyebrow="02 — Software Anatomy"
-            title="Hardware needs an operating system."
-            text="A MacBook is not only physical hardware. macOS creates the software environment that manages hardware resources and connects applications to the computer's underlying architecture."
-          />
-
-          <div className="grid gap-5 md:grid-cols-2">
-            {software.map((item, index) => (
-              <motion.div
-                key={item.title}
-                initial={reduced ? false : { opacity: 0, y: 30 }}
-                whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-                viewport={{
-                  once: true,
-                  amount: 0.1,
-                }}
-                transition={{
-                  duration: 0.65,
-                  delay: index * 0.04,
-                  ease: EASE,
-                }}
-                whileHover={
-                  reduced
-                    ? undefined
-                    : {
-                        y: -6,
-                      }
-                }
-                className="rounded-[28px] border bg-white p-7 shadow-[0_20px_60px_rgba(16,32,43,0.05)]"
-                style={{
-                  borderColor: COLORS.border,
-                }}
-              >
-                <div className="flex gap-5">
-                  <div
-                    className="h-fit rounded-2xl p-4"
-                    style={{
-                      background: COLORS.softBlue,
-                      color: COLORS.blue,
-                    }}
-                  >
-                    <SafeIcon icon={item.icon} size={25} />
-                  </div>
-
-                  <div>
-                    <div
-                      className="mb-2 text-xs font-black uppercase tracking-[0.18em]"
-                      style={{ color: COLORS.blue }}
-                    >
-                      {item.category}
-                    </div>
-
-                    <h3
-                      className="text-2xl font-black"
-                      style={{ color: COLORS.text }}
-                    >
-                      {item.title}
-                    </h3>
-
-                    <p
-                      className="mt-3 leading-7"
-                      style={{
-                        color: COLORS.textLight,
-                      }}
-                    >
-                      {item.description}
-                    </p>
-
-                    <p
-                      className="mt-4 text-sm leading-7"
-                      style={{
-                        color: COLORS.textLight,
-                      }}
-                    >
-                      {item.details}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-28 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <SectionTitle
-            reduced={reduced}
-            eyebrow="03 — External Anatomy"
-            title="Start with what you can see."
-            text="Every visible MacBook component has a physical position, a specific function and a relationship with internal systems."
-          />
-
-          <div className="grid gap-7 lg:grid-cols-2">
-            {externalAnatomy.map((item) => (
-              <ImageCard key={item.title} item={item} reduced={reduced} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="anatomy"
-        className="px-6 py-28 md:px-10"
-        style={{
-          background: COLORS.white,
-        }}
-      >
-        <div className="mx-auto max-w-7xl">
-          <SectionTitle
-            reduced={reduced}
-            eyebrow="04 — Internal Anatomy"
-            title="Inside the chassis is an integrated computer architecture."
-            text="Modern MacBooks combine processing, memory, storage, power, cooling, wireless communication and security into an extremely compact internal system."
-          />
-
-          <div className="grid gap-7 lg:grid-cols-2">
-            {internalAnatomy.map((item) => (
-              <ImageCard key={item.title} item={item} reduced={reduced} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="hardware" className="px-6 py-28 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <SectionTitle
-            reduced={reduced}
-            eyebrow="05 — Functional Anatomy"
-            title="No component works alone."
-            text="A MacBook behaves as a coordinated system. Power, processing, memory, storage, display, networking and thermal systems continuously exchange resources and information."
-          />
-
-          <div className="space-y-6">
-            {functionalFlows.map((flow) => (
-              <ArchitectureFlow
-                key={flow.title}
-                flow={flow}
-                reduced={reduced}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-28 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <SectionTitle
-            reduced={reduced}
-            eyebrow="06 — System Architecture"
-            title="Follow the journey of information."
-            text="Common MacBook activities demonstrate how multiple hardware and software layers cooperate to produce a single user-visible result."
-          />
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {systemExamples.map((item, index) => (
-              <SystemExampleCard
-                key={item.title}
-                item={item}
-                index={index}
-                reduced={reduced}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-28 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <SectionTitle
-            reduced={reduced}
-            eyebrow="07 — Sensors & Security"
-            title="The MacBook also senses and protects."
-            text="Sensors help the computer understand its environment and physical state, while hardware-backed security protects authentication and sensitive data."
-          />
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {sensorsSecurity.map((item, index) => (
-              <motion.div
-                key={item.title}
-                initial={
-                  reduced
-                    ? false
-                    : {
-                        opacity: 0,
-                        y: 35,
-                      }
-                }
-                whileInView={
-                  reduced
-                    ? undefined
-                    : {
-                        opacity: 1,
-                        y: 0,
-                      }
-                }
-                viewport={{
-                  once: true,
-                  amount: 0.1,
-                }}
-                transition={{
-                  duration: 0.65,
-                  delay: index * 0.04,
-                  ease: EASE,
-                }}
-                className="rounded-[28px] border bg-white p-7"
-                style={{
-                  borderColor: COLORS.border,
-                }}
-              >
-                <div
-                  className="mb-5 inline-flex rounded-2xl p-4"
-                  style={{
-                    background: COLORS.softBlue,
-                    color: COLORS.blue,
-                  }}
-                >
-                  <SafeIcon icon={item.icon} size={25} />
-                </div>
-
-                <h3
-                  className="text-xl font-black"
-                  style={{ color: COLORS.text }}
-                >
-                  {item.title}
-                </h3>
-
-                <p
-                  className="mt-4 text-sm leading-7"
-                  style={{
-                    color: COLORS.textLight,
-                  }}
-                >
-                  {item.description}
-                </p>
-
-                <div className="mt-5">
-                  <InfoRow label="Function" value={item.function} />
-                </div>
-
-                <div className="mt-5">
-                  <InfoRow label="Relationship" value={item.relationship} />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-28 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <SectionTitle
-            reduced={reduced}
-            eyebrow="08 — Quality & Durability"
-            title="Engineering quality is more than appearance."
-            text="A MacBook's quality depends on its materials, structural design, display, keyboard, trackpad, battery, thermal architecture and physical connectivity."
-          />
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {durability.map((item, index) => (
-              <motion.div
-                key={item.title}
-                initial={
-                  reduced
-                    ? false
-                    : {
-                        opacity: 0,
-                        y: 30,
-                      }
-                }
-                whileInView={
-                  reduced
-                    ? undefined
-                    : {
-                        opacity: 1,
-                        y: 0,
-                      }
-                }
-                viewport={{
-                  once: true,
-                  amount: 0.1,
-                }}
-                transition={{
-                  duration: 0.7,
-                  delay: index * 0.04,
-                  ease: EASE,
-                }}
-                whileHover={
-                  reduced
-                    ? undefined
-                    : {
-                        y: -5,
-                      }
-                }
-                className="rounded-[28px] border bg-white p-7"
-                style={{
-                  borderColor: COLORS.border,
-                }}
-              >
-                <div className="flex gap-5">
-                  <div
-                    className="h-fit rounded-2xl p-4"
-                    style={{
-                      background: `${COLORS.green}70`,
-                      color: COLORS.text,
-                    }}
-                  >
-                    <SafeIcon icon={item.icon} size={23} />
-                  </div>
-
-                  <div>
-                    <h3
-                      className="text-xl font-black"
-                      style={{ color: COLORS.text }}
-                    >
-                      {item.title}
-                    </h3>
-
-                    <p
-                      className="mt-3 text-sm leading-7"
-                      style={{
-                        color: COLORS.textLight,
-                      }}
-                    >
-                      {item.description}
-                    </p>
-
-                    <div
-                      className="mt-5 rounded-2xl p-5 text-sm leading-7"
-                      style={{
-                        background: COLORS.soft,
-                        color: COLORS.textLight,
-                      }}
-                    >
-                      <strong style={{ color: COLORS.text }}>
-                        Durability analysis:
-                      </strong>{" "}
-                      {item.analysis}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section
-        className="px-6 py-28 md:px-10"
-        style={{
-          background: COLORS.white,
-        }}
-      >
-        <div className="mx-auto max-w-7xl">
-          <SectionTitle
-            reduced={reduced}
-            eyebrow="09 — Smart Classification"
-            title="Explore the MacBook by system."
-            text="Search the anatomy database and filter components by technical category. Open any component to see its location, function, relationship and technical information."
-          />
-
-          <div className="mb-8 rounded-[30px] border bg-white p-5 shadow-[0_20px_60px_rgba(16,32,43,0.05)]">
-            <div className="flex flex-col gap-5">
-              <div className="relative">
-                <Search
-                  className="absolute left-4 top-1/2 -translate-y-1/2"
-                  size={20}
-                  style={{ color: COLORS.textLight }}
-                />
-
-                <input
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Search MacBook components..."
-                  className="w-full rounded-2xl border bg-transparent py-4 pl-12 pr-12 outline-none"
-                  style={{
-                    borderColor: COLORS.border,
-                    color: COLORS.text,
-                  }}
-                />
-
-                {search && (
-                  <button
-                    onClick={() => setSearch("")}
-                    className="absolute right-4 top-1/2 -translate-y-1/2"
-                  >
-                    <X
-                      size={18}
-                      style={{
-                        color: COLORS.textLight,
-                      }}
-                    />
-                  </button>
-                )}
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <FilterButton
-                    key={category}
-                    active={activeCategory === category}
-                    onClick={() => setActiveCategory(category)}
-                  >
-                    {category}
-                  </FilterButton>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-6 flex items-center justify-between">
-            <p
-              className="text-sm font-bold"
-              style={{ color: COLORS.textLight }}
-            >
-              Showing {filteredItems.length} components
-            </p>
-
-            <p
-              className="hidden text-sm md:block"
-              style={{ color: COLORS.textLight }}
-            >
-              Component → Location → Function → Relationship
-            </p>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            {filteredItems.map((item) => (
-              <InteractiveDetail
-                key={item.title}
-                item={item}
-                active={activeAnatomy === item.title}
-                setActive={setActiveAnatomy}
-                reduced={reduced}
-              />
-            ))}
-          </div>
-
-          {filteredItems.length === 0 && (
             <div
-              className="rounded-[28px] border bg-white p-12 text-center"
+              className="mb-6 inline-flex rounded-full border px-4 py-2 text-sm font-black"
               style={{
+                background: COLORS.white,
                 borderColor: COLORS.border,
+                color: COLORS.blue,
               }}
             >
-              <Search
-                className="mx-auto mb-5"
-                size={40}
-                style={{ color: COLORS.blue }}
-              />
-
-              <h3
-                className="text-2xl font-black"
-                style={{ color: COLORS.text }}
-              >
-                No component found
-              </h3>
-
-              <p className="mt-3" style={{ color: COLORS.textLight }}>
-                Try another search term or choose another category.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="px-6 py-28 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <SectionTitle
-            reduced={reduced}
-            eyebrow="10 — Troubleshooting"
-            title="Understand the problem before replacing the part."
-            text="A symptom does not always identify the failed component. Effective troubleshooting separates software, power, thermal, configuration and hardware causes before a repair decision is made."
-          />
-
-          <div className="space-y-5">
-            {troubleshooting.map((item, index) => (
-              <TroubleshootingCard
-                key={item.problem}
-                item={item}
-                index={index}
-                active={activeProblem}
-                setActive={setActiveProblem}
-                reduced={reduced}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-28 md:px-10">
-        <motion.div
-          initial={
-            reduced
-              ? false
-              : {
-                  opacity: 0,
-                  y: 40,
-                }
-          }
-          whileInView={
-            reduced
-              ? undefined
-              : {
-                  opacity: 1,
-                  y: 0,
-                }
-          }
-          viewport={{
-            once: true,
-            amount: 0.2,
-          }}
-          transition={{
-            duration: 0.9,
-            ease: EASE,
-          }}
-          className="mx-auto max-w-6xl overflow-hidden rounded-[40px] border bg-white p-8 shadow-[0_30px_100px_rgba(16,32,43,0.1)] md:p-14"
-          style={{ borderColor: COLORS.border }}
-        >
-          <div className="grid items-center gap-10 md:grid-cols-2">
-            <div>
-              <div
-                className="mb-5 inline-flex rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.2em]"
-                style={{
-                  background: COLORS.softBlue,
-                  color: COLORS.blue,
-                }}
-              >
-                MacBook Architecture
-              </div>
-
-              <h2
-                className="text-4xl font-black tracking-tight md:text-6xl"
-                style={{ color: COLORS.text }}
-              >
-                One machine.
-                <span className="block" style={{ color: COLORS.blue }}>
-                  Many systems.
-                </span>
-              </h2>
-
-              <p
-                className="mt-6 text-base leading-8"
-                style={{ color: COLORS.textLight }}
-              >
-                The MacBook demonstrates how modern computing combines
-                electrical power, semiconductor processing, memory, storage,
-                thermal engineering, sensors, security, connectivity and
-                software into one integrated platform.
-              </p>
+              Mac Technical Anatomy
             </div>
 
-            <motion.div
-              animate={
-                reduced
-                  ? undefined
-                  : {
-                      y: [0, -10, 0],
-                      rotate: [0, 1.5, 0],
-                    }
-              }
-              transition={{
-                duration: 6,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+            <h1
+              className="text-5xl font-black leading-[0.95] tracking-[-0.05em] md:text-7xl"
+              style={{ color: COLORS.text }}
             >
-              <img
-                src={IMAGES.internals}
-                alt="MacBook internal architecture"
-                className="rounded-[30px] shadow-[0_30px_80px_rgba(16,32,43,0.15)]"
-                onError={(event) => {
-                  event.currentTarget.src = IMAGES.mac;
-                }}
-              />
-            </motion.div>
-          </div>
-        </motion.div>
-      </section>
+              Explore
+              <br />
+              <span style={{ color: COLORS.blue }}>every layer.</span>
+            </h1>
 
-      <section className="px-6 pb-32 pt-10 md:px-10">
-        <div className="mx-auto max-w-4xl text-center">
-          <motion.div
-            animate={
-              reduced
-                ? undefined
-                : {
-                    scale: [1, 1.04, 1],
-                  }
-            }
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="mx-auto mb-7 flex h-20 w-20 items-center justify-center rounded-[26px]"
-            style={{
-              background: COLORS.blue,
-              color: COLORS.white,
-              boxShadow: `0 20px 60px ${COLORS.blue}40`,
-            }}
-          >
-            <Monitor size={38} />
-          </motion.div>
+            <p
+              className="mt-7 max-w-xl text-lg leading-8 md:text-xl"
+              style={{ color: COLORS.textLight }}
+            >
+              Explore the external structure, Apple silicon, unified memory,
+              storage, macOS, connectivity, security and the systems that make a
+              Mac work.
+            </p>
 
-          <h2
-            className="text-4xl font-black tracking-tight md:text-6xl"
-            style={{ color: COLORS.text }}
-          >
-            Anatomy becomes architecture.
-          </h2>
-
-          <p
-            className="mx-auto mt-5 max-w-2xl text-base leading-8"
-            style={{ color: COLORS.textLight }}
-          >
-            By studying the MacBook component by component, we can understand
-            not only what each part does, but also how the complete computer
-            behaves as one coordinated system.
-          </p>
-
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            {[
-              "Hardware",
-              "Software",
-              "Power",
-              "Processing",
-              "Memory",
-              "Storage",
-              "Thermal",
-              "Security",
-            ].map((item) => (
-              <div
-                key={item}
-                className="rounded-full border bg-white px-4 py-2 text-sm font-bold"
+            <div className="mt-9 flex flex-wrap gap-4">
+              <a
+                href="#explore"
+                className="rounded-2xl px-6 py-4 font-black shadow-lg transition-transform hover:-translate-y-1"
                 style={{
+                  background: COLORS.blue,
+                  color: COLORS.white,
+                }}
+              >
+                Explore every layer →
+              </a>
+
+              <a
+                href="#architecture"
+                className="rounded-2xl border px-6 py-4 font-black transition-transform hover:-translate-y-1"
+                style={{
+                  background: COLORS.white,
                   borderColor: COLORS.border,
                   color: COLORS.text,
                 }}
               >
-                {item}
+                View architecture
+              </a>
+            </div>
+
+            <div className="mt-10 flex flex-wrap gap-3">
+              {[
+                "External",
+                "Hardware",
+                "Software",
+                "Security",
+                "Processing",
+              ].map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border px-4 py-2 text-sm font-bold"
+                  style={{
+                    background: COLORS.white,
+                    borderColor: COLORS.border,
+                    color: COLORS.textLight,
+                  }}
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={
+              reduceMotion ? false : { opacity: 0, scale: 0.85, rotate: 4 }
+            }
+            animate={
+              reduceMotion ? undefined : { opacity: 1, scale: 1, rotate: 0 }
+            }
+            transition={{ duration: 1 }}
+            className="relative"
+          >
+            <div
+              className="absolute -inset-10 rounded-full blur-3xl"
+              style={{
+                background: `${COLORS.cyan}55`,
+              }}
+            />
+
+            <div className="relative mx-auto max-w-2xl">
+              <div
+                className="relative overflow-hidden rounded-[2.5rem] border-[8px] shadow-2xl"
+                style={{
+                  background: COLORS.text,
+                  borderColor: "#D8E8F2",
+                }}
+              >
+                <img
+                  src={IMAGES.mac}
+                  alt="Mac technical anatomy"
+                  className="aspect-[16/10] w-full object-cover"
+                />
+
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, transparent 40%, rgba(23,50,77,.75))",
+                  }}
+                />
+
+                <div className="absolute bottom-6 left-6 right-6">
+                  <div
+                    className="rounded-3xl border p-5 backdrop-blur-xl"
+                    style={{
+                      background: "rgba(255,255,255,.9)",
+                      borderColor: COLORS.border,
+                    }}
+                  >
+                    <div
+                      className="text-xs font-black uppercase tracking-[0.2em]"
+                      style={{ color: COLORS.blue }}
+                    >
+                      Architecture
+                    </div>
+
+                    <div
+                      className="mt-2 text-2xl font-black"
+                      style={{ color: COLORS.text }}
+                    >
+                      Apple Silicon + macOS
+                    </div>
+
+                    <div
+                      className="mt-2 text-sm"
+                      style={{ color: COLORS.textLight }}
+                    >
+                      Computing, memory, software and hardware working as one
+                      system.
+                    </div>
+                  </div>
+                </div>
               </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section
+        id="explore"
+        className="py-28"
+        style={{
+          background: COLORS.soft,
+          color: COLORS.text,
+        }}
+      >
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <SectionTitle
+            eyebrow="Technical Explorer"
+            title="Explore every layer"
+            text="Search the external, internal and software architecture and move between technical categories."
+          />
+
+          <div
+            className="mb-8 rounded-3xl border p-3"
+            style={{
+              background: COLORS.white,
+              borderColor: COLORS.border,
+            }}
+          >
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+              {groups.map((group) => {
+                const active = activeGroup === group;
+
+                return (
+                  <button
+                    key={group}
+                    type="button"
+                    onClick={() => handleGroupChange(group)}
+                    className="rounded-2xl px-5 py-3 text-sm font-black transition-all"
+                    style={{
+                      background: active ? COLORS.blue : COLORS.softBlue,
+                      color: active ? COLORS.white : COLORS.text,
+                    }}
+                  >
+                    {group}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div
+            className="mb-8 flex flex-col gap-4 rounded-3xl border p-5 md:flex-row md:items-center"
+            style={{
+              background: COLORS.white,
+              borderColor: COLORS.border,
+            }}
+          >
+            <input
+              type="text"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search Mac anatomy, components, systems..."
+              className="min-w-0 flex-1 rounded-2xl border bg-transparent px-5 py-4 outline-none"
+              style={{
+                borderColor: COLORS.border,
+                color: COLORS.text,
+              }}
+            />
+
+            <div
+              className="rounded-2xl px-5 py-4 text-center text-sm font-black"
+              style={{
+                background: COLORS.softBlue,
+                color: COLORS.blue,
+              }}
+            >
+              {filteredSystems.length} systems found
+            </div>
+          </div>
+
+          <div className="mb-10 flex flex-wrap gap-3">
+            {categories.map((category) => {
+              const active = activeCategory === category;
+
+              return (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => setActiveCategory(category)}
+                  className="rounded-full border px-4 py-2 text-sm font-bold transition-all"
+                  style={{
+                    borderColor: active ? COLORS.blue : COLORS.border,
+                    background: active ? COLORS.blue : COLORS.white,
+                    color: active ? COLORS.white : COLORS.text,
+                  }}
+                >
+                  {category}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mb-8 flex items-end justify-between gap-5">
+            <div>
+              <div
+                className="text-sm font-black uppercase tracking-widest"
+                style={{ color: COLORS.blue }}
+              >
+                Mac Architecture Database
+              </div>
+
+              <h3 className="mt-2 text-3xl font-black">
+                {filteredSystems.length} systems found
+              </h3>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setActiveGroup("All");
+                setActiveCategory("All");
+                setSearch("");
+              }}
+              className="rounded-xl border px-4 py-2 text-sm font-bold"
+              style={{
+                background: COLORS.white,
+                borderColor: COLORS.border,
+                color: COLORS.text,
+              }}
+            >
+              Reset
+            </button>
+          </div>
+
+          {filteredSystems.length === 0 ? (
+            <div
+              className="rounded-[2rem] border p-12 text-center"
+              style={{
+                background: COLORS.white,
+                borderColor: COLORS.border,
+              }}
+            >
+              <div
+                className="text-5xl font-black"
+                style={{ color: COLORS.blue }}
+              >
+                ⌕
+              </div>
+
+              <h3 className="mt-4 text-2xl font-black">No systems found</h3>
+
+              <p className="mt-2" style={{ color: COLORS.textLight }}>
+                Try another search term or category.
+              </p>
+            </div>
+          ) : (
+            <motion.div
+              layout
+              className="grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredSystems.map((item, index) => (
+                  <motion.article
+                    key={item.id}
+                    layout
+                    initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+                    animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                    exit={reduceMotion ? undefined : { opacity: 0, y: -20 }}
+                    transition={{
+                      duration: 0.35,
+                      delay: index * 0.015,
+                    }}
+                    whileHover={reduceMotion ? undefined : { y: -7 }}
+                    className="group overflow-hidden rounded-[2rem] border"
+                    style={{
+                      background: COLORS.white,
+                      borderColor: COLORS.border,
+                    }}
+                  >
+                    <div className="relative h-56 overflow-hidden">
+                      <ImageCard
+                        src={getSmartImage(item.title, item.category)}
+                        alt={item.title}
+                      />
+
+                      <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
+                        <span
+                          className="rounded-full px-3 py-1 text-xs font-black"
+                          style={{
+                            background: COLORS.white,
+                            color: COLORS.blue,
+                          }}
+                        >
+                          {item.group}
+                        </span>
+
+                        <span
+                          className="rounded-full px-3 py-1 text-xs font-black"
+                          style={{
+                            background: COLORS.green,
+                            color: COLORS.text,
+                          }}
+                        >
+                          {item.category}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-6">
+                      <h3 className="text-2xl font-black">{item.title}</h3>
+
+                      <p
+                        className="mt-3 leading-7"
+                        style={{ color: COLORS.textLight }}
+                      >
+                        {item.definition}
+                      </p>
+
+                      <div
+                        className="mt-5 rounded-2xl p-4"
+                        style={{
+                          background: COLORS.softBlue,
+                        }}
+                      >
+                        <div
+                          className="text-xs font-black uppercase tracking-widest"
+                          style={{ color: COLORS.blue }}
+                        >
+                          Location
+                        </div>
+
+                        <div className="mt-1 text-sm font-semibold">
+                          {item.location}
+                        </div>
+                      </div>
+
+                      <div className="mt-5">
+                        <div className="text-sm font-black">
+                          System interaction
+                        </div>
+
+                        <p
+                          className="mt-2 text-sm leading-6"
+                          style={{ color: COLORS.textLight }}
+                        >
+                          {item.interaction}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.article>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </div>
+      </section>
+
+      <section
+        id="architecture"
+        className="py-28"
+        style={{ background: COLORS.white }}
+      >
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <SectionTitle
+            eyebrow="System Architecture"
+            title="Everything is connected."
+            text="A Mac combines processing, memory, storage, power, graphics, networking and macOS into one integrated computing system."
+          />
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            {functionalFlows.map((flow, index) => (
+              <FlowCard key={flow.title} flow={flow} index={index} />
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="sensors"
+        className="py-28"
+        style={{ background: COLORS.softBlue }}
+      >
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <SectionTitle
+            eyebrow="Sensors & Security"
+            title="The Mac understands its environment."
+            text="Sensors, biometric security and hardware-backed protection work together with macOS to create a secure and responsive computing environment."
+          />
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {sensors.map((sensor, index) => (
+              <motion.article
+                key={sensor.title}
+                initial={reduceMotion ? false : { opacity: 0, y: 25 }}
+                whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ delay: index * 0.05 }}
+                className="rounded-[2rem] border p-6"
+                style={{
+                  background: COLORS.white,
+                  borderColor: COLORS.border,
+                }}
+              >
+                <div
+                  className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl"
+                  style={{
+                    background: index % 2 === 0 ? COLORS.cyan : COLORS.green,
+                    color: COLORS.text,
+                  }}
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </div>
+
+                <h3 className="text-xl font-black">{sensor.title}</h3>
+
+                <p
+                  className="mt-3 text-sm leading-6"
+                  style={{ color: COLORS.textLight }}
+                >
+                  {sensor.description}
+                </p>
+              </motion.article>
+            ))}
+          </div>
+
+          <div
+            className="mt-10 rounded-[2rem] p-8 md:p-10"
+            style={{
+              background: COLORS.text,
+              color: COLORS.white,
+            }}
+          >
+            <div className="grid gap-8 lg:grid-cols-3">
+              <div>
+                <div
+                  className="text-sm font-black uppercase tracking-widest"
+                  style={{ color: COLORS.cyan }}
+                >
+                  Security
+                </div>
+
+                <h3 className="mt-3 text-3xl font-black">
+                  Hardware-backed protection
+                </h3>
+              </div>
+
+              <div className="lg:col-span-2">
+                <p className="leading-8" style={{ color: "#D9EAF5" }}>
+                  Mac security combines Apple silicon security architecture,
+                  Secure Enclave technology, encryption, authentication and
+                  macOS security controls to protect system and user data.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="technician"
+        className="py-28"
+        style={{ background: COLORS.white }}
+      >
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <SectionTitle
+            eyebrow="Technician Lab"
+            title="Understand the failure before the fix."
+            text="Use relationships between Mac hardware and software to reason about common technical problems."
+          />
+
+          <div className="space-y-4">
+            {troubleshooting.map((item, index) => {
+              const open = openTroubleshooting === index;
+
+              return (
+                <div
+                  key={item.title}
+                  className="overflow-hidden rounded-[2rem] border"
+                  style={{
+                    background: COLORS.soft,
+                    borderColor: COLORS.border,
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenTroubleshooting(open ? null : index)}
+                    className="flex w-full items-center justify-between gap-5 p-6 text-left"
+                  >
+                    <div>
+                      <div
+                        className="text-xs font-black uppercase tracking-widest"
+                        style={{ color: COLORS.blue }}
+                      >
+                        Diagnostic Case {index + 1}
+                      </div>
+
+                      <h3 className="mt-2 text-xl font-black">{item.title}</h3>
+                    </div>
+
+                    <span
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xl font-black"
+                      style={{
+                        background: COLORS.white,
+                        color: COLORS.blue,
+                      }}
+                    >
+                      {open ? "−" : "+"}
+                    </span>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {open && (
+                      <motion.div
+                        initial={
+                          reduceMotion ? false : { height: 0, opacity: 0 }
+                        }
+                        animate={
+                          reduceMotion
+                            ? undefined
+                            : { height: "auto", opacity: 1 }
+                        }
+                        exit={
+                          reduceMotion ? undefined : { height: 0, opacity: 0 }
+                        }
+                      >
+                        <div className="grid gap-6 border-t p-6 md:grid-cols-2">
+                          <div>
+                            <div
+                              className="mb-3 text-sm font-black"
+                              style={{ color: COLORS.blue }}
+                            >
+                              Possible causes
+                            </div>
+
+                            <ul className="space-y-2">
+                              {item.causes.map((cause) => (
+                                <li
+                                  key={cause}
+                                  className="text-sm"
+                                  style={{
+                                    color: COLORS.textLight,
+                                  }}
+                                >
+                                  • {cause}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <div
+                            className="rounded-2xl p-5"
+                            style={{
+                              background: COLORS.white,
+                            }}
+                          >
+                            <div className="text-sm font-black">
+                              Diagnostic approach
+                            </div>
+
+                            <p
+                              className="mt-2 text-sm leading-6"
+                              style={{
+                                color: COLORS.textLight,
+                              }}
+                            >
+                              {item.action}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" className="py-28" style={{ background: COLORS.soft }}>
+        <div className="mx-auto max-w-4xl px-6 lg:px-8">
+          <SectionTitle
+            eyebrow="Technical FAQ"
+            title="Technical questions."
+            text="Quick explanations for the most important concepts in Mac architecture."
+            center
+          />
+
+          <div className="space-y-4">
+            {faqs.map((faq, index) => {
+              const open = openFaq === index;
+
+              return (
+                <div
+                  key={faq.question}
+                  className="overflow-hidden rounded-[2rem] border"
+                  style={{
+                    background: COLORS.white,
+                    borderColor: COLORS.border,
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(open ? null : index)}
+                    className="flex w-full items-center justify-between gap-5 p-6 text-left"
+                  >
+                    <span className="text-lg font-black">{faq.question}</span>
+
+                    <span
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                      style={{
+                        background: COLORS.softBlue,
+                        color: COLORS.blue,
+                      }}
+                    >
+                      {open ? "−" : "+"}
+                    </span>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {open && (
+                      <motion.div
+                        initial={
+                          reduceMotion ? false : { height: 0, opacity: 0 }
+                        }
+                        animate={
+                          reduceMotion
+                            ? undefined
+                            : { height: "auto", opacity: 1 }
+                        }
+                        exit={
+                          reduceMotion ? undefined : { height: 0, opacity: 0 }
+                        }
+                      >
+                        <div
+                          className="border-t px-6 pb-6 pt-5 leading-7"
+                          style={{
+                            color: COLORS.textLight,
+                            borderColor: COLORS.border,
+                          }}
+                        >
+                          {faq.answer}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="relative overflow-hidden py-28"
+        style={{
+          background: COLORS.text,
+          color: COLORS.white,
+        }}
+      >
+        <div
+          className="absolute -left-32 -top-32 h-96 w-96 rounded-full blur-3xl"
+          style={{
+            background: `${COLORS.blue}35`,
+          }}
+        />
+
+        <div
+          className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full blur-3xl"
+          style={{
+            background: `${COLORS.green}25`,
+          }}
+        />
+
+        <div className="relative mx-auto max-w-5xl px-6 text-center lg:px-8">
+          <div
+            className="mb-5 text-sm font-black uppercase tracking-[0.25em]"
+            style={{ color: COLORS.cyan }}
+          >
+            Mac Anatomy
+          </div>
+
+          <h2 className="text-4xl font-black tracking-tight md:text-6xl">
+            Every layer works together.
+          </h2>
+
+          <p
+            className="mx-auto mt-6 max-w-2xl text-lg leading-8"
+            style={{ color: "#D5E7F2" }}
+          >
+            From Apple silicon and unified memory to macOS, storage,
+            connectivity and security, Mac architecture combines hardware and
+            software into one computing platform.
+          </p>
+
+          <div className="mt-9 flex flex-wrap justify-center gap-4">
+            <a
+              href="#explore"
+              className="rounded-2xl px-6 py-4 font-black"
+              style={{
+                background: COLORS.white,
+                color: COLORS.text,
+              }}
+            >
+              Explore Mac Anatomy
+            </a>
+
+            <Link
+              to="/iph"
+              className="rounded-2xl border px-6 py-4 font-black"
+              style={{
+                borderColor: "rgba(255,255,255,.25)",
+                color: COLORS.white,
+              }}
+            >
+              Explore iPhone →
+            </Link>
           </div>
         </div>
       </section>
